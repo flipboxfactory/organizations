@@ -6,15 +6,15 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\services;
+namespace flipbox\organizations\services;
 
 use Craft;
 use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\Organization as OrganizationRecord;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\Organization as OrganizationRecord;
 use yii\base\Component;
 use yii\base\Exception;
 
@@ -179,7 +179,7 @@ class Element extends Component
 
     /**
      * @param OrganizationElement $organization
-     * @return \flipbox\organization\records\TypeSiteSettings|null
+     * @return \flipbox\organizations\records\TypeSiteSettings|null
      */
     private function getSiteSettings(OrganizationElement $organization)
     {

@@ -6,12 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\types\traits;
+namespace flipbox\organizations\actions\types\traits;
 
 use Craft;
 use flipbox\ember\exceptions\ModelNotFoundException;
-use flipbox\organization\cp\actions\general\traits\SiteSettingAttributes;
-use flipbox\organization\records\Type;
+use flipbox\organizations\cp\actions\general\traits\SiteSettingAttributes;
+use flipbox\organizations\records\Type;
 use yii\base\BaseObject;
 
 /**

@@ -6,14 +6,14 @@
  * @link       https://www.flipboxfactory.com/software/domains/
  */
 
-namespace flipbox\organization\actions\users;
+namespace flipbox\organizations\actions\users;
 
 use craft\elements\User;
 use flipbox\ember\actions\model\traits\Lookup;
 use flipbox\ember\actions\model\traits\Manage;
 use flipbox\ember\exceptions\RecordNotFoundException;
-use flipbox\organization\Organizations;
-use flipbox\organization\records\UserAssociation;
+use flipbox\organizations\Organizations;
+use flipbox\organizations\records\UserAssociation;
 use yii\base\Model;
 use yii\web\HttpException;
 

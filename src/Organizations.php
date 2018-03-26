@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization;
+namespace flipbox\organizations;
 
 use Craft;
 use craft\base\Plugin as BasePlugin;
@@ -22,14 +22,14 @@ use craft\services\Elements;
 use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
-use flipbox\organization\db\behaviors\OrganizationAttributesToUserQueryBehavior;
-use flipbox\organization\elements\behaviors\UserCategoriesBehavior;
-use flipbox\organization\elements\behaviors\UserOrganizationsBehavior;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\fields\Organization as OrganizationField;
-use flipbox\organization\models\Settings as OrganizationSettings;
-use flipbox\organization\records\Type as OrganizationType;
-use flipbox\organization\web\twig\variables\Organization as OrganizationVariable;
+use flipbox\organizations\db\behaviors\OrganizationAttributesToUserQueryBehavior;
+use flipbox\organizations\elements\behaviors\UserCategoriesBehavior;
+use flipbox\organizations\elements\behaviors\UserOrganizationsBehavior;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\fields\Organization as OrganizationField;
+use flipbox\organizations\models\Settings as OrganizationSettings;
+use flipbox\organizations\records\Type as OrganizationType;
+use flipbox\organizations\web\twig\variables\Organization as OrganizationVariable;
 use yii\base\Event;
 use yii\log\Logger;
 

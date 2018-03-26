@@ -6,12 +6,12 @@
  * @link       https://github.com/flipboxfactory/craft-ember
  */
 
-namespace flipbox\organization\traits;
+namespace flipbox\organizations\traits;
 
 use Craft;
 use flipbox\ember\helpers\ObjectHelper;
-use flipbox\organization\elements\Organization as Organization;
-use flipbox\organization\Organizations as OrganizationPlugin;
+use flipbox\organizations\elements\Organization as Organization;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @property int|null $organizationId

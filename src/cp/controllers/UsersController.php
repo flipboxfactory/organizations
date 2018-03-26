@@ -6,12 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers;
+namespace flipbox\organizations\cp\controllers;
 
 use Craft;
 use flipbox\ember\helpers\ArrayHelper;
-use flipbox\organization\actions\users\Associate;
-use flipbox\organization\actions\users\Dissociate;
+use flipbox\organizations\actions\users\Associate;
+use flipbox\organizations\actions\users\Dissociate;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

@@ -1,16 +1,16 @@
 <?php
 
-namespace flipbox\organization\db\behaviors;
+namespace flipbox\organizations\db\behaviors;
 
 use craft\elements\db\UserQuery;
 use craft\helpers\ArrayHelper;
-use flipbox\organization\db\objects\UserQueryParamHandler;
-use flipbox\organization\elements\Organization;
+use flipbox\organizations\db\objects\UserQueryParamHandler;
+use flipbox\organizations\elements\Organization;
 use yii\base\Behavior;
 
 /**
  * Class UserOrganizationBehavior
- * @package flipbox\organization\db\behaviors
+ * @package flipbox\organizations\db\behaviors
  *
  * @property UserQuery $owner
  */

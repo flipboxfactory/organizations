@@ -6,12 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers\settings\view;
+namespace flipbox\organizations\cp\controllers\settings\view;
 
 use Craft;
 use flipbox\ember\helpers\UrlHelper;
-use flipbox\organization\cp\controllers\view\AbstractController as BaseAbstractController;
-use flipbox\organization\cp\Cp as CpModule;
+use flipbox\organizations\cp\controllers\view\AbstractController as BaseAbstractController;
+use flipbox\organizations\cp\Cp as CpModule;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

@@ -1,16 +1,16 @@
 <?php
 
-namespace flipbox\organization\elements\behaviors;
+namespace flipbox\organizations\elements\behaviors;
 
 use Craft;
 use craft\elements\User;
 use craft\events\ModelEvent;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organization\db\OrganizationQuery;
-use flipbox\organization\elements\Organization;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\validators\OrganizationsValidator;
+use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\elements\Organization;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\validators\OrganizationsValidator;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\base\Exception;
@@ -18,7 +18,7 @@ use yii\helpers\Json;
 
 /**
  * Class UserOrganizationsBehavior
- * @package flipbox\organization\elements\behaviors
+ * @package flipbox\organizations\elements\behaviors
  *
  * @property User $owner;
  */

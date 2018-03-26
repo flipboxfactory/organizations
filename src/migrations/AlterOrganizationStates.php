@@ -6,10 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\migrations;
+namespace flipbox\organizations\migrations;
 
 use craft\db\Migration;
-use flipbox\organization\records\Organization;
+use flipbox\organizations\records\Organization;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

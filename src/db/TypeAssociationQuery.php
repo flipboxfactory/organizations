@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\db;
+namespace flipbox\organizations\db;
 
 use craft\helpers\Db;
 use flipbox\craft\sortable\associations\db\SortableAssociationQuery;
-use flipbox\organization\records\TypeAssociation;
+use flipbox\organizations\records\TypeAssociation;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

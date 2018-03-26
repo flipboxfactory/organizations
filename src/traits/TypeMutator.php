@@ -6,10 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\traits;
+namespace flipbox\organizations\traits;
 
-use flipbox\organization\Organizations;
-use flipbox\organization\records\Type;
+use flipbox\organizations\Organizations;
+use flipbox\organizations\records\Type;
 
 /**
  * @property int|null $typeId

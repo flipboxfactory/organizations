@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\db;
+namespace flipbox\organizations\db;
 
 use craft\db\Query;
 use craft\elements\db\ElementQuery;
@@ -14,13 +14,13 @@ use craft\helpers\Db;
 use craft\records\UserGroup_User as UserGroupUsersRecord;
 use flipbox\ember\db\traits\UserAttribute;
 use flipbox\ember\db\traits\UserGroupAttribute;
-use flipbox\organization\db\traits\TypeAttribute;
-use flipbox\organization\db\traits\UserCategoryAttribute;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\records\Organization as OrganizationRecord;
-use flipbox\organization\records\TypeAssociation as TypeAssociationRecord;
-use flipbox\organization\records\UserAssociation as OrganizationUsersRecord;
-use flipbox\organization\records\UserCategoryAssociation as UserCategoryAssociationRecord;
+use flipbox\organizations\db\traits\TypeAttribute;
+use flipbox\organizations\db\traits\UserCategoryAttribute;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\records\Organization as OrganizationRecord;
+use flipbox\organizations\records\TypeAssociation as TypeAssociationRecord;
+use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
+use flipbox\organizations\records\UserCategoryAssociation as UserCategoryAssociationRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

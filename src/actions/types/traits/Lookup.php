@@ -6,10 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\types\traits;
+namespace flipbox\organizations\actions\types\traits;
 
-use flipbox\organization\Organizations;
-use flipbox\organization\records\Type;
+use flipbox\organizations\Organizations;
+use flipbox\organizations\records\Type;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

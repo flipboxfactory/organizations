@@ -6,14 +6,14 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\services;
+namespace flipbox\organizations\services;
 
 use craft\helpers\ArrayHelper;
 use flipbox\ember\exceptions\RecordNotFoundException;
 use flipbox\ember\helpers\SiteHelper;
 use flipbox\ember\services\traits\elements\MultiSiteAccessor;
-use flipbox\organization\db\OrganizationQuery;
-use flipbox\organization\elements\Organization as OrganizationElement;
+use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\elements\Organization as OrganizationElement;
 use yii\base\Component;
 
 /**

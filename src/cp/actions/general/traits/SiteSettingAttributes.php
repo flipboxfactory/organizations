@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\actions\general\traits;
+namespace flipbox\organizations\cp\actions\general\traits;
 
 use Craft;
 use craft\helpers\ArrayHelper;

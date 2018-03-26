@@ -6,16 +6,16 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\actions\general;
+namespace flipbox\organizations\cp\actions\general;
 
 use Craft;
 use craft\helpers\ArrayHelper;
 use craft\helpers\StringHelper;
 use flipbox\ember\actions\model\ModelCreate;
 use flipbox\ember\exceptions\ModelNotFoundException;
-use flipbox\organization\models\Settings;
-use flipbox\organization\models\SiteSettings;
-use flipbox\organization\Organizations;
+use flipbox\organizations\models\Settings;
+use flipbox\organizations\models\SiteSettings;
+use flipbox\organizations\Organizations;
 use yii\base\BaseObject;
 use yii\base\Model;
 

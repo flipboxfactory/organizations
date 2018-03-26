@@ -6,12 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers\settings;
+namespace flipbox\organizations\cp\controllers\settings;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organization\cp\actions\general\Update;
-use flipbox\organization\cp\controllers\AbstractController;
+use flipbox\organizations\cp\actions\general\Update;
+use flipbox\organizations\cp\controllers\AbstractController;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

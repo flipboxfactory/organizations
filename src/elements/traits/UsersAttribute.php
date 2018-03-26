@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\elements\traits;
+namespace flipbox\organizations\elements\traits;
 
 use Craft;
 use craft\db\Query;
@@ -14,8 +14,8 @@ use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\UserAssociation as OrganizationUsersRecord;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

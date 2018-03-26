@@ -6,7 +6,7 @@
  * @link       https://github.com/flipboxfactory/craft-ember
  */
 
-namespace flipbox\organization\traits;
+namespace flipbox\organizations\traits;
 
 use craft\elements\User as UserElement;
 use flipbox\ember\helpers\ModelHelper;

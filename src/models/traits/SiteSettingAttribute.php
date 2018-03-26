@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\models\traits;
+namespace flipbox\organizations\models\traits;
 
 use Craft;
 use flipbox\ember\helpers\ObjectHelper;
-use flipbox\organization\models\SiteSettings;
+use flipbox\organizations\models\SiteSettings;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

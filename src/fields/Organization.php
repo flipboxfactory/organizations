@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\fields;
+namespace flipbox\organizations\fields;
 
 use Craft;
 use craft\fields\BaseRelationField;
-use flipbox\organization\elements\Organization as OrganizationElement;
+use flipbox\organizations\elements\Organization as OrganizationElement;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

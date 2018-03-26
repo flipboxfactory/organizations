@@ -6,12 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\services;
+namespace flipbox\organizations\services;
 
 use Craft;
 use flipbox\ember\services\traits\records\Accessor;
-use flipbox\organization\events\ChangeStateEvent;
-use flipbox\organization\records\Organization as OrganizationRecord;
+use flipbox\organizations\events\ChangeStateEvent;
+use flipbox\organizations\records\Organization as OrganizationRecord;
 use yii\base\Component;
 
 /**

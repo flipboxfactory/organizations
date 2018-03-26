@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\models;
+namespace flipbox\organizations\models;
 
 use Craft;
 use craft\base\Model;
@@ -14,7 +14,7 @@ use flipbox\ember\helpers\ModelHelper;
 use flipbox\ember\helpers\SiteHelper;
 use flipbox\ember\traits\FieldLayoutAttribute;
 use flipbox\ember\validators\ModelValidator;
-use flipbox\organization\elements\Organization;
+use flipbox\organizations\elements\Organization;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

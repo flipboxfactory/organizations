@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\organizations;
+namespace flipbox\organizations\actions\organizations;
 
 use flipbox\ember\actions\element\ElementIndex;
-use flipbox\organization\db\OrganizationQuery;
-use flipbox\organization\Organizations;
+use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\Organizations;
 use yii\db\QueryInterface;
 
 /**

@@ -6,12 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers;
+namespace flipbox\organizations\cp\controllers;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organization\db\UserCategoryQuery;
-use flipbox\organization\Organizations;
+use flipbox\organizations\db\UserCategoryQuery;
+use flipbox\organizations\Organizations;
 use yii\web\Response;
 
 /**

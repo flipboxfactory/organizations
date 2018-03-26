@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\types;
+namespace flipbox\organizations\actions\types;
 
 use flipbox\ember\actions\model\ModelView;
-use flipbox\organization\Organizations;
-use flipbox\organization\records\Type;
+use flipbox\organizations\Organizations;
+use flipbox\organizations\records\Type;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

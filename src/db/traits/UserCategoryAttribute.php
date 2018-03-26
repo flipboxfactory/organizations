@@ -6,13 +6,13 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\db\traits;
+namespace flipbox\organizations\db\traits;
 
 use craft\db\Query;
 use craft\helpers\Db;
 use flipbox\ember\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organization\records\UserCategory;
+use flipbox\organizations\records\UserCategory;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

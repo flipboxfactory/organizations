@@ -6,14 +6,14 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\services;
+namespace flipbox\organizations\services;
 
 use flipbox\craft\sortable\associations\db\SortableAssociationQueryInterface;
 use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\services\traits\records\Accessor;
-use flipbox\organization\db\UserAssociationQuery;
-use flipbox\organization\records\UserAssociation;
+use flipbox\organizations\db\UserAssociationQuery;
+use flipbox\organizations\records\UserAssociation;
 use yii\db\ActiveQuery;
 
 /**

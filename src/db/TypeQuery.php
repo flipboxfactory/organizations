@@ -6,16 +6,16 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\db;
+namespace flipbox\organizations\db;
 
 use craft\db\QueryAbortedException;
 use craft\helpers\Db;
 use flipbox\ember\db\CacheableActiveQuery;
 use flipbox\ember\db\traits\AuditAttributes;
 use flipbox\ember\db\traits\FixedOrderBy;
-use flipbox\organization\records\Type;
-use flipbox\organization\records\Type as TypeRecord;
-use flipbox\organization\records\TypeAssociation as TypeAssociationRecord;
+use flipbox\organizations\records\Type;
+use flipbox\organizations\records\Type as TypeRecord;
+use flipbox\organizations\records\TypeAssociation as TypeAssociationRecord;
 use yii\base\ArrayableTrait;
 
 /**

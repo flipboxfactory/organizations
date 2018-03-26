@@ -17,10 +17,10 @@
 	}],
 	"support": {
 		"email": "support@flipboxfactory.com",
-		"issues": "https://github.com/flipboxfactory/organization/issues?state=open",
-		"source": "https://github.com/flipboxfactory/organization",
-		"docs": "https://github.com/flipboxfactory/organization",
-		"rss": "https://github.com/flipboxfactory/organization/commits/master.atom"
+		"issues": "https://github.com/flipboxfactory/organizations/issues?state=open",
+		"source": "https://github.com/flipboxfactory/organizations",
+		"docs": "https://github.com/flipboxfactory/organizations",
+		"rss": "https://github.com/flipboxfactory/organizations/commits/master.atom"
 	},
 	"require": {
 		"craftcms/cms": "~3.0.0-RC",
@@ -35,12 +35,12 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"flipbox\\organization\\": "src/"
+			"flipbox\\organizations\\": "src/"
 		}
 	},
 	"autoload-dev": {
 		"psr-4": {
-			"flipbox\\organization\\tests\\": "tests/src/"
+			"flipbox\\organizations\\tests\\": "tests/src/"
 		}
 	},
 	"extra": {
@@ -48,30 +48,29 @@
 		"handle": "organizations",
 		"developer": "Flipbox Digital",
 		"developerUrl": "https://www.flipboxfactory.com",
-		"class": "flipbox\\organization\\Organization",
-		"changelogUrl": "https://raw.githubusercontent.com/flipboxfactory/organization/master/CHANGELOG.md",
-		"downloadUrl": "https://github.com/flipboxfactory/organization/archive/master.zip",
+		"class": "flipbox\\organizations\\Organizations",
+		"changelogUrl": "https://raw.githubusercontent.com/flipboxfactory/organizations/master/CHANGELOG.md",
+		"downloadUrl": "https://github.com/flipboxfactory/organizations/archive/master.zip",
 		"hasCpSettings": true,
 		"hasCpSection": true,
 		"schemaVersion": "1.0.0",
 		"components": {
-			"element": "flipbox\\organization\\services\\Element",
-			"organizations": "flipbox\\organization\\services\\Organizations",
-			"records": "flipbox\\organization\\services\\Records",
-			"types": "flipbox\\organization\\services\\Types",
-			"typeSettings": "flipbox\\organization\\services\\TypeSettings",
-			"typeAssociations": "flipbox\\organization\\services\\TypeAssociations",
-			"users": "flipbox\\organization\\services\\Users",
-			"userAssociations": "flipbox\\organization\\services\\UserAssociations",
-			"userCategories": "flipbox\\organization\\services\\UserCategories",
-			"userCategoryAssociations": "flipbox\\organization\\services\\UserCategoryAssociations"
+			"element": "flipbox\\organizations\\services\\Element",
+			"organizations": "flipbox\\organizations\\services\\Organizations",
+			"records": "flipbox\\organizations\\services\\Records",
+			"types": "flipbox\\organizations\\services\\Types",
+			"typeSettings": "flipbox\\organizations\\services\\TypeSettings",
+			"typeAssociations": "flipbox\\organizations\\services\\TypeAssociations",
+			"users": "flipbox\\organizations\\services\\Users",
+			"userAssociations": "flipbox\\organizations\\services\\UserAssociations",
+			"userCategories": "flipbox\\organizations\\services\\UserCategories",
+			"userCategoryAssociations": "flipbox\\organizations\\services\\UserCategoryAssociations"
 		},
 		"modules": {
 			"cp": {
-				"basePath": "@flipbox/organization/cp",
-				"class": "flipbox\\organization\\cp\\Cp",
+				"class": "flipbox\\organizations\\cp\\Cp",
 				"components": {
-					"settings": "flipbox\\organization\\cp\\services\\Settings"
+					"settings": "flipbox\\organizations\\cp\\services\\Settings"
 				}
 			}
 		}

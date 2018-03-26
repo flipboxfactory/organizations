@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\models;
+namespace flipbox\organizations\models;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

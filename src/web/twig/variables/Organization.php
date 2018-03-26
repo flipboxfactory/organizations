@@ -6,10 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\web\twig\variables;
+namespace flipbox\organizations\web\twig\variables;
 
-use flipbox\organization\models\Settings;
-use flipbox\organization\Organizations as OrganizationPlugin;
+use flipbox\organizations\models\Settings;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\di\ServiceLocator;
 
 /**

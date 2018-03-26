@@ -6,14 +6,14 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers;
+namespace flipbox\organizations\cp\controllers;
 
 use Craft;
 use craft\controllers\ElementIndexesController;
 use craft\elements\User;
 use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterElementHtmlAttributesEvent;
-use flipbox\organization\elements\actions\RemoveUsers;
+use flipbox\organizations\elements\actions\RemoveUsers;
 use yii\base\Event;
 
 /**

@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers\settings\view;
+namespace flipbox\organizations\cp\controllers\settings\view;
 
 use Craft;
 use craft\helpers\UrlHelper as UrlHelper;
-use flipbox\organization\records\Type;
+use flipbox\organizations\records\Type;
 use yii\web\Response;
 
 /**
@@ -30,7 +30,7 @@ class TypesController extends AbstractController
     const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . DIRECTORY_SEPARATOR . 'upsert';
 
     /**
-     * @return \flipbox\organization\services\Types
+     * @return \flipbox\organizations\services\Types
      */
     protected function typeService()
     {

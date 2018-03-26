@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\traits;
+namespace flipbox\organizations\traits;
 
 use Craft;
 use DateTime;

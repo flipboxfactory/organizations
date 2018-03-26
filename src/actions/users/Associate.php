@@ -6,10 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\users;
+namespace flipbox\organizations\actions\users;
 
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\UserAssociation;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\UserAssociation;
 use yii\base\Model;
 
 /**

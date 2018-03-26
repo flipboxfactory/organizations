@@ -1,14 +1,14 @@
 <?php
 
-namespace flipbox\organization\elements\behaviors;
+namespace flipbox\organizations\elements\behaviors;
 
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organization\db\UserCategoryQuery;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\UserCategory;
+use flipbox\organizations\db\UserCategoryQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\UserCategory;
 use yii\base\Behavior;
 
 /**

@@ -6,17 +6,17 @@
  * @link       https://github.com/flipboxfactory/craft-ember
  */
 
-namespace flipbox\organization\cp\actions\organization;
+namespace flipbox\organizations\cp\actions\organization;
 
 use Craft;
 use craft\errors\ElementNotFoundException;
 use flipbox\ember\actions\element\traits\Lookup;
 use flipbox\ember\actions\traits\CheckAccess;
 use flipbox\ember\actions\traits\Populate;
-use flipbox\organization\actions\organizations\traits\Populate as PopulateOrganization;
-use flipbox\organization\cp\controllers\traits\Sites;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organizations;
+use flipbox\organizations\actions\organizations\traits\Populate as PopulateOrganization;
+use flipbox\organizations\cp\controllers\traits\Sites;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations;
 use yii\base\Action;
 use yii\base\BaseObject;
 

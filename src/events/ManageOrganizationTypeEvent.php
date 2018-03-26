@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\events;
+namespace flipbox\organizations\events;
 
 use craft\events\CancelableEvent;
-use flipbox\organization\elements\Organization;
-use flipbox\organization\records\Type;
+use flipbox\organizations\elements\Organization;
+use flipbox\organizations\records\Type;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

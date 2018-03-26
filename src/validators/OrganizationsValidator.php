@@ -6,13 +6,13 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\validators;
+namespace flipbox\organizations\validators;
 
 use Craft;
 use craft\helpers\Json;
 use flipbox\ember\exceptions\InvalidQueryException;
-use flipbox\organization\db\OrganizationQuery;
-use flipbox\organization\Organizations as OrganizationPlugin;
+use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\validators\Validator;
 
 /**

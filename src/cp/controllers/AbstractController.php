@@ -6,13 +6,13 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers;
+namespace flipbox\organizations\cp\controllers;
 
 use craft\helpers\ArrayHelper;
 use flipbox\ember\filters\FlashMessageFilter;
 use flipbox\ember\filters\ModelErrorFilter;
 use flipbox\ember\filters\RedirectFilter;
-use flipbox\organization\cp\Cp;
+use flipbox\organizations\cp\Cp;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

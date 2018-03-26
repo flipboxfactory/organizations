@@ -6,15 +6,15 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\elements\actions;
+namespace flipbox\organizations\elements\actions;
 
 use Craft;
 use craft\base\ElementAction;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\db\UserQuery;
 use craft\helpers\ArrayHelper;
-use flipbox\organization\elements\Organization;
-use flipbox\organization\Organizations as OrganizationPlugin;
+use flipbox\organizations\elements\Organization;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\base\Exception;
 
 /**

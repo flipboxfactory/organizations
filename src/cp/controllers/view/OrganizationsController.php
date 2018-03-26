@@ -6,20 +6,20 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers\view;
+namespace flipbox\organizations\cp\controllers\view;
 
 use Craft;
 use craft\elements\User as UserElement;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use flipbox\ember\helpers\SiteHelper;
-use flipbox\organization\actions\organizations\traits\Populate;
-use flipbox\organization\cp\controllers\traits\Sites;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\events\RegisterOrganizationActionsEvent;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\Type;
-use flipbox\organization\web\assets\organization\Organization as OrganizationAsset;
+use flipbox\organizations\actions\organizations\traits\Populate;
+use flipbox\organizations\cp\controllers\traits\Sites;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\events\RegisterOrganizationActionsEvent;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\Type;
+use flipbox\organizations\web\assets\organization\Organization as OrganizationAsset;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\web\Response;
@@ -53,7 +53,7 @@ class OrganizationsController extends AbstractController
     const TEMPLATE_UPSERT = self::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'upsert';
 
     /**
-     * @return \flipbox\organization\services\Organizations
+     * @return \flipbox\organizations\services\Organizations
      */
     protected function elementService()
     {

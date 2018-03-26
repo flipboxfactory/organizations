@@ -6,19 +6,19 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\services;
+namespace flipbox\organizations\services;
 
 use craft\db\Query;
 use craft\elements\User as UserElement;
 use flipbox\ember\helpers\ArrayHelper;
 use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
-use flipbox\organization\db\UserCategoryQuery;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organizations;
-use flipbox\organization\records\UserAssociation;
-use flipbox\organization\records\UserCategory;
-use flipbox\organization\records\UserCategoryAssociation;
+use flipbox\organizations\db\UserCategoryQuery;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations;
+use flipbox\organizations\records\UserAssociation;
+use flipbox\organizations\records\UserCategory;
+use flipbox\organizations\records\UserCategoryAssociation;
 use yii\base\Component;
 
 /**

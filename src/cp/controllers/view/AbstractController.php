@@ -6,13 +6,13 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers\view;
+namespace flipbox\organizations\cp\controllers\view;
 
 use Craft;
 use craft\web\Controller;
 use flipbox\ember\helpers\UrlHelper;
-use flipbox\organization\cp\Cp as CpModule;
-use flipbox\organization\Organizations as OrganizationPlugin;
+use flipbox\organizations\cp\Cp as CpModule;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

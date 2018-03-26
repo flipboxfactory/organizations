@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\records;
+namespace flipbox\organizations\records;
 
 use flipbox\ember\records\ActiveRecordWithId;
 use flipbox\ember\traits\HandleRules;
-use flipbox\organization\db\UserCategoryQuery;
+use flipbox\organizations\db\UserCategoryQuery;
 use yii\validators\UniqueValidator;
 
 /**

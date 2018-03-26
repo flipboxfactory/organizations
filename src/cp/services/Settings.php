@@ -6,12 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\services;
+namespace flipbox\organizations\cp\services;
 
 use Craft;
-use flipbox\organization\migrations\AlterOrganizationStates;
-use flipbox\organization\models\Settings as SettingsModel;
-use flipbox\organization\Organizations as OrganizationPlugin;
+use flipbox\organizations\migrations\AlterOrganizationStates;
+use flipbox\organizations\models\Settings as SettingsModel;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 

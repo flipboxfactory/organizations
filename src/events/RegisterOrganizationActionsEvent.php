@@ -6,9 +6,9 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\events;
+namespace flipbox\organizations\events;
 
-use flipbox\organization\elements\Organization;
+use flipbox\organizations\elements\Organization;
 use yii\base\Event;
 
 /**

@@ -6,15 +6,15 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\services;
+namespace flipbox\organizations\services;
 
 use Craft;
 use craft\helpers\ArrayHelper;
 use craft\queue\jobs\ResaveElements;
 use flipbox\ember\services\traits\records\Accessor;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\records\Type as TypeModel;
-use flipbox\organization\records\TypeSiteSettings as TypeSettingsRecord;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\records\Type as TypeModel;
+use flipbox\organizations\records\TypeSiteSettings as TypeSettingsRecord;
 use yii\base\Component;
 
 /**

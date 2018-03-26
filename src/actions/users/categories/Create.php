@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\users\categories;
+namespace flipbox\organizations\actions\users\categories;
 
 use flipbox\ember\actions\model\ModelCreate;
-use flipbox\organization\Organizations;
-use flipbox\organization\records\UserCategory;
+use flipbox\organizations\Organizations;
+use flipbox\organizations\records\UserCategory;
 use yii\base\Model;
 
 /**

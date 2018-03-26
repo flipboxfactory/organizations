@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\records;
+namespace flipbox\organizations\records;
 
 use Craft;
 use flipbox\ember\helpers\ObjectHelper;
@@ -14,8 +14,8 @@ use flipbox\ember\records\ActiveRecordWithId;
 use flipbox\ember\records\traits\FieldLayoutAttribute;
 use flipbox\ember\traits\HandleRules;
 use flipbox\ember\validators\ModelValidator;
-use flipbox\organization\db\TypeQuery;
-use flipbox\organization\Organizations as OrganizationPlugin;
+use flipbox\organizations\db\TypeQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
 use yii\validators\UniqueValidator;
 

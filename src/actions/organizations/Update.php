@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\organizations;
+namespace flipbox\organizations\actions\organizations;
 
 use flipbox\ember\actions\element\ElementUpdate;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organizations;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations;
 use yii\base\BaseObject;
 
 /**

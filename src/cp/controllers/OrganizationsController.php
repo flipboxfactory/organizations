@@ -6,14 +6,14 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\cp\controllers;
+namespace flipbox\organizations\cp\controllers;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organization\actions\organizations\Create;
-use flipbox\organization\actions\organizations\Delete;
-use flipbox\organization\actions\organizations\Update;
-use flipbox\organization\cp\actions\organization\SwitchType;
+use flipbox\organizations\actions\organizations\Create;
+use flipbox\organizations\actions\organizations\Delete;
+use flipbox\organizations\actions\organizations\Update;
+use flipbox\organizations\cp\actions\organization\SwitchType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

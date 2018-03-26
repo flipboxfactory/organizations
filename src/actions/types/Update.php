@@ -6,10 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\types;
+namespace flipbox\organizations\actions\types;
 
 use flipbox\ember\actions\model\ModelUpdate;
-use flipbox\organization\records\Type;
+use flipbox\organizations\records\Type;
 use yii\base\BaseObject;
 use yii\base\Model;
 

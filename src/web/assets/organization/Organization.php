@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\web\assets\organization;
+namespace flipbox\organizations\web\assets\organization;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;

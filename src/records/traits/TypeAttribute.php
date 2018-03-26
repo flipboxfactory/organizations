@@ -6,13 +6,13 @@
  * @link       https://github.com/flipboxfactory/craft-ember
  */
 
-namespace flipbox\organization\records\traits;
+namespace flipbox\organizations\records\traits;
 
 use flipbox\ember\records\traits\ActiveRecord;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\Type as TypeRecord;
-use flipbox\organization\traits\TypeMutator;
-use flipbox\organization\traits\TypeRules;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\Type as TypeRecord;
+use flipbox\organizations\traits\TypeMutator;
+use flipbox\organizations\traits\TypeRules;
 use yii\db\ActiveQueryInterface;
 
 /**

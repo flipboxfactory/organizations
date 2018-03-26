@@ -6,16 +6,16 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\db\objects;
+namespace flipbox\organizations\db\objects;
 
 use craft\elements\db\UserQuery;
 use craft\helpers\Db;
-use flipbox\organization\db\behaviors\OrganizationAttributesToUserQueryBehavior;
-use flipbox\organization\db\traits\OrganizationAttribute;
-use flipbox\organization\db\traits\TypeAttribute;
-use flipbox\organization\db\traits\UserCategoryAttribute;
-use flipbox\organization\records\UserAssociation as OrganizationUsersRecord;
-use flipbox\organization\records\UserCategoryAssociation as UserCollectionUsersRecord;
+use flipbox\organizations\db\behaviors\OrganizationAttributesToUserQueryBehavior;
+use flipbox\organizations\db\traits\OrganizationAttribute;
+use flipbox\organizations\db\traits\TypeAttribute;
+use flipbox\organizations\db\traits\UserCategoryAttribute;
+use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
+use flipbox\organizations\records\UserCategoryAssociation as UserCollectionUsersRecord;
 use yii\base\BaseObject;
 use yii\db\Query;
 

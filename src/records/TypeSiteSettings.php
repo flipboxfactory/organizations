@@ -6,14 +6,14 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\records;
+namespace flipbox\organizations\records;
 
 use craft\validators\UriFormatValidator;
 use flipbox\ember\helpers\ModelHelper;
 use flipbox\ember\records\ActiveRecord;
 use flipbox\ember\records\traits\SiteAttribute;
-use flipbox\organization\models\SiteSettingsInterface;
-use flipbox\organization\Organizations as OrganizationPlugin;
+use flipbox\organizations\models\SiteSettingsInterface;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

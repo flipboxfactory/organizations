@@ -6,16 +6,16 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\services;
+namespace flipbox\organizations\services;
 
 use Craft;
 use craft\elements\db\UserQuery;
 use craft\elements\User as UserElement;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\services\traits\elements\Accessor;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\UserAssociation;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\UserAssociation;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 

@@ -6,15 +6,15 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\elements\traits;
+namespace flipbox\organizations\elements\traits;
 
 use Craft;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organization\db\TypeQuery;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\Type;
-use flipbox\organization\records\Type as TypeModel;
+use flipbox\organizations\db\TypeQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\Type;
+use flipbox\organizations\records\Type as TypeModel;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

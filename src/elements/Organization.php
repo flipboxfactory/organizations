@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\elements;
+namespace flipbox\organizations\elements;
 
 use Craft;
 use craft\base\Element;
@@ -16,10 +16,10 @@ use craft\elements\User;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper as UrlHelper;
 use flipbox\ember\helpers\ModelHelper;
-use flipbox\organization\db\OrganizationQuery;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\Type as TypeModel;
-use flipbox\organization\traits\DateJoinedAttribute;
+use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\Type as TypeModel;
+use flipbox\organizations\traits\DateJoinedAttribute;
 use yii\base\ErrorException as Exception;
 
 /**

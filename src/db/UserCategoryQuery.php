@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\db;
+namespace flipbox\organizations\db;
 
 use craft\db\QueryAbortedException;
 use craft\helpers\Db;
@@ -14,9 +14,9 @@ use flipbox\ember\db\CacheableActiveQuery;
 use flipbox\ember\db\traits\AuditAttributes;
 use flipbox\ember\db\traits\FixedOrderBy;
 use flipbox\ember\db\traits\UserAttribute;
-use flipbox\organization\records\UserAssociation as OrganizationUsersRecord;
-use flipbox\organization\records\UserCategory as UserCategoryRecord;
-use flipbox\organization\records\UserCategoryAssociation as UserCategoryAssociationsRecord;
+use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
+use flipbox\organizations\records\UserCategory as UserCategoryRecord;
+use flipbox\organizations\records\UserCategoryAssociation as UserCategoryAssociationsRecord;
 use yii\base\ArrayableTrait;
 
 /**

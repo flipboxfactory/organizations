@@ -6,20 +6,20 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\migrations;
+namespace flipbox\organizations\migrations;
 
 use craft\db\Migration;
 use craft\records\Element as ElementRecord;
 use craft\records\FieldLayout as FieldLayoutRecord;
 use craft\records\Site as SiteRecord;
 use craft\records\User as UserRecord;
-use flipbox\organization\records\Organization as OrganizationRecord;
-use flipbox\organization\records\Type as OrganizationTypeRecord;
-use flipbox\organization\records\TypeAssociation as OrganizationTypeAssociationRecord;
-use flipbox\organization\records\TypeSiteSettings as OrganizationTypeSiteSettingsRecord;
-use flipbox\organization\records\UserAssociation as OrganizationUserRecord;
-use flipbox\organization\records\UserCategory as OrganizationUserCategoryRecord;
-use flipbox\organization\records\UserCategoryAssociation as OrganizationUserCategoryAssociationRecord;
+use flipbox\organizations\records\Organization as OrganizationRecord;
+use flipbox\organizations\records\Type as OrganizationTypeRecord;
+use flipbox\organizations\records\TypeAssociation as OrganizationTypeAssociationRecord;
+use flipbox\organizations\records\TypeSiteSettings as OrganizationTypeSiteSettingsRecord;
+use flipbox\organizations\records\UserAssociation as OrganizationUserRecord;
+use flipbox\organizations\records\UserCategory as OrganizationUserCategoryRecord;
+use flipbox\organizations\records\UserCategoryAssociation as OrganizationUserCategoryAssociationRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

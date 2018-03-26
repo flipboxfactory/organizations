@@ -6,14 +6,14 @@
  * @link       https://github.com/flipboxfactory/craft-ember
  */
 
-namespace flipbox\organization\cp\controllers\traits;
+namespace flipbox\organizations\cp\controllers\traits;
 
 use Craft;
 use craft\base\Field;
 use craft\models\FieldLayoutTab;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\models\SiteSettings;
-use flipbox\organization\Organizations;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\models\SiteSettings;
+use flipbox\organizations\Organizations;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

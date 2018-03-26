@@ -6,15 +6,15 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\organizations\traits;
+namespace flipbox\organizations\actions\organizations\traits;
 
 use Craft;
 use craft\errors\ElementNotFoundException;
 use craft\helpers\DateTimeHelper;
 use craft\models\Site;
 use flipbox\ember\helpers\SiteHelper;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organizations;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations;
 use yii\base\BaseObject;
 
 /**

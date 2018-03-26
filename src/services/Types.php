@@ -6,18 +6,18 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\services;
+namespace flipbox\organizations\services;
 
 use Craft;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
-use flipbox\organization\db\TypeQuery;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\Type;
-use flipbox\organization\records\Type as TypeRecord;
-use flipbox\organization\records\TypeAssociation;
+use flipbox\organizations\db\TypeQuery;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\Type;
+use flipbox\organizations\records\Type as TypeRecord;
+use flipbox\organizations\records\TypeAssociation;
 use yii\base\Component;
 use yii\base\Exception;
 

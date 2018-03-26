@@ -6,11 +6,11 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\actions\organizations;
+namespace flipbox\organizations\actions\organizations;
 
 use flipbox\ember\actions\element\ElementView;
-use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organizations;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

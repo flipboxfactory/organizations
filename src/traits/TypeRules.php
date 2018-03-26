@@ -6,10 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\traits;
+namespace flipbox\organizations\traits;
 
 use flipbox\ember\helpers\ModelHelper;
-use flipbox\organization\records\Type as TypeModel;
+use flipbox\organizations\records\Type as TypeModel;
 
 /**
  * @property int|null $typeId

@@ -6,12 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organization\db\traits;
+namespace flipbox\organizations\db\traits;
 
 use flipbox\ember\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organization\Organizations as OrganizationPlugin;
-use flipbox\organization\records\Type;
+use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\Type;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
