@@ -1,0 +1,16 @@
+{% import "_includes/forms" as forms %}
+{{ forms.lightswitchField({
+    label: "Enabled"|t('app'),
+    id: 'enabled',
+    name: 'enabled',
+    on: element.enabled
+}) }}
+
+{% if showSites %}
+    {{ forms.lightswitchField({
+        label: "Enabled for site"|t('app'),
+        id: 'enabledForSite',
+        name: 'enabledForSite',
+        on: element.enabledForSite
+    }) }}
+{% endif %}

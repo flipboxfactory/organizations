@@ -1,0 +1,42 @@
+{% set siteIds = siteIds ?? craft.app.sites.getEditableSiteIds() %}
+    {% if siteIds|length %}
+        {% if selectedSiteId is not defined %}
+            {% if element.siteId in siteIds %}
+                {% set selectedSiteId = element.siteId %}
+            {% elseif craft.app.sites.currentSite.id in siteIds %}
+                {% set selectedSiteId = craft.app.sites.currentSite.id %}
+            {% else %}
+                {% set selectedSiteId = siteIds|first %}
+            {% endif %}
+        {% endif %}
+        {% set groups = craft.app.sites.getAllGroups() %}
+
+        <div class="btn menubtn sitemenubtn"
+             data-icon="world">{{ selectedSiteId ? craft.app.sites.getSiteById(selectedSiteId).name|t('site') }}</div>
+        <div class="menu">
+            {% for group in groups %}
+                {% set groupSiteIds = group.getSiteIds()|intersect(siteIds) %}
+                {% if groupSiteIds %}
+                    {% if groups|length > 1 %}<h6>{{ group.name|t('site') }}</h6>{% endif %}
+                    <ul class="padded">
+                        {% for siteId in groupSiteIds %}
+                            {% set site = craft.app.sites.getSiteById(siteId) %}
+                            {% set status = siteId in enabledSiteIds ? 'enabled' : 'disabled' %}
+                            <li>
+                                {% if selectedSiteId and siteId == selectedSiteId %}
+                                    <a class="sel" data-site-id="{{ siteId }}">
+                                        <div class="status {{ status }}"></div>{{ site.name|t('site') }}
+                                    </a>
+                                {% else %}
+                                    {% set params = {site: siteId} %}
+                                    <a href="{{ url(url, params) }}">
+                                        <div class="status {{ status }}"></div>{{ site.name|t('site') }}
+                                    </a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% endif %}

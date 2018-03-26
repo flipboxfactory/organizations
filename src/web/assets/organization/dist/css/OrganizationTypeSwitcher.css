@@ -1,0 +1,17 @@
+.menubtn#available {
+    margin-left: -1px;
+}
+
+.menubtn#available:before, .menubtn#available:after {
+    margin: 0;
+}
+
+.menubtn#available:before {
+    margin-right: -1px;
+}
+
+.menubtn#available:after {
+    content: '' !important;
+}
+
+/*# sourceMappingURL=OrganizationTypeSwitcher.css.map */

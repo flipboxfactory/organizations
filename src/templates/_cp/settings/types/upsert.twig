@@ -1,0 +1,83 @@
+{% extends "organizations/_cp/settings/_layout" %}
+{% import "_includes/forms" as forms %}
+{% from "organizations/_cp/_components/sites" import uriSettings %}
+
+{% block actionButton %}
+    <div class="btngroup submit right">
+        <input type="submit" class="btn submit" value="{{ 'Save'|t('app') }}">
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul role="listbox">
+                <li>
+                    <a class="formsubmit"
+                       data-redirect="{{ continueEditingUrl|hash }}">
+                        {{ "Save and continue editing"|t('app') }}
+                        {{ forms.optionShortcutLabel('S') }}
+                    </a>
+                </li>
+                <li>
+                    <a class="formsubmit"
+                       data-redirect="{{ (baseCpPath~'/new')|hash }}">
+                        {{ "Save and add another"|t('app') }}
+                    </a>
+                </li>
+            </ul>
+            {% if type.id %}
+                <hr/>
+                <ul role="listbox">
+                    <li>
+                        <a class="formsubmit error"
+                           data-action="{{ baseActionPath }}/delete"
+                           data-confirm="{{ 'Are you sure you want to delete this organization type?'|t('organizations') }}"
+                           data-redirect="{{ baseCpPath|hash }}"
+                           role="option"
+                           tabindex="-1">{{ "Delete"|t('app') }}</a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    <input type="hidden" name="action"
+           value="{{ baseActionPath }}/{% if type.id %}update{% else %}create{% endif %}">
+    {% if type.id %}<input type="hidden" name="type" value="{{ type.id }}">{% endif %}
+    {{ redirectInput(baseCpPath) }}
+
+    <div id="type">
+        {{ forms.textField({
+            first: true,
+            label: "Name"|t('organizations'),
+            instructions: "What this type will be called in the CP."|t('organizations'),
+            id: 'name',
+            name: 'name',
+            value: type.name,
+            errors: type.getErrors('name'),
+            autofocus: true,
+            required: true,
+            translatable: true
+        }) }}
+
+        {{ forms.textField({
+            label: "Handle"|t('organizations'),
+            instructions: "How you’ll refer to this type in the templates."|t('organizations'),
+            id: 'handle',
+            class: 'code',
+            name: 'handle',
+            value: type.handle,
+            errors: type.getErrors('handle'),
+            required: true
+        }) }}
+
+        <hr>
+
+        {{ uriSettings(type, false) }}
+    </div>
+
+    <div id="layout" class="hidden">
+        {% include "_includes/fieldlayoutdesigner" with {
+            fieldLayout: type.getFieldLayout()
+        } only %}
+    </div>
+{% endblock %}

@@ -1,0 +1,110 @@
+<?php
+
+namespace flipbox\organization\db\behaviors;
+
+use craft\elements\db\UserQuery;
+use craft\helpers\ArrayHelper;
+use flipbox\organization\db\objects\UserQueryParamHandler;
+use flipbox\organization\elements\Organization;
+use yii\base\Behavior;
+
+/**
+ * Class UserOrganizationBehavior
+ * @package flipbox\organization\db\behaviors
+ *
+ * @property UserQuery $owner
+ */
+class OrganizationAttributesToUserQueryBehavior extends Behavior
+{
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+        $this->handler = new UserQueryParamHandler($this);
+    }
+
+    /**
+     * @var UserQueryParamHandler
+     */
+    private $handler;
+
+    /**
+     * @param UserQuery $query
+     */
+    public function applyOrganizationParams(UserQuery $query)
+    {
+        $this->handler->applyParams($query);
+    }
+
+    /**
+     * @return UserQueryParamHandler
+     */
+    public function getOrganization(): UserQueryParamHandler
+    {
+        return $this->handler;
+    }
+
+    /**
+     * @param string|string[]|int|int[]|Organization|Organization[]|null $value
+     * @return UserQuery
+     */
+    public function setOrganization($value): UserQuery
+    {
+        if (is_array($value)) {
+            $this->findSubNodes($value);
+
+            // If we removed everything, we're all done here
+            if (empty($value)) {
+                return $this->owner;
+            }
+        }
+
+        $this->handler->setOrganization($value);
+        return $this->owner;
+    }
+
+    /**
+     * @param string|string[]|int|int[]|Organization|Organization[]|null $value
+     * @return UserQuery
+     */
+    public function organization($value): UserQuery
+    {
+        return $this->setOrganization($value);
+    }
+
+    /**
+     * @param string|string[]|int|int[]|Organization|Organization[]|null $value
+     * @return UserQuery
+     */
+    public function setOrganizationId($value): UserQuery
+    {
+        return $this->setOrganization($value);
+    }
+
+    /**
+     * @param string|string[]|int|int[]|Organization|Organization[]|null $value
+     * @return UserQuery
+     */
+    public function organizationId($value): UserQuery
+    {
+        return $this->setOrganization($value);
+    }
+
+    /**
+     * Extract the sub nodes (userCategory and type) from a criteria array
+     *
+     * @param array $value
+     */
+    private function findSubNodes(array &$value)
+    {
+        if (null !== ($subValue = ArrayHelper::remove($value, 'type'))) {
+            $this->handler->setType($subValue);
+        }
+
+        if (null !== ($subValue = ArrayHelper::remove($value, 'userCategory'))) {
+            $this->handler->setUserCategory($subValue);
+        }
+    }
+}

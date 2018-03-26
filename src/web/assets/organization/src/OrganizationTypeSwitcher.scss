@@ -1,0 +1,25 @@
+@charset "UTF-8";
+
+.menubtn {
+
+  &#available {
+    margin-left: -1px;
+
+    &:before,
+    &:after {
+      margin: 0;
+    }
+
+    &:before {
+      margin-right: -1px;
+
+    }
+
+    &:after {
+      content: '' !important;
+
+    }
+
+  }
+
+}

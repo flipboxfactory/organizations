@@ -1,0 +1,61 @@
+@charset "UTF-8";
+@import "../../../../../../../vendor/craftcms/cms/lib/craftcms-sass/mixins";
+
+.manage-categories {
+  opacity: .075;
+  cursor: pointer;
+
+  &.loading {
+    opacity: 1 !important;
+    font-size: 0;
+
+    &:after {
+      top: -8px;
+
+    }
+
+  }
+
+}
+
+body {
+  &.ltr {
+    .manage-categories.loading {
+      padding-right: 0;
+
+      &:after {
+        right: -18px;
+
+      }
+
+    }
+
+  }
+
+  &.rtl {
+    .hud-editor-toggle.loading {
+      padding-left: 0;
+
+      &:after {
+        left: -18px;
+      }
+
+    }
+
+  }
+
+}
+
+tr:hover {
+
+  > td {
+
+    .manage-categories {
+      opacity: 1;
+      color: $blue;
+
+    }
+
+  }
+
+}

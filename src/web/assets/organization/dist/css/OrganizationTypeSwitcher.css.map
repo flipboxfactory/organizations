@@ -1,0 +1,9 @@
+{
+  "version": 3,
+  "mappings": "AAIE,kBAAY;EACV,WAAW,EAAE,IAAI;EAEjB,mDACQ;IACN,MAAM,EAAE,CAAC;EAGX,yBAAS;IACP,YAAY,EAAE,IAAI;EAIpB,wBAAQ;IACN,OAAO,EAAE,aAAa",
+  "sources": [
+    "../../src/OrganizationTypeSwitcher.scss"
+  ],
+  "names": [],
+  "file": "OrganizationTypeSwitcher.css"
+}

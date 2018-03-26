@@ -1,0 +1,220 @@
+<?php
+
+/**
+ * @copyright  Copyright (c) Flipbox Digital Limited
+ * @license    https://flipboxfactory.com/software/organization/license
+ * @link       https://www.flipboxfactory.com/software/organization/
+ */
+
+namespace flipbox\organization\records;
+
+use Craft;
+use flipbox\ember\helpers\ObjectHelper;
+use flipbox\ember\records\ActiveRecordWithId;
+use flipbox\ember\records\traits\FieldLayoutAttribute;
+use flipbox\ember\traits\HandleRules;
+use flipbox\ember\validators\ModelValidator;
+use flipbox\organization\db\TypeQuery;
+use flipbox\organization\Organization as OrganizationPlugin;
+use yii\db\ActiveQueryInterface;
+use yii\validators\UniqueValidator;
+
+/**
+ * @author Flipbox Factory <hello@flipboxfactory.com>
+ * @since 1.0.0
+ *
+ * @property string $name
+ * @property TypeSiteSettings[] $siteSettingRecords
+ */
+class Type extends ActiveRecordWithId
+{
+    use FieldLayoutAttribute,
+        HandleRules;
+
+    /**
+     * The table name
+     */
+    const TABLE_ALIAS = Organization::TABLE_ALIAS . '_types';
+
+    /**
+     * @inheritdoc
+     */
+    protected $getterPriorityAttributes = ['fieldLayoutId'];
+
+    /**
+     * @inheritdoc
+     */
+    protected static function fieldLayoutType(): string
+    {
+        return self::class;
+    }
+
+    /**
+     * @inheritdoc
+     * @return TypeQuery
+     */
+    public static function find()
+    {
+        return new TypeQuery;
+    }
+
+    /*******************************************
+     * EVENTS
+     *******************************************/
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        if (false === OrganizationPlugin::getInstance()->getTypes()->beforeSave($this)) {
+            return false;
+        }
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        OrganizationPlugin::getInstance()->getTypes()->afterSave($this);
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /*******************************************
+     * SITE SETTINGS
+     *******************************************/
+
+    /**
+     * @return TypeSiteSettings[]
+     * @throws \craft\errors\SiteNotFoundException
+     */
+    public function getSiteSettings(): array
+    {
+        if (empty($this->siteSettingRecords)) {
+            $this->addPrimarySiteSettings();
+        }
+
+        return $this->siteSettingRecords;
+    }
+
+    /**
+     * @param array $siteSettings
+     * @return $this
+     */
+    public function setSiteSettings(array $siteSettings = [])
+    {
+        foreach ($siteSettings as $siteId => &$site) {
+            $site = $this->resolveSiteSettings($siteId, $site);
+        }
+
+        $this->populateRelation('siteSettingRecords', $siteSettings);
+        return $this;
+    }
+
+    /**
+     * @return $this
+     * @throws \craft\errors\SiteNotFoundException
+     */
+    protected function addPrimarySiteSettings()
+    {
+        $primarySite = Craft::$app->getSites()->getPrimarySite();
+
+        if ($primarySite->id !== null) {
+            $this->addSiteSettings($primarySite->id, ['site' => $primarySite]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param int $siteId
+     * @param $site
+     * @return TypeSiteSettings
+     */
+    protected function resolveSiteSettings(int $siteId, $site): TypeSiteSettings
+    {
+        if (!$record = $this->siteSettingRecords[$siteId] ?? null) {
+            $record = new TypeSiteSettings();
+        }
+
+        return ObjectHelper::populate(
+            $record,
+            $site
+        );
+    }
+
+    /**
+     * @param int $siteId
+     * @param $site
+     * @return $this
+     */
+    protected function addSiteSettings(int $siteId, $site)
+    {
+        $site = $this->resolveSiteSettings($siteId, $site);
+        $this->populateRelation('siteSettingRecords', (
+            $this->siteSettingRecords +
+            [
+                $site->getSiteId() => $site
+            ]
+        ));
+
+        return $this;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function rules()
+    {
+        return array_merge(
+            parent::rules(),
+            $this->handleRules(),
+            $this->fieldLayoutRules(),
+            [
+                [
+                    [
+                        'name'
+                    ],
+                    'required'
+                ],
+                [
+                    [
+                        'siteSettings'
+                    ],
+                    ModelValidator::class
+                ],
+                [
+                    [
+                        'name',
+                    ],
+                    'string',
+                    'max' => 255
+                ],
+                [
+                    [
+                        'handle'
+                    ],
+                    UniqueValidator::class
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Returns the type’s site settings.
+     *
+     * @return ActiveQueryInterface The relational query object.
+     */
+    protected function getSiteSettingRecords(): ActiveQueryInterface
+    {
+        return $this->hasMany(TypeSiteSettings::class, ['typeId' => 'id'])
+            ->where([
+                'siteId' => OrganizationPlugin::getInstance()->getSettings()->getEnabledSiteIds()
+            ])
+            ->indexBy('siteId');
+    }
+}

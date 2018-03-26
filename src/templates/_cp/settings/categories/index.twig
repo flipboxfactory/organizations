@@ -1,0 +1,40 @@
+{% extends "organizations/_cp/settings/_layout" %}
+
+{% block actionButton %}
+    <div class="buttons right">
+        <a href="{{ url(continueEditingUrl ~ '/new') }}"
+           class="btn submit add icon">{{ "New category"|t('organizations') }}</a>
+    </div>
+{% endblock %}
+
+{% set content %}
+    <table id="categories" class="data fullwidth collapsible">
+        <thead>
+        <th scope="col">{{ "Name"|t('organizations') }}</th>
+        <th scope="col">{{ "Handle"|t('organizations') }}</th>
+        </thead>
+        <tbody>
+        {% if categories|length %}
+            {% for category in categories %}
+                <tr data-id="{{ category.id }}" data-name="{{ category.name }}">
+                    <th scope="row"
+                        data-title="{{ 'Name'|t('organizations') }}">
+                        <a href="{{ url(baseCpPath~'/'~category.id) }}">
+                            {{ category.name }}
+                        </a>
+                    </th>
+                    <td data-title="{{ 'Handle'|t('organizations') }}">
+                        <code>{{ category.handle }}</code>
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="3">
+                    {{ "No categories exist yet."|t('organizations') }}
+                </td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+{% endset %}

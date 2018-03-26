@@ -1,0 +1,79 @@
+{
+	"name": "flipboxfactory/organizations",
+	"description": "Simple parent + child management",
+	"version": "1.0.0-rc",
+	"type": "craft-plugin",
+	"keywords": [
+		"flipbox",
+		"organization",
+		"parent-child",
+		"craftcms",
+		"yii2"
+	],
+	"license": "proprietary",
+	"authors": [{
+		"name": "Flipbox Factory",
+		"email": "hello@flipboxfactory.com"
+	}],
+	"support": {
+		"email": "support@flipboxfactory.com",
+		"issues": "https://github.com/flipboxfactory/organization/issues?state=open",
+		"source": "https://github.com/flipboxfactory/organization",
+		"docs": "https://github.com/flipboxfactory/organization",
+		"rss": "https://github.com/flipboxfactory/organization/commits/master.atom"
+	},
+	"require": {
+		"craftcms/cms": "~3.0.0-RC",
+		"flipboxfactory/craft-ember": "~1.0.0-rc.15",
+		"flipboxfactory/craft-elements-nested-index": "~1.0.0.rc",
+		"flipboxfactory/craft-sortable-associations": "~1.0.0.rc.1"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "^5.0",
+		"squizlabs/php_codesniffer": "^2.0",
+		"codeception/codeception": "^2.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"flipbox\\organization\\": "src/"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"flipbox\\organization\\tests\\": "tests/src/"
+		}
+	},
+	"extra": {
+		"name": "Organizations",
+		"handle": "organizations",
+		"developer": "Flipbox Digital",
+		"developerUrl": "https://www.flipboxfactory.com",
+		"class": "flipbox\\organization\\Organization",
+		"changelogUrl": "https://raw.githubusercontent.com/flipboxfactory/organization/master/CHANGELOG.md",
+		"downloadUrl": "https://github.com/flipboxfactory/organization/archive/master.zip",
+		"hasCpSettings": true,
+		"hasCpSection": true,
+		"schemaVersion": "1.0.0",
+		"components": {
+			"element": "flipbox\\organization\\services\\Element",
+			"organizations": "flipbox\\organization\\services\\Organizations",
+			"records": "flipbox\\organization\\services\\Records",
+			"types": "flipbox\\organization\\services\\Types",
+			"typeSettings": "flipbox\\organization\\services\\TypeSettings",
+			"typeAssociations": "flipbox\\organization\\services\\TypeAssociations",
+			"users": "flipbox\\organization\\services\\Users",
+			"userAssociations": "flipbox\\organization\\services\\UserAssociations",
+			"userCategories": "flipbox\\organization\\services\\UserCategories",
+			"userCategoryAssociations": "flipbox\\organization\\services\\UserCategoryAssociations"
+		},
+		"modules": {
+			"cp": {
+				"basePath": "@flipbox/organization/cp",
+				"class": "flipbox\\organization\\cp\\Cp",
+				"components": {
+					"settings": "flipbox\\organization\\cp\\services\\Settings"
+				}
+			}
+		}
+	}
+}

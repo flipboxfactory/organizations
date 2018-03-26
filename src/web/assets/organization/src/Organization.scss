@@ -1,0 +1,75 @@
+@charset "UTF-8";
+@import "../../../../../../../vendor/craftcms/cms/lib/craftcms-sass/mixins";
+
+/* ----------------------------------------
+/* Organization
+/* ----------------------------------------*/
+.tabs {
+
+  > ul {
+
+    > li {
+
+      &.users {
+        float: right;
+
+      }
+
+    }
+
+  }
+
+}
+
+/* delete organization modal */
+.deleteorganizationmodal,
+.changeorganizationstatusmodal {
+  .options {
+    label {
+      display: inline-block;
+      line-height: 30px;
+
+    }
+
+  }
+
+  .elementselect {
+    @include margin-left(10px);
+    display: inline-block;
+    vertical-align: middle;
+
+  }
+
+  .buttons .spinner {
+    @include floatright;
+    @include margin-right(-20px);
+    @include margin-left(-4px);
+
+  }
+}
+
+#main-container {
+  #main {
+    #main-content {
+      #details {
+        .meta {
+
+          + .meta {
+            padding-top: 0;
+            margin-top: -16px;
+
+            > .field {
+              border-top: 1px solid rgba(0, 0, 20, 0.1);
+            }
+
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}

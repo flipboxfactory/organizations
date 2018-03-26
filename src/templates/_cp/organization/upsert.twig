@@ -1,0 +1,240 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{% set isTypeSet = type is defined and type %}
+{% set fullPageForm = true %}
+
+{% block contextMenu %}
+    <div id="sites">
+        {% include "organizations/_cp/organization/__sites" with {
+            element: organization,
+            url: siteUrl,
+            enabledSiteIds: enabledSiteIds,
+            siteIds: siteIds
+        } only %}
+    </div>
+{% endblock %}
+
+{% block actionButton %}
+    <div class="btngroup">
+        <input type="submit" class="btn submit"
+               value="{{ 'Save'|t('app') }}">
+        <div class="btn submit menubtn"></div>
+        <div class="menu">
+            <ul role="listbox">
+                <li>
+                    <a class="formsubmit"
+                       data-redirect="{{ continueEditingUrl|hash }}">
+                        {{ forms.optionShortcutLabel('S') }}
+                        {{ "Save and continue editing"|t('app') }}
+                    </a>
+                </li>
+                <li>
+                    <a class="formsubmit"
+                       data-redirect="{{ (baseCpPath ~ '/new')|hash }}">
+                        {{ "Save and add another"|t('app') }}
+                    </a>
+                </li>
+            </ul>
+            {% if organization.id %}
+                <hr/>
+                <ul role="listbox">
+                    <li>
+                        <a class="formsubmit error"
+                           data-action="{{ baseActionPath }}/delete"
+                           data-confirm="{{ 'Are you sure you want to delete this organization?'|t('organizations') }}"
+                           data-redirect="{{ baseCpPath|hash }}"
+                           role="option"
+                           tabindex="-1">{{ "Delete"|t('app') }}</a>
+                    </li>
+                </ul>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block content %}
+    {% if craft.app.getIsMultiSite() %}<input type="hidden" name="site" value="{{ organization.siteId }}">{% endif %}
+    <input type="hidden" name="action"
+           value="{{ baseActionPath }}/{% if organization.contentId %}update{% else %}create{% endif %}">
+    {% if organization.id %}<input type="hidden" name="organization" value="{{ organization.id }}">{% endif %}
+    {{ redirectInput(baseCpPath) }}
+
+    <div id="fields">
+        {% include "organizations/_cp/organization/__fields" with {
+            element: organization,
+            fieldLayout: organization.getFieldLayout()
+        } only %}
+
+        {% if organization.id %}
+            <div id="user-index"{% if tabs|length > 1 %} class="hidden"{% endif %}>
+                {% include "nested-element-index/_elements/index" with {
+                    element: organization,
+                    container: 'nested-index-organization-users',
+                    elementType: elementType,
+                    indexJsClass: usersIndexJsClass,
+                    indexJs: usersIndexJs,
+                    inputJsClass: usersInputJsClass,
+                    inputJs: usersInputJs
+                } only %}
+            </div>
+        {% endif %}
+
+    </div>
+{% endblock %}
+
+{% block details %}
+    <div id="settings" class="meta">
+        {% if organization.id %}
+            {% if actions|length %}
+                <div class="field" id="actions">
+                    <div class="heading">
+                        <label id="actions-label" for="actions">Actions</label>
+                    </div>
+                    <div class="input">
+                        <div id="action-menubtn" class="btn menubtn"
+                             data-icon="settings"
+                             title="{{ 'Actions'|t('app') }}"></div>
+                        <div class="menu">
+                            {% for actionList in actions %}
+                                {% if not loop.first %}
+                                    <hr>{% endif %}
+                                <ul>
+                                    {% for actionItem in actionList %}
+                                        <li>
+                                            <a
+                                                    {%- if actionItem.id is defined %} id="{{ actionItem.id }}"{% endif %}
+                                                    {%- if actionItem.action is defined %} class="formsubmit" data-action="{{ actionItem.action }}"{% endif -%}
+                                            >{{ actionItem.label }}</a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endfor %}
+                        </div>
+                        <div id="action-spinner" class="spinner hidden"></div>
+                    </div>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        {% if craft.organizations.settings.hasStates() %}
+            {{ forms.selectField({
+                label: "State"|t('organizations'),
+                id: 'state',
+                name: "state",
+                value: organization.state,
+                errors: organization.getErrors('state'),
+                required: true,
+                options: craft.organizations.settings.states
+            }) }}
+        {% endif %}
+
+        {% set activeTypeValue = '' %}
+        {% set activeTypeName = "Default"|t('organizations') %}
+        {% set activeType = organization.activeType %}
+        {% set types = organization.types.all() %}
+        {% if activeType %}
+            {% set activeTypeValue = organization.activeType.id %}
+            {% set activeTypeName = organization.activeType.name %}
+        {% endif %}
+        <div class="field" id="types">
+            {% set typeOptionIds = [] %}
+            <div class="heading">
+                <label id="type-label" for="typeButton">Type</label>
+            </div>
+            <div class="input">
+                <div class="btngroup">
+                    <div id="active" class="btn menubtn"
+                         title="{{ 'Types'|t('app') }}">
+                        {{ activeTypeName }}
+                        <input type="hidden" name="type" value="{{ activeTypeValue }}">
+                    </div>
+                    <div class="menu">
+                        <ul class="padded">
+                            <li>
+                                <a data-id=""{% if activeTypeValue == '' %} class="sel"{% endif %}>{{ "Default"|t('organizations') }}</a>
+                            </li>
+                        </ul>
+                        <div id="assigned"{% if not types|length %} style="display: none"{% endif %}>
+                            <hr/>
+                            <h6>{{ "Assigned"|t('organizations') }}</h6>
+                            <ul class="padded" id="active">
+                                {% for type in types %}
+                                    {% set typeOptionIds = typeOptionIds|merge([type.id]) %}
+                                    <li>
+                                        <a data-id="{{ type.id }}" {% if activeTypeValue == type.id %} class="sel"{% endif %}>{{ type.name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div id="available" class="btn icon menubtn"
+                         data-icon="settings"
+                         title="{{ 'Available Types'|t('app') }}">
+                        {% for type in types %}
+                            <input type="hidden" name="types[]" value="{{ type.id }}">
+                        {% endfor %}
+                    </div>
+                    <div class="menu">
+                        <h6>{{ "Available"|t('organizations') }}</h6>
+                        <ul>
+                            {% for typeOption in typeOptions %}
+                                <li>
+                                    <a data-organization="{{ organization.id }}" data-type="{{ typeOption.value }}"
+                                       data-label="{{ typeOption.label }}">
+                                        <span class="status{{ typeOption.value in typeOptionIds ? ' active' : '' }}"></span> {{ typeOption.label }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{ forms.textField({
+            label: "Slug"|t('app'),
+            id: 'slug',
+            name: 'slug',
+            value: organization.slug,
+            errors: organization.getErrors('slug')|merge(organization.getErrors('uri'))
+        }) }}
+
+        {{ forms.dateTimeField({
+            label: "Join Date"|t('organizations'),
+            id: 'dateJoined',
+            name: 'dateJoined',
+            value: (organization.dateJoined ? organization.dateJoined : null),
+        errors: organization.getErrors('dateJoined')
+        }) }}
+
+    </div>
+    <div id="enabled" class="meta">
+        {% include "organizations/_cp/organization/__enabled" with {
+            element: organization,
+            showSites: showSites
+        } only %}
+    </div>
+
+    {% if organization.id %}
+        <hr>
+        <div class="meta read-only">
+            <div class="data">
+                <h5 class="heading">{{ "Created at"|t('app') }}</h5>
+                <div class="value">{{ organization.dateCreated|datetime('short') }}</div>
+            </div>
+            <div class="data">
+                <h5 class="heading">{{ "Updated at"|t('app') }}</h5>
+                <div class="value">{{ organization.dateUpdated|datetime('short') }}</div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+{% js %}
+    {% if not organization.slug %}
+        window.slugGenerator = new Craft.SlugGenerator('#title', '#slug');
+    {% endif %}
+{% endjs %}
+

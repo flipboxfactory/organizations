@@ -1,0 +1,49 @@
+@charset "UTF-8";
+
+.hud-editor-toggle {
+  position: relative;
+  display: inline-block;
+
+  &.loading {
+
+    &:after {
+      content: '.';
+      font-size: 0;
+      position: absolute;
+      bottom: 0;
+      width: 24px;
+      background: url(../images/spinner.gif) no-repeat 50% 50%;
+      height: 32px;
+    }
+
+  }
+
+}
+
+body {
+  &.ltr {
+    .hud-editor-toggle.loading {
+      padding-right: 31px;
+
+      &:after {
+        right: 3px;
+
+      }
+
+    }
+
+  }
+
+  &.rtl {
+    .hud-editor-toggle.loading {
+      padding-left: 31px;
+
+      &:after {
+        left: 3px;
+      }
+
+    }
+
+  }
+
+}
