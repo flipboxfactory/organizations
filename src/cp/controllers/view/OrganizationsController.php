@@ -17,7 +17,7 @@ use flipbox\organization\actions\organizations\traits\Populate;
 use flipbox\organization\cp\controllers\traits\Sites;
 use flipbox\organization\elements\Organization as OrganizationElement;
 use flipbox\organization\events\RegisterOrganizationActionsEvent;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\Type;
 use flipbox\organization\web\assets\organization\Organization as OrganizationAsset;
 use yii\base\Exception;

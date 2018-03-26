@@ -11,7 +11,7 @@ namespace flipbox\organization\actions\organizations;
 use craft\base\ElementInterface;
 use flipbox\ember\actions\element\ElementCreate;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use yii\base\BaseObject;
 
 /**
@@ -29,7 +29,7 @@ class Create extends ElementCreate
      */
     public function newElement(array $config = []): ElementInterface
     {
-        return Organization::getInstance()->getOrganizations()->create($config);
+        return Organizations::getInstance()->getOrganizations()->create($config);
     }
 
     /**

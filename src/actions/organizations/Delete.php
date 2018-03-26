@@ -10,7 +10,7 @@ namespace flipbox\organization\actions\organizations;
 
 use flipbox\ember\actions\element\ElementDelete;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -32,6 +32,6 @@ class Delete extends ElementDelete
      */
     public function find($identifier)
     {
-        return Organization::getInstance()->getOrganizations()->find($identifier);
+        return Organizations::getInstance()->getOrganizations()->find($identifier);
     }
 }

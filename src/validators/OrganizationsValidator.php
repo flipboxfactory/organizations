@@ -12,7 +12,7 @@ use Craft;
 use craft\helpers\Json;
 use flipbox\ember\exceptions\InvalidQueryException;
 use flipbox\organization\db\OrganizationQuery;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use yii\validators\Validator;
 
 /**

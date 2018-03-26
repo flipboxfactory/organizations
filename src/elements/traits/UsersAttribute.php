@@ -14,7 +14,7 @@ use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\UserAssociation as OrganizationUsersRecord;
 
 /**

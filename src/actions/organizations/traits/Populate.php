@@ -14,7 +14,7 @@ use craft\helpers\DateTimeHelper;
 use craft\models\Site;
 use flipbox\ember\helpers\SiteHelper;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use yii\base\BaseObject;
 
 /**
@@ -98,7 +98,7 @@ trait Populate
 
         // Active type
         $organization->setActiveType(
-            Organization::getInstance()->getTypes()->resolveFromRequest()
+            Organizations::getInstance()->getTypes()->resolveFromRequest()
         );
 
         // Set types

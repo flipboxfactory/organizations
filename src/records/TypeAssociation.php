@@ -12,7 +12,7 @@ use Craft;
 use flipbox\craft\sortable\associations\records\SortableAssociation;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\organization\db\TypeAssociationQuery;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

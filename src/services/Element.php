@@ -13,7 +13,7 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\Organization as OrganizationRecord;
 use yii\base\Component;
 use yii\base\Exception;

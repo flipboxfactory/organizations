@@ -8,7 +8,7 @@
 
 namespace flipbox\organization\actions\users\categories\traits;
 
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use flipbox\organization\records\UserCategory;
 
 /**
@@ -23,6 +23,6 @@ trait Lookup
      */
     protected function find($identifier)
     {
-        return Organization::getInstance()->getUserCategories()->find($identifier);
+        return Organizations::getInstance()->getUserCategories()->find($identifier);
     }
 }

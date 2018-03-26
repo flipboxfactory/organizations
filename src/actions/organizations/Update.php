@@ -10,7 +10,7 @@ namespace flipbox\organization\actions\organizations;
 
 use flipbox\ember\actions\element\ElementUpdate;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use yii\base\BaseObject;
 
 /**
@@ -36,7 +36,7 @@ class Update extends ElementUpdate
     public function find($identifier)
     {
         $site = $this->resolveSiteFromRequest();
-        return Organization::getInstance()->getOrganizations()->find(
+        return Organizations::getInstance()->getOrganizations()->find(
             $identifier,
             $site ? $site->id : null
         );

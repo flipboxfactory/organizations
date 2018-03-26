@@ -9,7 +9,7 @@
 namespace flipbox\organization\web\twig\variables;
 
 use flipbox\organization\models\Settings;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use yii\di\ServiceLocator;
 
 /**

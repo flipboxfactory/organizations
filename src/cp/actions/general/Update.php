@@ -15,7 +15,7 @@ use flipbox\ember\actions\model\ModelCreate;
 use flipbox\ember\exceptions\ModelNotFoundException;
 use flipbox\organization\models\Settings;
 use flipbox\organization\models\SiteSettings;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use yii\base\BaseObject;
 use yii\base\Model;
 
@@ -136,7 +136,7 @@ class Update extends ModelCreate
      */
     protected function performAction(Model $model): bool
     {
-        return Organization::getInstance()->getCp()->getSettings()->save($model);
+        return Organizations::getInstance()->getCp()->getSettings()->save($model);
     }
 
     /**
@@ -145,7 +145,7 @@ class Update extends ModelCreate
      */
     protected function newModel(array $config = []): Model
     {
-        return Organization::getInstance()->getSettings();
+        return Organizations::getInstance()->getSettings();
     }
 
 

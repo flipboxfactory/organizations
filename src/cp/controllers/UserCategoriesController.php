@@ -11,7 +11,7 @@ namespace flipbox\organization\cp\controllers;
 use Craft;
 use craft\helpers\ArrayHelper;
 use flipbox\organization\db\UserCategoryQuery;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use yii\web\Response;
 
 /**
@@ -73,11 +73,11 @@ class UserCategoriesController extends AbstractController
             (int)$request->getRequiredBodyParam('user')
         );
 
-        $organization = Organization::getInstance()->getOrganizations()->get(
+        $organization = Organizations::getInstance()->getOrganizations()->get(
             $request->getRequiredBodyParam('organization')
         );
 
-        $query = Organization::getInstance()->getUserCategories()->getQuery([
+        $query = Organizations::getInstance()->getUserCategories()->getQuery([
             'id' => array_keys(array_filter((array)$request->getRequiredBodyParam('categories')))
         ]);
 
@@ -85,7 +85,7 @@ class UserCategoriesController extends AbstractController
             $query->all()
         );
 
-        Organization::getInstance()->getUserCategories()->saveAssociations(
+        Organizations::getInstance()->getUserCategories()->saveAssociations(
             $query,
             $user,
             $organization
@@ -108,7 +108,7 @@ class UserCategoriesController extends AbstractController
             $request->getRequiredBodyParam('user')
         );
 
-        $organization = Organization::getInstance()->getOrganizations()->get(
+        $organization = Organizations::getInstance()->getOrganizations()->get(
             $request->getRequiredBodyParam('organization')
         );
 

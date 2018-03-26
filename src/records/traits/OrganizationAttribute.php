@@ -10,7 +10,7 @@ namespace flipbox\organization\records\traits;
 
 use flipbox\ember\records\traits\ActiveRecord;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\Organization;
 use flipbox\organization\traits\OrganizationMutator;
 use flipbox\organization\traits\OrganizationRules;

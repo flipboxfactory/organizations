@@ -15,7 +15,7 @@ use flipbox\ember\records\traits\FieldLayoutAttribute;
 use flipbox\ember\traits\HandleRules;
 use flipbox\ember\validators\ModelValidator;
 use flipbox\organization\db\TypeQuery;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
 use yii\validators\UniqueValidator;
 

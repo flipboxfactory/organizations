@@ -9,7 +9,7 @@
 namespace flipbox\organization\actions\types;
 
 use flipbox\ember\actions\model\ModelCreate;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use flipbox\organization\records\Type;
 use yii\base\BaseObject;
 use yii\base\Model;
@@ -43,7 +43,7 @@ class Create extends ModelCreate
      */
     protected function newModel(array $config = []): Model
     {
-        return Organization::getInstance()->getTypes()->create($config);
+        return Organizations::getInstance()->getTypes()->create($config);
     }
 
     /**

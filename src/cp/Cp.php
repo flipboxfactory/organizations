@@ -9,7 +9,7 @@
 namespace flipbox\organization\cp;
 
 use Craft;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use yii\base\Module as BaseModule;
 use yii\web\NotFoundHttpException;
 
@@ -17,7 +17,7 @@ use yii\web\NotFoundHttpException;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @property Organization $module
+ * @property Organizations $module
  */
 class Cp extends BaseModule
 {

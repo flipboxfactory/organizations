@@ -9,7 +9,7 @@
 namespace flipbox\organization\records\traits;
 
 use flipbox\ember\records\traits\ActiveRecord;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\Type as TypeRecord;
 use flipbox\organization\traits\TypeMutator;
 use flipbox\organization\traits\TypeRules;

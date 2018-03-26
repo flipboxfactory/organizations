@@ -12,7 +12,7 @@ use craft\elements\User;
 use flipbox\ember\actions\model\traits\Lookup;
 use flipbox\ember\actions\model\traits\Manage;
 use flipbox\ember\exceptions\RecordNotFoundException;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use flipbox\organization\records\UserAssociation;
 use yii\base\Model;
 use yii\web\HttpException;
@@ -50,7 +50,7 @@ abstract class Action extends \yii\base\Action
      */
     protected function find($identifier)
     {
-        return Organization::getInstance()->getUsers()->find($identifier);
+        return Organizations::getInstance()->getUsers()->find($identifier);
     }
 
     /**
@@ -69,7 +69,7 @@ abstract class Action extends \yii\base\Action
             return $this->handleNotFoundResponse();
         }
 
-        if (null === ($organization = Organization::getInstance()->getOrganizations()->find($organization))) {
+        if (null === ($organization = Organizations::getInstance()->getOrganizations()->find($organization))) {
             return $this->handleNotFoundResponse();
         }
 

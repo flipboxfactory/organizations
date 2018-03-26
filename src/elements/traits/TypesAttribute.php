@@ -12,7 +12,7 @@ use Craft;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
 use flipbox\organization\db\TypeQuery;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\Type;
 use flipbox\organization\records\Type as TypeModel;
 

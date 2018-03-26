@@ -13,7 +13,7 @@ use flipbox\ember\helpers\ModelHelper;
 use flipbox\ember\records\ActiveRecord;
 use flipbox\ember\records\traits\SiteAttribute;
 use flipbox\organization\models\SiteSettingsInterface;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

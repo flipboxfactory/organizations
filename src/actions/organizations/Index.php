@@ -10,7 +10,7 @@ namespace flipbox\organization\actions\organizations;
 
 use flipbox\ember\actions\element\ElementIndex;
 use flipbox\organization\db\OrganizationQuery;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use yii\db\QueryInterface;
 
 /**
@@ -25,6 +25,6 @@ class Index extends ElementIndex
      */
     public function createQuery(array $config = []): QueryInterface
     {
-        return Organization::getInstance()->getOrganizations()->getQuery($config);
+        return Organizations::getInstance()->getOrganizations()->getQuery($config);
     }
 }

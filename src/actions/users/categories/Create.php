@@ -9,7 +9,7 @@
 namespace flipbox\organization\actions\users\categories;
 
 use flipbox\ember\actions\model\ModelCreate;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use flipbox\organization\records\UserCategory;
 use yii\base\Model;
 
@@ -27,7 +27,7 @@ class Create extends ModelCreate
      */
     protected function newModel(array $config = []): Model
     {
-        return Organization::getInstance()->getUserCategories()->create($config);
+        return Organizations::getInstance()->getUserCategories()->create($config);
     }
 
     /**

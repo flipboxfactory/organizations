@@ -14,7 +14,7 @@ use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
 use flipbox\organization\db\TypeQuery;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\Type;
 use flipbox\organization\records\Type as TypeRecord;
 use flipbox\organization\records\TypeAssociation;

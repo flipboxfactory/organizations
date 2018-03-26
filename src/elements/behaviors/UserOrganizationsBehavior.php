@@ -9,7 +9,7 @@ use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
 use flipbox\organization\db\OrganizationQuery;
 use flipbox\organization\elements\Organization;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\validators\OrganizationsValidator;
 use yii\base\Behavior;
 use yii\base\Event;

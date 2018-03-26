@@ -13,7 +13,7 @@ use flipbox\craft\sortable\associations\records\SortableAssociation;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\records\traits\UserAttribute;
 use flipbox\organization\db\UserAssociationQuery;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
 
 /**

@@ -11,7 +11,7 @@ namespace flipbox\organization\cp\services;
 use Craft;
 use flipbox\organization\migrations\AlterOrganizationStates;
 use flipbox\organization\models\Settings as SettingsModel;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 

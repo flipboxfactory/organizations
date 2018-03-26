@@ -11,7 +11,7 @@ namespace flipbox\organization\traits;
 use Craft;
 use flipbox\ember\helpers\ObjectHelper;
 use flipbox\organization\elements\Organization as Organization;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 
 /**
  * @property int|null $organizationId

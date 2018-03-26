@@ -10,7 +10,7 @@ namespace flipbox\organization\actions\organizations;
 
 use flipbox\ember\actions\element\ElementView;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -32,6 +32,6 @@ class View extends ElementView
      */
     protected function findById(int $id)
     {
-        return Organization::getInstance()->getOrganizations()->get($id);
+        return Organizations::getInstance()->getOrganizations()->get($id);
     }
 }

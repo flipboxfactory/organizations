@@ -39,7 +39,7 @@ use yii\log\Logger;
  *
  * @method OrganizationSettings getSettings()
  */
-class Organization extends BasePlugin
+class Organizations extends BasePlugin
 {
     /**
      * @inheritdoc

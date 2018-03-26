@@ -8,7 +8,7 @@
 
 namespace flipbox\organization\actions\types\traits;
 
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use flipbox\organization\records\Type;
 
 /**
@@ -23,6 +23,6 @@ trait Lookup
      */
     protected function find($identifier)
     {
-        return Organization::getInstance()->getTypes()->find($identifier);
+        return Organizations::getInstance()->getTypes()->find($identifier);
     }
 }

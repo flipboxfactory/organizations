@@ -13,7 +13,7 @@ use craft\base\Field;
 use craft\models\FieldLayoutTab;
 use flipbox\organization\elements\Organization as OrganizationElement;
 use flipbox\organization\models\SiteSettings;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -102,7 +102,7 @@ trait Sites
         }
 
         return array_keys(
-            Organization::getInstance()->getSettings()->getSiteSettings()
+            Organizations::getInstance()->getSettings()->getSiteSettings()
         );
     }
 
@@ -112,7 +112,7 @@ trait Sites
      */
     protected function getSiteUrl(OrganizationElement $organization): string
     {
-        return Organization::getInstance()->getUniqueId() . '/' . $organization->getId() ?: 'new';
+        return Organizations::getInstance()->getUniqueId() . '/' . $organization->getId() ?: 'new';
     }
 
     /**
@@ -131,6 +131,6 @@ trait Sites
      */
     protected function resolveSites(): array
     {
-        return Organization::getInstance()->getSettings()->getSiteSettings();
+        return Organizations::getInstance()->getSettings()->getSiteSettings();
     }
 }

@@ -12,7 +12,7 @@ use Craft;
 use craft\web\Controller;
 use flipbox\ember\helpers\UrlHelper;
 use flipbox\organization\cp\Cp as CpModule;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

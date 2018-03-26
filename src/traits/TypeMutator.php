@@ -8,7 +8,7 @@
 
 namespace flipbox\organization\traits;
 
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use flipbox\organization\records\Type;
 
 /**
@@ -60,7 +60,7 @@ trait TypeMutator
     {
         $this->type = null;
 
-        if (null === ($type = Organization::getInstance()->getTypes()->resolve($type))) {
+        if (null === ($type = Organizations::getInstance()->getTypes()->resolve($type))) {
             $this->type = $this->typeId = null;
         } else {
             $this->typeId = $type->id;
@@ -113,6 +113,6 @@ trait TypeMutator
             return null;
         }
 
-        return Organization::getInstance()->getTypes()->find($this->typeId);
+        return Organizations::getInstance()->getTypes()->find($this->typeId);
     }
 }

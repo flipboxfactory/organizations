@@ -14,7 +14,7 @@ use craft\elements\User as UserElement;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\services\traits\elements\Accessor;
 use flipbox\organization\elements\Organization as OrganizationElement;
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\UserAssociation;
 use yii\base\Component;
 use yii\base\InvalidConfigException;

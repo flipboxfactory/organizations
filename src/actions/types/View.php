@@ -9,7 +9,7 @@
 namespace flipbox\organization\actions\types;
 
 use flipbox\ember\actions\model\ModelView;
-use flipbox\organization\Organization;
+use flipbox\organization\Organizations;
 use flipbox\organization\records\Type;
 
 /**
@@ -32,6 +32,6 @@ class View extends ModelView
      */
     protected function find($identifier)
     {
-        return Organization::getInstance()->getTypes()->get($identifier);
+        return Organizations::getInstance()->getTypes()->get($identifier);
     }
 }

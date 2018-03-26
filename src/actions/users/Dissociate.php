@@ -8,7 +8,7 @@
 
 namespace flipbox\organization\actions\users;
 
-use flipbox\organization\Organization as OrganizationPlugin;
+use flipbox\organization\Organizations as OrganizationPlugin;
 use flipbox\organization\records\UserAssociation;
 use yii\base\Model;
 
