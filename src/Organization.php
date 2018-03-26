@@ -168,8 +168,10 @@ class Organization extends BasePlugin
                 'organizations/settings' => 'organizations/cp/settings/view/general/index',
 
                 'organizations/settings/user-categories' => 'organizations/cp/settings/view/user-categories/index',
-                'organizations/settings/user-categories/new' => 'organizations/cp/settings/view/user-categories/upsert',
-                'organizations/settings/user-categories/<identifier:\d+>' => 'organizations/cp/settings/view/user-categories/upsert',
+                'organizations/settings/user-categories/new' =>
+                    'organizations/cp/settings/view/user-categories/upsert',
+                'organizations/settings/user-categories/<identifier:\d+>' =>
+                    'organizations/cp/settings/view/user-categories/upsert',
 
                 'organizations/settings/types' => 'organizations/cp/settings/view/types/index',
                 'organizations/settings/types/new' => 'organizations/cp/settings/view/types/upsert',
