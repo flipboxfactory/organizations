@@ -9,7 +9,10 @@
 namespace flipbox\organizations\cp;
 
 use Craft;
+use craft\events\RegisterTemplateRootsEvent;
+use craft\web\View;
 use flipbox\organizations\Organizations;
+use yii\base\Event;
 use yii\base\Module as BaseModule;
 use yii\web\NotFoundHttpException;
 
@@ -21,6 +24,24 @@ use yii\web\NotFoundHttpException;
  */
 class Cp extends BaseModule
 {
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Base template directory
+        Event::on(
+            View::class,
+            View::EVENT_REGISTER_CP_TEMPLATE_ROOTS,
+            function (RegisterTemplateRootsEvent $e) {
+                $e->roots['nested-element-index'] = Craft::$app->getPath()->getVendorPath() .
+                    '/flipboxfactory/craft-elements-nested-index/src/templates';
+            }
+        );
+    }
+
     /**
      * @inheritdoc
      */
