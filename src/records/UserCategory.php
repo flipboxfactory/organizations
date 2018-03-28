@@ -68,4 +68,12 @@ class UserCategory extends ActiveRecordWithId
             ]
         );
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function __toString()
+    {
+        return (string) $this->getAttribute('name');
+    }
 }

@@ -217,4 +217,12 @@ class Type extends ActiveRecordWithId
             ])
             ->indexBy('siteId');
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function __toString()
+    {
+        return (string) $this->getAttribute('name');
+    }
 }
