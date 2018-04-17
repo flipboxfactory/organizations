@@ -190,6 +190,9 @@ class OrganizationsController extends AbstractController
             ],
             'viewParams' => [
                 'organization' => $element->getId()
+            ],
+            'viewSettings' => [
+                'loadMoreAction' => 'organizations/cp/user-indexes/get-more-elements'
             ]
         ];
     }

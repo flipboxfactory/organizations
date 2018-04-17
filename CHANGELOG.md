@@ -1,7 +1,12 @@
 Changelog
 =========
+## Unreleased
+### Changed
+- load more action when viewing more than associated organization users
+- fixed issue where Join Date was not getting updated correctly.
+
 ## 1.0.0-rc.2 - 2018-03-28
-### Fixed
+### Changed
 - dependency templates were not registered in admin views
 
 ## 1.0.0-rc.1 - 2018-03-26
