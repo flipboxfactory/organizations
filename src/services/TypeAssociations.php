@@ -43,17 +43,20 @@ class TypeAssociations extends SortableAssociations
     /**
      * @return string
      */
-    const TABLE_ALIAS = TypeAssociation::TABLE_ALIAS;
-
-    /**
-     * @return string
-     */
     const SOURCE_ATTRIBUTE = TypeAssociation::SOURCE_ATTRIBUTE;
 
     /**
      * @return string
      */
     const TARGET_ATTRIBUTE = TypeAssociation::TARGET_ATTRIBUTE;
+
+    /**
+     * @inheritdoc
+     */
+    protected static function tableAlias(): string
+    {
+        return TypeAssociation::tableAlias();
+    }
 
     /**
      * @param array $config

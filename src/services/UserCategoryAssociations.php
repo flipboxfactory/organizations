@@ -41,17 +41,20 @@ class UserCategoryAssociations extends SortableAssociations
     /**
      * @return string
      */
-    const TABLE_ALIAS = UserCategoryAssociation::TABLE_ALIAS;
-
-    /**
-     * @return string
-     */
     const SOURCE_ATTRIBUTE = UserCategoryAssociation::SOURCE_ATTRIBUTE;
 
     /**
      * @return string
      */
     const TARGET_ATTRIBUTE = UserCategoryAssociation::TARGET_ATTRIBUTE;
+
+    /**
+     * @inheritdoc
+     */
+    protected static function tableAlias(): string
+    {
+        return UserCategoryAssociation::tableAlias();
+    }
 
     /**
      * @param array $config

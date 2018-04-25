@@ -1,5 +1,9 @@
 Changelog
 =========
+## Unreleased
+### Changed
+- Updated dependencies
+
 ## 1.0.0-rc.3 - 2018-04-17
 ### Changed
 - load more action when viewing more than associated organization users
