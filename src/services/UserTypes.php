@@ -15,7 +15,7 @@ use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
 use flipbox\organizations\db\UserTypeQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
-use flipbox\organizations\Organizations;
+use flipbox\organizations\Organizations as OrganizationsPlugin;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
 use flipbox\organizations\records\UserTypeAssociation;
@@ -102,7 +102,7 @@ class UserTypes extends Component
             return true;
         }
 
-        $associationService = Organizations::getInstance()->getUserTypeAssociations();
+        $associationService = OrganizationsPlugin::getInstance()->getUserTypeAssociations();
 
         $userAssociationId = $this->associationId($user->getId(), $organization->getId());
 
