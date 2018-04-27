@@ -17,6 +17,9 @@ use flipbox\organizations\records\Organization;
  */
 class AlterOrganizationStates extends Migration
 {
+    /**
+     * The state column name
+     */
     const COLUMN_NAME = 'state';
 
     /**

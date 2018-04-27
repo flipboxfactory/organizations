@@ -35,7 +35,7 @@
 
     {{ forms.editableTableField({
         label: "Site Settings"|t('app'),
-        instructions: "Configure the organization type's site-specific settings."|t('app'),
+        instructions: "Configure the organization type's site-specific settings."|t('organizations'),
         id: 'siteSettings',
         name: 'siteSettings',
         cols: {
@@ -50,8 +50,8 @@
     },
     uriFormat: {
         type: 'singleline',
-        heading: "Entry URI Format"|t('app'),
-        info: "What organization URIs should look like for the site. Leave blank if organizations don’t have URLs."|t('app'),
+        heading: "Organization URI Format"|t('organizations'),
+        info: "What organization URIs should look like for the site. Leave blank if organizations don’t have URLs."|t('organiztionns'),
         placeholder: "Leave blank if organizations don’t have URLs"|t('organizations'),
         code: true,
         class: 'type-channel type-structure'

@@ -144,7 +144,7 @@
             <div class="input">
                 <div class="btngroup">
                     <div id="active" class="btn menubtn"
-                         title="{{ 'Types'|t('app') }}">
+                         title="{{ 'Types'|t('organizations') }}">
                         {{ activeTypeName }}
                         <input type="hidden" name="type" value="{{ activeTypeValue }}">
                     </div>
@@ -170,7 +170,7 @@
 
                     <div id="available" class="btn icon menubtn"
                          data-icon="settings"
-                         title="{{ 'Available Types'|t('app') }}">
+                         title="{{ 'Available Types'|t('organizations') }}">
                         {% for type in types %}
                             <input type="hidden" name="types[]" value="{{ type.id }}">
                         {% endfor %}

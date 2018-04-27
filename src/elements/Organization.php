@@ -292,7 +292,7 @@ class Organization extends Element
         // Edit
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => EditAction::class,
-            'label' => Craft::t('app', 'Edit organization'),
+            'label' => Craft::t('organizations', 'Edit organization'),
         ]);
 
 //        if (Craft::$app->getUser()->checkPermission('deleteOrganizations')) {

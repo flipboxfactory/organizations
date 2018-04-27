@@ -12,7 +12,7 @@
                     <ul>
                         {% for type in types %}
                             <li>
-                                <a href="{{ url(baseCpPath~'/new/'~type.handle, {type: type.handle}) }}">{{ type.name|t('app') }}</a>
+                                <a href="{{ url(baseCpPath~'/new/'~type.handle, {type: type.handle}) }}">{{ type.name|t('organizations') }}</a>
                             </li>
                         {% endfor %}
                     </ul>
