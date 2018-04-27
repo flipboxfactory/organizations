@@ -10,19 +10,19 @@ namespace flipbox\organizations\cp\controllers\settings\view;
 
 use Craft;
 use craft\helpers\UrlHelper as UrlHelper;
-use flipbox\organizations\records\UserCategory;
+use flipbox\organizations\records\UserType;
 use yii\web\Response;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class UserCategoriesController extends AbstractController
+class UserTypesController extends AbstractController
 {
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'categories';
+    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'types';
 
     /**
      * The insert/update view template path
@@ -30,11 +30,11 @@ class UserCategoriesController extends AbstractController
     const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . DIRECTORY_SEPARATOR . 'upsert';
 
     /**
-     * @return \flipbox\organizations\services\UserCategories
+     * @return \flipbox\organizations\services\UserTypes
      */
-    protected function userCategoryService()
+    protected function userTypeService()
     {
-        return $this->module->module->getUserCategories();
+        return $this->module->module->getUserTypes();
     }
 
     /**
@@ -45,7 +45,7 @@ class UserCategoriesController extends AbstractController
         $variables = [];
         $this->baseVariables($variables);
 
-        $variables['categories'] = $this->userCategoryService()->findAll();
+        $variables['types'] = $this->userTypeService()->findAll();
 
         return $this->renderTemplate(static::TEMPLATE_INDEX, $variables);
     }
@@ -54,27 +54,27 @@ class UserCategoriesController extends AbstractController
      * Insert/Update
      *
      * @param string|int|null $identifier
-     * @param UserCategory $userCategory
+     * @param UserType $userType
      * @return Response
      */
-    public function actionUpsert($identifier = null, UserCategory $userCategory = null)
+    public function actionUpsert($identifier = null, UserType $userType = null)
     {
-        if (null === $userCategory) {
+        if (null === $userType) {
             if (null === $identifier) {
-                $userCategory = $this->userCategoryService()->create();
+                $userType = $this->userTypeService()->create();
             } else {
-                $userCategory = $this->userCategoryService()->get($identifier);
+                $userType = $this->userTypeService()->get($identifier);
             }
         }
 
         $variables = [];
-        if ($userCategory->getIsNewRecord()) {
+        if ($userType->getIsNewRecord()) {
             $this->insertVariables($variables);
         } else {
-            $this->updateVariables($variables, $userCategory);
+            $this->updateVariables($variables, $userType);
         }
 
-        $variables['category'] = $userCategory;
+        $variables['type'] = $userType;
         $variables['fullPageForm'] = true;
 
         return $this->renderTemplate(static::TEMPLATE_UPSERT, $variables);
@@ -89,7 +89,7 @@ class UserCategoriesController extends AbstractController
      */
     protected function getBaseActionPath(): string
     {
-        return parent::getBaseActionPath() . '/user-categories';
+        return parent::getBaseActionPath() . '/user-types';
     }
 
     /**
@@ -97,7 +97,7 @@ class UserCategoriesController extends AbstractController
      */
     protected function getBaseCpPath(): string
     {
-        return parent::getBaseCpPath() . '/user-categories';
+        return parent::getBaseCpPath() . '/user-types';
     }
 
     /*******************************************
@@ -119,15 +119,15 @@ class UserCategoriesController extends AbstractController
 
     /**
      * @param array $variables
-     * @param UserCategory $userCategory
+     * @param UserType $userType
      */
-    protected function updateVariables(array &$variables, UserCategory $userCategory)
+    protected function updateVariables(array &$variables, UserType $userType)
     {
         $this->baseVariables($variables);
-        $variables['title'] .= ' - ' . Craft::t('organizations', 'Edit') . ' ' . $userCategory->name;
-        $variables['continueEditingUrl'] = $this->getBaseContinueEditingUrl('/' . $userCategory->getId());
+        $variables['title'] .= ' - ' . Craft::t('organizations', 'Edit') . ' ' . $userType->name;
+        $variables['continueEditingUrl'] = $this->getBaseContinueEditingUrl('/' . $userType->getId());
         $variables['crumbs'][] = [
-            'label' => Craft::t('organizations', $userCategory->name),
+            'label' => Craft::t('organizations', $userType->name),
             'url' => UrlHelper::url($variables['continueEditingUrl'])
         ];
     }
@@ -141,7 +141,7 @@ class UserCategoriesController extends AbstractController
      */
     protected function baseVariables(array &$variables = [])
     {
-        $title = Craft::t('organizations', 'User Categories');
+        $title = Craft::t('organizations', 'User Types');
 
         parent::baseVariables($variables);
         $variables['title'] .= ': ' . $title;

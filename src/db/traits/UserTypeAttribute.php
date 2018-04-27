@@ -12,56 +12,56 @@ use craft\db\Query;
 use craft\helpers\Db;
 use flipbox\ember\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organizations\records\UserCategory;
+use flipbox\organizations\records\UserType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-trait UserCategoryAttribute
+trait UserTypeAttribute
 {
     /**
-     * The user category(s) that the resulting organizations’ users must be in.
+     * The user type(s) that the resulting organizations’ users must be in.
      *
-     * @var string|string[]|int|int[]|UserCategory|UserCategory[]|null
+     * @var string|string[]|int|int[]|UserType|UserType[]|null
      */
-    public $userCategory;
+    public $userType;
 
     /**
-     * @param string|string[]|int|int[]|UserCategory|UserCategory[]|null $value
+     * @param string|string[]|int|int[]|UserType|UserType[]|null $value
      * @return static The query object
      */
-    public function setUserCategory($value)
+    public function setUserType($value)
     {
-        $this->userCategory = $value;
+        $this->userType = $value;
         return $this;
     }
 
     /**
-     * @param string|string[]|int|int[]|UserCategory|UserCategory[]|null $value
+     * @param string|string[]|int|int[]|UserType|UserType[]|null $value
      * @return static The query object
      */
-    public function userCategory($value)
+    public function userType($value)
     {
-        return $this->setUserCategory($value);
+        return $this->setUserType($value);
     }
 
     /**
-     * @param string|string[]|int|int[]|UserCategory|UserCategory[]|null $value
+     * @param string|string[]|int|int[]|UserType|UserType[]|null $value
      * @return static The query object
      */
-    public function setUserCategoryId($value)
+    public function setUserTypeId($value)
     {
-        return $this->setUserCategory($value);
+        return $this->setUserType($value);
     }
 
     /**
-     * @param string|string[]|int|int[]|UserCategory|UserCategory[]|null $value
+     * @param string|string[]|int|int[]|UserType|UserType[]|null $value
      * @return static The query object
      */
-    public function userCategoryId($value)
+    public function userTypeId($value)
     {
-        return $this->setUserCategory($value);
+        return $this->setUserType($value);
     }
 
     /**
@@ -69,11 +69,11 @@ trait UserCategoryAttribute
      * @param string $join
      * @return array
      */
-    protected function parseUserCategoryValue($value, string $join = 'and'): array
+    protected function parseUserTypeValue($value, string $join = 'and'): array
     {
         if (false === QueryHelper::parseBaseParam($value, $join)) {
             foreach ($value as $operator => &$v) {
-                $this->resolveUserCategoryValue($operator, $v);
+                $this->resolveUserTypeValue($operator, $v);
             }
         }
 
@@ -91,14 +91,14 @@ trait UserCategoryAttribute
      * @param $operator
      * @param $value
      */
-    protected function resolveUserCategoryValue($operator, &$value)
+    protected function resolveUserTypeValue($operator, &$value)
     {
         if (false === QueryHelper::findParamValue($value, $operator)) {
             if (is_string($value)) {
-                $value = $this->resolveUserCategoryStringValue($value);
+                $value = $this->resolveUserTypeStringValue($value);
             }
 
-            if ($value instanceof UserCategory) {
+            if ($value instanceof UserType) {
                 $value = $value->id;
             }
 
@@ -112,11 +112,11 @@ trait UserCategoryAttribute
      * @param string $value
      * @return string|false
      */
-    protected function resolveUserCategoryStringValue(string $value)
+    protected function resolveUserTypeStringValue(string $value)
     {
         $value = (new Query())
             ->select(['id'])
-            ->from([UserCategory::tableName()])
+            ->from([UserType::tableName()])
             ->where(Db::parseParam('handle', $value))
             ->scalar();
         return empty($value) ? false : $value;

@@ -22,7 +22,7 @@
                     </a>
                 </li>
             </ul>
-            {% if category.id %}
+            {% if type.id %}
                 <hr/>
                 <ul role="listbox">
                     <li>
@@ -41,18 +41,18 @@
 
 {% block content %}
     <input type="hidden" name="action"
-           value="{{ baseActionPath }}/{% if category.id %}update{% else %}create{% endif %}">
-    {% if category.id %}<input type="hidden" name="category" value="{{ category.id }}">{% endif %}
+           value="{{ baseActionPath }}/{% if type.id %}update{% else %}create{% endif %}">
+    {% if type.id %}<input type="hidden" name="type" value="{{ type.id }}">{% endif %}
     {{ redirectInput(baseCpPath) }}
 
     {{ forms.textField({
         first: true,
         label: "Name"|t('organizations'),
-        instructions: "What this user category will be called in the CP."|t('organizations'),
+        instructions: "What this user type will be called in the CP."|t('organizations'),
         id: 'name',
         name: 'name',
-        value: category.name,
-        errors: category.getErrors('name'),
+        value: type.name,
+        errors: type.getErrors('name'),
         autofocus: true,
         required: true,
         translatable: true
@@ -60,18 +60,18 @@
 
     {{ forms.textField({
         label: "Handle"|t('organizations'),
-        instructions: "How you’ll refer to this user category in the templates."|t('organizations'),
+        instructions: "How you’ll refer to this user type in the templates."|t('organizations'),
         id: 'handle',
         class: 'code',
         name: 'handle',
-        value: category.handle,
-        errors: category.getErrors('handle'),
+        value: type.handle,
+        errors: type.getErrors('handle'),
         required: true
     }) }}
 
 {% endblock %}
 
-{% if not category.handle %}
+{% if not type.handle %}
     {% js %}
         window.handleGenerator = new Craft.HandleGenerator('#name', '#handle');
     {% endjs %}

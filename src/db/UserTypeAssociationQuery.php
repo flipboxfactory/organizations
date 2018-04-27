@@ -10,17 +10,17 @@ namespace flipbox\organizations\db;
 
 use craft\helpers\Db;
 use flipbox\craft\sortable\associations\db\SortableAssociationQuery;
-use flipbox\organizations\records\UserCategoryAssociation;
+use flipbox\organizations\records\UserTypeAssociation;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method UserCategoryAssociation one($db = null)
- * @method UserCategoryAssociation[] all($db = null)
- * @method UserCategoryAssociation[] getCachedResult($db = null)
+ * @method UserTypeAssociation one($db = null)
+ * @method UserTypeAssociation[] all($db = null)
+ * @method UserTypeAssociation[] getCachedResult($db = null)
  */
-class UserCategoryAssociationQuery extends SortableAssociationQuery
+class UserTypeAssociationQuery extends SortableAssociationQuery
 {
     /**
      * @var int|int[]|false|null The user Id(s). Prefix Ids with "not " to exclude them.
@@ -28,34 +28,34 @@ class UserCategoryAssociationQuery extends SortableAssociationQuery
     public $userId;
 
     /**
-     * @var int|int[]|false|null The category Id(s). Prefix Ids with "not " to exclude them.
+     * @var int|int[]|false|null The type Id(s). Prefix Ids with "not " to exclude them.
      */
-    public $categoryId;
+    public $typeId;
 
     /**
      * @inheritdoc
      */
     protected function fixedOrderColumn(): string
     {
-        return 'categoryId';
+        return 'typeId';
     }
 
     /**
      * @inheritdoc
      * return static
      */
-    public function category($value)
+    public function type($value)
     {
-        return $this->categoryId($value);
+        return $this->typeId($value);
     }
 
     /**
      * @inheritdoc
      * return static
      */
-    public function categoryId($value)
+    public function typeId($value)
     {
-        $this->categoryId = $value;
+        $this->typeId = $value;
         return $this;
     }
 
@@ -87,8 +87,8 @@ class UserCategoryAssociationQuery extends SortableAssociationQuery
             $this->andWhere(Db::parseParam('userId', $this->userId));
         }
 
-        if ($this->categoryId !== null) {
-            $this->andWhere(Db::parseParam('categoryId', $this->categoryId));
+        if ($this->typeId !== null) {
+            $this->andWhere(Db::parseParam('typeId', $this->typeId));
         }
     }
 }

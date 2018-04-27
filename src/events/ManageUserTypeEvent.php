@@ -11,18 +11,18 @@ namespace flipbox\organizations\events;
 use craft\elements\User;
 use craft\events\CancelableEvent;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\records\UserCategory;
+use flipbox\organizations\records\UserType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class ManageUserCategoryEvent extends CancelableEvent
+class ManageUserTypeEvent extends CancelableEvent
 {
     /**
-     * @var UserCategory
+     * @var UserType
      */
-    public $category;
+    public $type;
 
     /**
      * @var User

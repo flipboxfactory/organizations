@@ -23,7 +23,7 @@ use yii\db\ActiveQueryInterface;
  * @property int $organizationId
  * @property int $sortOrder
  * @property Organization $organization
- * @property UserCategory[] $categories
+ * @property UserType[] $types
  */
 class UserAssociation extends SortableAssociation
 {
@@ -88,12 +88,12 @@ class UserAssociation extends SortableAssociation
     /**
      * @return ActiveQueryInterface
      */
-    public function getCategories(): ActiveQueryInterface
+    public function getTypes(): ActiveQueryInterface
     {
         // Todo - order this by the sortOrder
-        return $this->hasMany(UserCategory::class, ['id' => 'categoryId'])
+        return $this->hasMany(UserType::class, ['id' => 'typeId'])
             ->viaTable(
-                UserCategoryAssociation::tableName(),
+                UserTypeAssociation::tableName(),
                 ['userId' => 'id']
             );
     }

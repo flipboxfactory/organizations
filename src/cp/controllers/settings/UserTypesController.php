@@ -10,16 +10,16 @@ namespace flipbox\organizations\cp\controllers\settings;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\actions\users\categories\Create;
-use flipbox\organizations\actions\users\categories\Delete;
-use flipbox\organizations\actions\users\categories\Update;
+use flipbox\organizations\actions\users\types\Create;
+use flipbox\organizations\actions\users\types\Delete;
+use flipbox\organizations\actions\users\types\Update;
 use flipbox\organizations\cp\controllers\AbstractController;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class UserCategoriesController extends AbstractController
+class UserTypesController extends AbstractController
 {
     /**
      * @return array
@@ -30,7 +30,7 @@ class UserCategoriesController extends AbstractController
             parent::behaviors(),
             [
                 'error' => [
-                    'default' => 'category'
+                    'default' => 'type'
                 ],
                 'redirect' => [
                     'only' => ['create', 'update', 'delete'],
@@ -43,16 +43,16 @@ class UserCategoriesController extends AbstractController
                 'flash' => [
                     'actions' => [
                         'create' => [
-                            201 => Craft::t('organizations', "User Category successfully created."),
-                            401 => Craft::t('organizations', "Failed to create User Category.")
+                            201 => Craft::t('organizations', "User Type successfully created."),
+                            401 => Craft::t('organizations', "Failed to create User Type.")
                         ],
                         'update' => [
-                            200 => Craft::t('organizations', "User Category successfully updated."),
-                            401 => Craft::t('organizations', "Failed to update User Category.")
+                            200 => Craft::t('organizations', "User Type successfully updated."),
+                            401 => Craft::t('organizations', "Failed to update User Type.")
                         ],
                         'delete' => [
-                            204 => Craft::t('organizations', "User Category successfully deleted."),
-                            401 => Craft::t('organizations', "Failed to delete User Category.")
+                            204 => Craft::t('organizations', "User Type successfully deleted."),
+                            401 => Craft::t('organizations', "Failed to delete User Type.")
                         ]
                     ]
                 ]
@@ -80,8 +80,7 @@ class UserCategoriesController extends AbstractController
     {
         /** @var Create $action */
         $action = Craft::createObject([
-            'class' => Create::class,
-            'checkAccess' => [$this, 'checkCreateAccess']
+            'class' => Create::class
         ], [
             'create',
             $this
@@ -93,85 +92,50 @@ class UserCategoriesController extends AbstractController
     }
 
     /**
-     * @param string|int|null $category
+     * @param string|int|null $type
      * @return mixed
      * @throws \yii\base\InvalidConfigException
      */
-    public function actionUpdate($category = null)
+    public function actionUpdate($type = null)
     {
-        if (null === $category) {
-            $category = Craft::$app->getRequest()->getBodyParam('category');
+        if (null === $type) {
+            $type = Craft::$app->getRequest()->getBodyParam('type');
         }
 
         /** @var Update $action */
         $action = Craft::createObject([
-            'class' => Update::class,
-            'checkAccess' => [$this, 'checkUpdateAccess']
+            'class' => Update::class
         ], [
             'update',
             $this
         ]);
 
         return $action->runWithParams([
-            'category' => $category
+            'type' => $type
         ]);
     }
 
     /**
-     * @param string|int|null $category
+     * @param string|int|null $type
      * @return mixed
      * @throws \yii\base\InvalidConfigException
      */
-    public function actionDelete($category = null)
+    public function actionDelete($type = null)
     {
-        if (null === $category) {
-            $category = Craft::$app->getRequest()->getBodyParam('category');
+        if (null === $type) {
+            $type = Craft::$app->getRequest()->getBodyParam('type');
         }
 
         /** @var Delete $action */
         $action = Craft::createObject([
-            'class' => Delete::class,
-            'checkAccess' => [$this, 'checkDeleteAccess']
+            'class' => Delete::class
         ], [
             'delete',
             $this
         ]);
 
         return $action->runWithParams([
-            'category' => $category
+            'type' => $type
         ]);
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkCreateAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkUpdateAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkDeleteAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function checkAdminAccess()
-    {
-        $this->requireLogin();
-        return Craft::$app->getUser()->getIsAdmin();
     }
 }

@@ -11,7 +11,7 @@ namespace flipbox\organizations\actions\types\traits;
 use Craft;
 use flipbox\ember\exceptions\ModelNotFoundException;
 use flipbox\organizations\cp\actions\general\traits\SiteSettingAttributes;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 use yii\base\BaseObject;
 
 /**
@@ -29,10 +29,10 @@ trait Populate
      */
     protected function ensureType(BaseObject $object): bool
     {
-        if (!$object instanceof Type) {
+        if (!$object instanceof OrganizationType) {
             throw new ModelNotFoundException(sprintf(
                 "Organization Type must be an instance of '%s', '%s' given.",
-                Type::class,
+                OrganizationType::class,
                 get_class($object)
             ));
         }
@@ -54,10 +54,10 @@ trait Populate
     }
 
     /**
-     * @param Type $model
-     * @return Type
+     * @param OrganizationType $model
+     * @return OrganizationType
      */
-    private function populateSiteLayout(Type $model): Type
+    private function populateSiteLayout(OrganizationType $model): OrganizationType
     {
         if ($fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost()) {
             $model->setFieldLayout($fieldLayout);
@@ -67,10 +67,10 @@ trait Populate
     }
 
     /**
-     * @param Type $model
-     * @return Type
+     * @param OrganizationType $model
+     * @return OrganizationType
      */
-    private function populateSiteSettings(Type $model): Type
+    private function populateSiteSettings(OrganizationType $model): OrganizationType
     {
         if (null !== ($sites = $this->sitesSettingsFromBody())) {
             $enabledSites = [];

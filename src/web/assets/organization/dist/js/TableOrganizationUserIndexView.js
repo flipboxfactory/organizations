@@ -1,7 +1,7 @@
 /** global: Craft */
 /** global: Garnish */
 /**
- * User Category editor
+ * User Type editor
  */
 
 Craft.TableOrganizationUserIndexView = Craft.TableElementIndexView.extend({
@@ -35,8 +35,8 @@ Craft.TableOrganizationUserIndexView = Craft.TableElementIndexView.extend({
 
     appendActionToRow: function (row) {
         var $action = $('<span />')
-            .addClass('settings icon manage-categories hud-editor-toggle')
-            .attr('title', 'Manage Categories')
+            .addClass('settings icon manage-types hud-editor-toggle')
+            .attr('title', 'Manage Types')
             .attr('role', 'button');
 
         var $td = $('<td />').append($action);
@@ -51,14 +51,14 @@ Craft.TableOrganizationUserIndexView = Craft.TableElementIndexView.extend({
     },
 
     handleActionColumnClick: function (ev) {
-        this.createCategoryEditor($(ev.target));
+        this.createTypeEditor($(ev.target));
     },
 
-    createCategoryEditor: function ($category) {
+    createTypeEditor: function ($type) {
         var params = $.extend({}, this.elementIndex.settings.viewParams);
-        params.user = $category.parents('tr').data('id');
+        params.user = $type.parents('tr').data('id');
 
-        return new Craft.OrganizationUserCategoryEditor($category, {
+        return new Craft.OrganizationUserTypeEditor($type, {
             params: params,
             onSaveElement: $.proxy(function (response) {
                 console.log(response);

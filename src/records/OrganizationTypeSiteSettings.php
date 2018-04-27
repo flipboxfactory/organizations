@@ -23,15 +23,15 @@ use flipbox\organizations\Organizations as OrganizationPlugin;
  * @property string $uriFormat
  * @property string $template
  */
-class TypeSiteSettings extends ActiveRecord implements SiteSettingsInterface
+class OrganizationTypeSiteSettings extends ActiveRecord implements SiteSettingsInterface
 {
-    use traits\TypeAttribute,
+    use traits\OrganizationTypeAttribute,
         SiteAttribute;
 
     /**
      * The table name
      */
-    const TABLE_ALIAS = Type::TABLE_ALIAS . '_sites';
+    const TABLE_ALIAS = OrganizationType::TABLE_ALIAS . '_sites';
 
     /**
      * @inheritdoc

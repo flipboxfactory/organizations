@@ -10,7 +10,7 @@ namespace flipbox\organizations\cp\controllers\settings\view;
 
 use Craft;
 use craft\helpers\UrlHelper as UrlHelper;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 use yii\web\Response;
 
 /**
@@ -54,10 +54,10 @@ class TypesController extends AbstractController
      * Insert/Update
      *
      * @param string|int|null $identifier
-     * @param Type $type
+     * @param OrganizationType $type
      * @return Response
      */
-    public function actionUpsert($identifier = null, Type $type = null)
+    public function actionUpsert($identifier = null, OrganizationType $type = null)
     {
         if (null === $type) {
             if (null === $identifier) {
@@ -141,9 +141,9 @@ class TypesController extends AbstractController
 
     /**
      * @param array $variables
-     * @param Type $type
+     * @param OrganizationType $type
      */
-    protected function updateVariables(array &$variables, Type $type)
+    protected function updateVariables(array &$variables, OrganizationType $type)
     {
         $this->baseVariables($variables);
         $variables['title'] .= ' - ' . Craft::t('organizations', 'Edit') . ' ' . $type->name;

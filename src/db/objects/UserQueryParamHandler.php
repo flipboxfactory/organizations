@@ -13,9 +13,9 @@ use craft\helpers\Db;
 use flipbox\organizations\db\behaviors\OrganizationAttributesToUserQueryBehavior;
 use flipbox\organizations\db\traits\OrganizationAttribute;
 use flipbox\organizations\db\traits\TypeAttribute;
-use flipbox\organizations\db\traits\UserCategoryAttribute;
+use flipbox\organizations\db\traits\UserTypeAttribute;
 use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
-use flipbox\organizations\records\UserCategoryAssociation as UserCollectionUsersRecord;
+use flipbox\organizations\records\UserTypeAssociation as UserCollectionUsersRecord;
 use yii\base\BaseObject;
 use yii\db\Query;
 
@@ -27,9 +27,9 @@ class UserQueryParamHandler extends BaseObject
 {
     use OrganizationAttribute,
         TypeAttribute,
-        UserCategoryAttribute {
-        setType as parentSetType;
-        setUserCategory as parentSetUserCategory;
+        UserTypeAttribute {
+        setOrganizationType as parentSetOrganizationType;
+        setUserType as parentSetUserType;
     }
 
     /**
@@ -50,18 +50,18 @@ class UserQueryParamHandler extends BaseObject
     /**
      * @inheritdoc
      */
-    public function setUserCategory($value): UserQuery
+    public function setUserType($value): UserQuery
     {
-        $this->parentSetUserCategory($value);
+        $this->parentSetUserType($value);
         return $this->owner->owner;
     }
 
     /**
      * @inheritdoc
      */
-    public function setType($value): UserQuery
+    public function setOrganizationType($value): UserQuery
     {
-        $this->parentSetType($value);
+        $this->parentSetOrganizationType($value);
         return $this->owner->owner;
     }
 
@@ -74,7 +74,7 @@ class UserQueryParamHandler extends BaseObject
             (
                 $this->organization === null &&
                 $this->type === null &&
-                $this->userCategory === null
+                $this->userType === null
             )
         ) {
             return;
@@ -88,9 +88,9 @@ class UserQueryParamHandler extends BaseObject
             $alias
         );
 
-        $this->applyUserCategoryParam(
+        $this->applyUserTypeParam(
             $query->subQuery,
-            $this->userCategory
+            $this->userType
         );
 
         // todo - implement types
@@ -118,7 +118,7 @@ class UserQueryParamHandler extends BaseObject
     /**
      * @inheritdoc
      */
-    protected function joinOrganizationUserCollectionTable(Query $query): string
+    protected function joinOrganizationUserTypeTable(Query $query): string
     {
         $alias = UserCollectionUsersRecord::tableAlias();
         $orgAlias = OrganizationUsersRecord::tableAlias();
@@ -158,17 +158,17 @@ class UserQueryParamHandler extends BaseObject
 
     /**
      * @param Query $query
-     * @param $category
+     * @param $type
      */
-    protected function applyUserCategoryParam(Query $query, $category)
+    protected function applyUserTypeParam(Query $query, $type)
     {
-        if (empty($category)) {
+        if (empty($type)) {
             return;
         }
 
-        $alias = $this->joinOrganizationUserCollectionTable($query);
+        $alias = $this->joinOrganizationUserTypeTable($query);
         $query->andWhere(
-            Db::parseParam($alias . '.categoryId', $this->parseUserCategoryValue($category))
+            Db::parseParam($alias . '.typeId', $this->parseUserTypeValue($type))
         );
 
         $query->distinct(true);

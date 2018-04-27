@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\users\categories\traits;
+namespace flipbox\organizations\actions\users\types\traits;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

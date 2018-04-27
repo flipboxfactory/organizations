@@ -86,8 +86,7 @@ class OrganizationsController extends AbstractController
 
         /** @var SwitchType $action */
         $action = Craft::createObject([
-            'class' => SwitchType::class,
-            'checkAccess' => [$this, 'checkSwitchTypeAccess']
+            'class' => SwitchType::class
         ], [
             'switchType',
             $this
@@ -106,8 +105,7 @@ class OrganizationsController extends AbstractController
     {
         /** @var Create $action */
         $action = Craft::createObject([
-            'class' => Create::class,
-            'checkAccess' => [$this, 'checkCreateAccess']
+            'class' => Create::class
         ], [
             'create',
             $this
@@ -129,8 +127,7 @@ class OrganizationsController extends AbstractController
 
         /** @var Update $action */
         $action = Craft::createObject([
-            'class' => Update::class,
-            'checkAccess' => [$this, 'checkUpdateAccess']
+            'class' => Update::class
         ], [
             'update',
             $this
@@ -154,8 +151,7 @@ class OrganizationsController extends AbstractController
 
         /** @var Delete $action */
         $action = Craft::createObject([
-            'class' => Delete::class,
-            'checkAccess' => [$this, 'checkDeleteAccess']
+            'class' => Delete::class
         ], [
             'delete',
             $this
@@ -164,46 +160,5 @@ class OrganizationsController extends AbstractController
         return $action->runWithParams([
             'organization' => $organization
         ]);
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkSwitchTypeAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkCreateAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkUpdateAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkDeleteAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function checkAdminAccess()
-    {
-        $this->requireLogin();
-        return Craft::$app->getUser()->getIsAdmin();
     }
 }

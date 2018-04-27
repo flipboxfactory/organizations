@@ -13,8 +13,8 @@ use craft\helpers\ArrayHelper;
 use craft\queue\jobs\ResaveElements;
 use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\elements\Organization as OrganizationElement;
-use flipbox\organizations\records\Type as TypeModel;
-use flipbox\organizations\records\TypeSiteSettings as TypeSettingsRecord;
+use flipbox\organizations\records\OrganizationType as TypeModel;
+use flipbox\organizations\records\OrganizationTypeSiteSettings as TypeSettingsRecord;
 use yii\base\Component;
 
 /**

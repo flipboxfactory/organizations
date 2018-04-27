@@ -12,27 +12,27 @@ use flipbox\craft\sortable\associations\db\SortableAssociationQueryInterface;
 use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\services\traits\records\Accessor;
-use flipbox\organizations\db\UserCategoryAssociationQuery;
-use flipbox\organizations\records\UserCategoryAssociation;
+use flipbox\organizations\db\UserTypeAssociationQuery;
+use flipbox\organizations\records\UserTypeAssociation;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method UserCategoryAssociationQuery parentGetQuery($config = [])
- * @method UserCategoryAssociation create(array $attributes = [])
- * @method UserCategoryAssociation find($identifier)
- * @method UserCategoryAssociation get($identifier)
- * @method UserCategoryAssociation findByCondition($condition = [])
- * @method UserCategoryAssociation getByCondition($condition = [])
- * @method UserCategoryAssociation findByCriteria($criteria = [])
- * @method UserCategoryAssociation getByCriteria($criteria = [])
- * @method UserCategoryAssociation[] findAllByCondition($condition = [])
- * @method UserCategoryAssociation[] getAllByCondition($condition = [])
- * @method UserCategoryAssociation[] findAllByCriteria($criteria = [])
- * @method UserCategoryAssociation[] getAllByCriteria($criteria = [])
+ * @method UserTypeAssociationQuery parentGetQuery($config = [])
+ * @method UserTypeAssociation create(array $attributes = [])
+ * @method UserTypeAssociation find($identifier)
+ * @method UserTypeAssociation get($identifier)
+ * @method UserTypeAssociation findByCondition($condition = [])
+ * @method UserTypeAssociation getByCondition($condition = [])
+ * @method UserTypeAssociation findByCriteria($criteria = [])
+ * @method UserTypeAssociation getByCriteria($criteria = [])
+ * @method UserTypeAssociation[] findAllByCondition($condition = [])
+ * @method UserTypeAssociation[] getAllByCondition($condition = [])
+ * @method UserTypeAssociation[] findAllByCriteria($criteria = [])
+ * @method UserTypeAssociation[] getAllByCriteria($criteria = [])
  */
-class UserCategoryAssociations extends SortableAssociations
+class UserTypeAssociations extends SortableAssociations
 {
     use Accessor {
         getQuery as parentGetQuery;
@@ -41,24 +41,24 @@ class UserCategoryAssociations extends SortableAssociations
     /**
      * @return string
      */
-    const SOURCE_ATTRIBUTE = UserCategoryAssociation::SOURCE_ATTRIBUTE;
+    const SOURCE_ATTRIBUTE = UserTypeAssociation::SOURCE_ATTRIBUTE;
 
     /**
      * @return string
      */
-    const TARGET_ATTRIBUTE = UserCategoryAssociation::TARGET_ATTRIBUTE;
+    const TARGET_ATTRIBUTE = UserTypeAssociation::TARGET_ATTRIBUTE;
 
     /**
      * @inheritdoc
      */
     protected static function tableAlias(): string
     {
-        return UserCategoryAssociation::tableAlias();
+        return UserTypeAssociation::tableAlias();
     }
 
     /**
      * @param array $config
-     * @return SortableAssociationQueryInterface|UserCategoryAssociationQuery
+     * @return SortableAssociationQueryInterface|UserTypeAssociationQuery
      */
     public function getQuery($config = []): SortableAssociationQueryInterface
     {
@@ -70,12 +70,12 @@ class UserCategoryAssociations extends SortableAssociations
      */
     public static function recordClass(): string
     {
-        return UserCategoryAssociation::class;
+        return UserTypeAssociation::class;
     }
 
     /**
-     * @param SortableAssociationInterface|UserCategoryAssociation $record
-     * @return SortableAssociationQueryInterface|UserCategoryAssociationQuery
+     * @param SortableAssociationInterface|UserTypeAssociation $record
+     * @return SortableAssociationQueryInterface|UserTypeAssociationQuery
      */
     protected function associationQuery(
         SortableAssociationInterface $record
@@ -86,7 +86,7 @@ class UserCategoryAssociations extends SortableAssociations
     }
 
     /**
-     * @param SortableAssociationQueryInterface|UserCategoryAssociationQuery $query
+     * @param SortableAssociationQueryInterface|UserTypeAssociationQuery $query
      * @return array
      */
     protected function existingAssociations(
@@ -101,11 +101,11 @@ class UserCategoryAssociations extends SortableAssociations
 
     /**
      * @param int $userAssociationId
-     * @return UserCategoryAssociationQuery
+     * @return UserTypeAssociationQuery
      */
     private function query(
         int $userAssociationId
-    ): UserCategoryAssociationQuery {
+    ): UserTypeAssociationQuery {
         return $this->getQuery()
             ->where([
                 static::SOURCE_ATTRIBUTE => $userAssociationId
@@ -115,13 +115,13 @@ class UserCategoryAssociations extends SortableAssociations
 
     /**
      * @param int $userAssociationId
-     * @return UserCategoryAssociation[]
+     * @return UserTypeAssociation[]
      */
     private function associations(
         int $userAssociationId
     ): array {
         return $this->query($userAssociationId)
-            ->indexBy('categoryId')
+            ->indexBy('typeId')
             ->all();
     }
 }

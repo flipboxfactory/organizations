@@ -18,7 +18,7 @@ use craft\helpers\UrlHelper as UrlHelper;
 use flipbox\ember\helpers\ModelHelper;
 use flipbox\organizations\db\OrganizationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\Type as TypeModel;
+use flipbox\organizations\records\OrganizationType as TypeModel;
 use flipbox\organizations\traits\DateJoinedAttribute;
 use yii\base\ErrorException as Exception;
 

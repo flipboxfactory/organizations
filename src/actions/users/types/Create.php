@@ -6,34 +6,36 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\users\categories;
+namespace flipbox\organizations\actions\users\types;
 
-use flipbox\ember\actions\model\ModelDelete;
-use flipbox\organizations\records\UserCategory;
+use flipbox\ember\actions\model\ModelCreate;
+use flipbox\organizations\Organizations;
+use flipbox\organizations\records\UserType;
 use yii\base\Model;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class Delete extends ModelDelete
+class Create extends ModelCreate
 {
-    use traits\Lookup;
+    use traits\Populate;
 
     /**
      * @inheritdoc
+     * @return UserType
      */
-    public function run($category)
+    protected function newModel(array $config = []): Model
     {
-        return parent::run($category);
+        return Organizations::getInstance()->getUserTypes()->create($config);
     }
 
     /**
      * @inheritdoc
-     * @param UserCategory $model
+     * @param UserType $model
      */
     protected function performAction(Model $model): bool
     {
-        return $model->delete();
+        return $model->insert();
     }
 }

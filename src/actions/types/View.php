@@ -10,7 +10,7 @@ namespace flipbox\organizations\actions\types;
 
 use flipbox\ember\actions\model\ModelView;
 use flipbox\organizations\Organizations;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -28,7 +28,7 @@ class View extends ModelView
 
     /**
      * @inheritdoc
-     * @return Type
+     * @return OrganizationType
      */
     protected function find($identifier)
     {

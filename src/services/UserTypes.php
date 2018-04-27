@@ -13,35 +13,35 @@ use craft\elements\User as UserElement;
 use flipbox\ember\helpers\ArrayHelper;
 use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
-use flipbox\organizations\db\UserCategoryQuery;
+use flipbox\organizations\db\UserTypeQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\records\UserAssociation;
-use flipbox\organizations\records\UserCategory;
-use flipbox\organizations\records\UserCategoryAssociation;
+use flipbox\organizations\records\UserType;
+use flipbox\organizations\records\UserTypeAssociation;
 use yii\base\Component;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method UserCategory create(array $attributes = [], string $toScenario = null)
- * @method UserCategory find($identifier, string $toScenario = null)
- * @method UserCategory get($identifier, string $toScenario = null)
- * @method UserCategory findByString($identifier, string $toScenario = null)
- * @method UserCategory getByString($identifier, string $toScenario = null)
- * @method UserCategory findByCondition($condition = [], string $toScenario = null)
- * @method UserCategory getByCondition($condition = [], string $toScenario = null)
- * @method UserCategory findByCriteria($criteria = [], string $toScenario = null)
- * @method UserCategory getByCriteria($criteria = [], string $toScenario = null)
- * @method UserCategory[] findAll(string $toScenario = null)
- * @method UserCategory[] findAllByCondition($condition = [], string $toScenario = null)
- * @method UserCategory[] getAllByCondition($condition = [], string $toScenario = null)
- * @method UserCategory[] findAllByCriteria($criteria = [], string $toScenario = null)
- * @method UserCategory[] getAllByCriteria($criteria = [], string $toScenario = null)
- * @method UserCategoryQuery getQuery($config = []): ActiveQuery($criteria = [], string $toScenario = null)
+ * @method UserType create(array $attributes = [], string $toScenario = null)
+ * @method UserType find($identifier, string $toScenario = null)
+ * @method UserType get($identifier, string $toScenario = null)
+ * @method UserType findByString($identifier, string $toScenario = null)
+ * @method UserType getByString($identifier, string $toScenario = null)
+ * @method UserType findByCondition($condition = [], string $toScenario = null)
+ * @method UserType getByCondition($condition = [], string $toScenario = null)
+ * @method UserType findByCriteria($criteria = [], string $toScenario = null)
+ * @method UserType getByCriteria($criteria = [], string $toScenario = null)
+ * @method UserType[] findAll(string $toScenario = null)
+ * @method UserType[] findAllByCondition($condition = [], string $toScenario = null)
+ * @method UserType[] getAllByCondition($condition = [], string $toScenario = null)
+ * @method UserType[] findAllByCriteria($criteria = [], string $toScenario = null)
+ * @method UserType[] getAllByCriteria($criteria = [], string $toScenario = null)
+ * @method UserTypeQuery getQuery($config = []): ActiveQuery($criteria = [], string $toScenario = null)
  */
-class UserCategories extends Component
+class UserTypes extends Component
 {
     use AccessorByString;
 
@@ -58,28 +58,28 @@ class UserCategories extends Component
      */
     public static function recordClass(): string
     {
-        return UserCategory::class;
+        return UserType::class;
     }
 
     /**
-     * @param mixed $category
-     * @return UserCategory
+     * @param mixed $type
+     * @return UserType
      */
-    public function resolve($category)
+    public function resolve($type)
     {
-        if ($category = $this->find($category)) {
-            return $category;
+        if ($type = $this->find($type)) {
+            return $type;
         }
 
-        $category = ArrayHelper::toArray($category, [], false);
+        $type = ArrayHelper::toArray($type, [], false);
 
         try {
-            $object = $this->create($category);
+            $object = $this->create($type);
         } catch (\Exception $e) {
-            $object = new UserCategory();
+            $object = new UserType();
             ObjectHelper::populate(
                 $object,
-                $category
+                $type
             );
         }
 
@@ -87,14 +87,14 @@ class UserCategories extends Component
     }
 
     /**
-     * @param UserCategoryQuery $query
+     * @param UserTypeQuery $query
      * @param UserElement $user
      * @param OrganizationElement $organization
      * @return bool
      * @throws \Exception
      */
     public function saveAssociations(
-        UserCategoryQuery $query,
+        UserTypeQuery $query,
         UserElement $user,
         OrganizationElement $organization
     ): bool {
@@ -102,7 +102,7 @@ class UserCategories extends Component
             return true;
         }
 
-        $associationService = Organizations::getInstance()->getUserCategoryAssociations();
+        $associationService = Organizations::getInstance()->getUserTypeAssociations();
 
         $userAssociationId = $this->associationId($user->getId(), $organization->getId());
 
@@ -123,18 +123,18 @@ class UserCategories extends Component
      *******************************************/
 
     /**
-     * @param array $categories
+     * @param array $types
      * @param int $userAssociationId
      * @return array
      */
     private function toAssociations(
-        array $categories,
+        array $types,
         int $userAssociationId
     ) {
         $associations = [];
-        foreach ($categories as $category) {
-            $associations[] = new UserCategoryAssociation([
-                'categoryId' => $category->id,
+        foreach ($types as $type) {
+            $associations[] = new UserTypeAssociation([
+                'typeId' => $type->id,
                 'userId' => $userAssociationId
             ]);
         }

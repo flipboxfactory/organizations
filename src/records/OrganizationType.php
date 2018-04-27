@@ -24,9 +24,9 @@ use yii\validators\UniqueValidator;
  * @since 1.0.0
  *
  * @property string $name
- * @property TypeSiteSettings[] $siteSettingRecords
+ * @property OrganizationTypeSiteSettings[] $siteSettingRecords
  */
-class Type extends ActiveRecordWithId
+class OrganizationType extends ActiveRecordWithId
 {
     use FieldLayoutAttribute,
         HandleRules;
@@ -88,7 +88,7 @@ class Type extends ActiveRecordWithId
      *******************************************/
 
     /**
-     * @return TypeSiteSettings[]
+     * @return OrganizationTypeSiteSettings[]
      * @throws \craft\errors\SiteNotFoundException
      */
     public function getSiteSettings(): array
@@ -132,12 +132,12 @@ class Type extends ActiveRecordWithId
     /**
      * @param int $siteId
      * @param $site
-     * @return TypeSiteSettings
+     * @return OrganizationTypeSiteSettings
      */
-    protected function resolveSiteSettings(int $siteId, $site): TypeSiteSettings
+    protected function resolveSiteSettings(int $siteId, $site): OrganizationTypeSiteSettings
     {
         if (!$record = $this->siteSettingRecords[$siteId] ?? null) {
-            $record = new TypeSiteSettings();
+            $record = new OrganizationTypeSiteSettings();
         }
 
         return ObjectHelper::populate(
@@ -211,7 +211,7 @@ class Type extends ActiveRecordWithId
      */
     protected function getSiteSettingRecords(): ActiveQueryInterface
     {
-        return $this->hasMany(TypeSiteSettings::class, ['typeId' => 'id'])
+        return $this->hasMany(OrganizationTypeSiteSettings::class, ['typeId' => 'id'])
             ->where([
                 'siteId' => OrganizationPlugin::getInstance()->getSettings()->getEnabledSiteIds()
             ])

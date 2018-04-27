@@ -93,18 +93,18 @@ class OrganizationAttributesToUserQueryBehavior extends Behavior
     }
 
     /**
-     * Extract the sub nodes (userCategory and type) from a criteria array
+     * Extract the sub nodes (userType and type) from a criteria array
      *
      * @param array $value
      */
     private function findSubNodes(array &$value)
     {
-        if (null !== ($subValue = ArrayHelper::remove($value, 'type'))) {
-            $this->handler->setType($subValue);
+        if (null !== ($subValue = ArrayHelper::remove($value, 'organizationType'))) {
+            $this->handler->setOrganizationType($subValue);
         }
 
-        if (null !== ($subValue = ArrayHelper::remove($value, 'userCategory'))) {
-            $this->handler->setUserCategory($subValue);
+        if (null !== ($subValue = ArrayHelper::remove($value, 'userType'))) {
+            $this->handler->setUserType($subValue);
         }
     }
 }

@@ -3,35 +3,35 @@
 {% block actionButton %}
     <div class="buttons right">
         <a href="{{ url(continueEditingUrl ~ '/new') }}"
-           class="btn submit add icon">{{ "New category"|t('organizations') }}</a>
+           class="btn submit add icon">{{ "New type"|t('organizations') }}</a>
     </div>
 {% endblock %}
 
 {% set content %}
-    <table id="categories" class="data fullwidth collapsible">
+    <table id="types" class="data fullwidth collapsible">
         <thead>
         <th scope="col">{{ "Name"|t('organizations') }}</th>
         <th scope="col">{{ "Handle"|t('organizations') }}</th>
         </thead>
         <tbody>
-        {% if categories|length %}
-            {% for category in categories %}
-                <tr data-id="{{ category.id }}" data-name="{{ category.name }}">
+        {% if types|length %}
+            {% for type in types %}
+                <tr data-id="{{ type.id }}" data-name="{{ type.name }}">
                     <th scope="row"
                         data-title="{{ 'Name'|t('organizations') }}">
-                        <a href="{{ url(baseCpPath~'/'~category.id) }}">
-                            {{ category.name }}
+                        <a href="{{ url(baseCpPath~'/'~type.id) }}">
+                            {{ type.name }}
                         </a>
                     </th>
                     <td data-title="{{ 'Handle'|t('organizations') }}">
-                        <code>{{ category.handle }}</code>
+                        <code>{{ type.handle }}</code>
                     </td>
                 </tr>
             {% endfor %}
         {% else %}
             <tr>
                 <td colspan="3">
-                    {{ "No categories exist yet."|t('organizations') }}
+                    {{ "No user types exist yet."|t('organizations') }}
                 </td>
             </tr>
         {% endif %}

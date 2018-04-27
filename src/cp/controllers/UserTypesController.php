@@ -10,7 +10,7 @@ namespace flipbox\organizations\cp\controllers;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\db\UserCategoryQuery;
+use flipbox\organizations\db\UserTypeQuery;
 use flipbox\organizations\Organizations;
 use yii\web\Response;
 
@@ -18,7 +18,7 @@ use yii\web\Response;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class UserCategoriesController extends AbstractController
+class UserTypesController extends AbstractController
 {
     /**
      * @return array
@@ -29,7 +29,7 @@ class UserCategoriesController extends AbstractController
             parent::behaviors(),
             [
                 'error' => [
-                    'default' => 'category'
+                    'default' => 'type'
                 ],
                 'redirect' => [
                     'only' => ['save-associations'],
@@ -40,8 +40,8 @@ class UserCategoriesController extends AbstractController
                 'flash' => [
                     'actions' => [
                         'save-associations' => [
-                            201 => Craft::t('organizations', "User Category successfully created."),
-                            401 => Craft::t('organizations', "Failed to create User Category.")
+                            201 => Craft::t('organizations', "User Type successfully created."),
+                            401 => Craft::t('organizations', "Failed to create User Type.")
                         ]
                     ]
                 ]
@@ -77,15 +77,15 @@ class UserCategoriesController extends AbstractController
             $request->getRequiredBodyParam('organization')
         );
 
-        $query = Organizations::getInstance()->getUserCategories()->getQuery([
-            'id' => array_keys(array_filter((array)$request->getRequiredBodyParam('categories')))
+        $query = Organizations::getInstance()->getUserTypes()->getQuery([
+            'id' => array_keys(array_filter((array)$request->getRequiredBodyParam('types')))
         ]);
 
         $query->setCachedResult(
             $query->all()
         );
 
-        Organizations::getInstance()->getUserCategories()->saveAssociations(
+        Organizations::getInstance()->getUserTypes()->saveAssociations(
             $query,
             $user,
             $organization
@@ -116,11 +116,11 @@ class UserCategoriesController extends AbstractController
 
         $view = $this->getView();
         $response['html'] = $view->renderTemplate(
-            "organizations/_cp/_components/userCategoriesEditorHtml",
+            "organizations/_cp/_components/userTypesEditorHtml",
             [
                 'user' => $user,
                 'organization' => $organization,
-                'categories' => (new UserCategoryQuery([
+                'types' => (new UserTypeQuery([
                     'organization' => $organization->id,
                     'user' => $user->id
                 ]))->all()

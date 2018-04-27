@@ -63,8 +63,8 @@
 			"typeAssociations": "flipbox\\organizations\\services\\TypeAssociations",
 			"users": "flipbox\\organizations\\services\\Users",
 			"userAssociations": "flipbox\\organizations\\services\\UserAssociations",
-			"userCategories": "flipbox\\organizations\\services\\UserCategories",
-			"userCategoryAssociations": "flipbox\\organizations\\services\\UserCategoryAssociations"
+			"userTypes": "flipbox\\organizations\\services\\UserTypes",
+			"userTypeAssociations": "flipbox\\organizations\\services\\UserTypeAssociations"
 		},
 		"modules": {
 			"cp": {

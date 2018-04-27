@@ -14,7 +14,7 @@ use craft\records\Element as ElementRecord;
 use craft\records\User as UserRecord;
 use flipbox\ember\records\ActiveRecordWithId;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\TypeAssociation as OrganizationTypeRecord;
+use flipbox\organizations\records\OrganizationTypeAssociation as OrganizationTypeRecord;
 use flipbox\organizations\records\UserAssociation as OrganizationUserRecord;
 use yii\db\ActiveQueryInterface;
 
@@ -25,7 +25,7 @@ use yii\db\ActiveQueryInterface;
  * @property string $state
  * @property string $dateJoined
  * @property ElementInterface $element
- * @property Type[] $types
+ * @property OrganizationType[] $types
  * @property UserRecord[] $users
  */
 class Organization extends ActiveRecordWithId
@@ -90,7 +90,7 @@ class Organization extends ActiveRecordWithId
     public function getTypes(): ActiveQueryInterface
     {
         // Todo - apply order by
-        return $this->hasMany(Type::class, ['id' => 'typeId'])
+        return $this->hasMany(OrganizationType::class, ['id' => 'typeId'])
             ->viaTable(
                 OrganizationTypeRecord::tableName(),
                 ['organizationId' => 'id']

@@ -13,9 +13,9 @@ use craft\helpers\Db;
 use flipbox\ember\db\CacheableActiveQuery;
 use flipbox\ember\db\traits\AuditAttributes;
 use flipbox\ember\db\traits\FixedOrderBy;
-use flipbox\organizations\records\Type;
-use flipbox\organizations\records\Type as TypeRecord;
-use flipbox\organizations\records\TypeAssociation as TypeAssociationRecord;
+use flipbox\organizations\records\OrganizationType;
+use flipbox\organizations\records\OrganizationType as TypeRecord;
+use flipbox\organizations\records\OrganizationTypeAssociation as TypeAssociationRecord;
 use yii\base\ArrayableTrait;
 
 /**
@@ -39,7 +39,7 @@ class TypeQuery extends CacheableActiveQuery
      */
     public function __construct($config = [])
     {
-        parent::__construct(Type::class, $config);
+        parent::__construct(OrganizationType::class, $config);
     }
 
     /**

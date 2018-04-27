@@ -10,7 +10,7 @@ namespace flipbox\organizations\actions\types;
 
 use flipbox\ember\actions\model\ModelCreate;
 use flipbox\organizations\Organizations;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 use yii\base\BaseObject;
 use yii\base\Model;
 
@@ -24,8 +24,8 @@ class Create extends ModelCreate
 
     /**
      * @inheritdoc
-     * @param Type $object
-     * @return Type
+     * @param OrganizationType $object
+     * @return OrganizationType
      */
     protected function populate(BaseObject $object): BaseObject
     {
@@ -39,7 +39,7 @@ class Create extends ModelCreate
 
     /**
      * @inheritdoc
-     * @return Type|Model
+     * @return OrganizationType|Model
      */
     protected function newModel(array $config = []): Model
     {
@@ -48,7 +48,7 @@ class Create extends ModelCreate
 
     /**
      * @inheritdoc
-     * @param Type|Model $model
+     * @param OrganizationType|Model $model
      */
     protected function performAction(Model $model): bool
     {

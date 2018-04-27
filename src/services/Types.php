@@ -15,9 +15,9 @@ use flipbox\ember\services\traits\records\AccessorByString;
 use flipbox\organizations\db\TypeQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\Type;
-use flipbox\organizations\records\Type as TypeRecord;
-use flipbox\organizations\records\TypeAssociation;
+use flipbox\organizations\records\OrganizationType;
+use flipbox\organizations\records\OrganizationType as TypeRecord;
+use flipbox\organizations\records\OrganizationTypeAssociation;
 use yii\base\Component;
 use yii\base\Exception;
 
@@ -258,9 +258,9 @@ class Types extends Component
     }
 
     /**
-     * @param Type[] $types
+     * @param OrganizationType[] $types
      * @param int $organizationId
-     * @return TypeAssociation[]
+     * @return OrganizationTypeAssociation[]
      */
     private function toAssociations(
         array $types,
@@ -269,7 +269,7 @@ class Types extends Component
         $associations = [];
         $sortOrder = 1;
         foreach ($types as $type) {
-            $associations[] = new TypeAssociation([
+            $associations[] = new OrganizationTypeAssociation([
                 'organizationId' => $organizationId,
                 'typeId' => $type->id,
                 'sortOrder' => $sortOrder++

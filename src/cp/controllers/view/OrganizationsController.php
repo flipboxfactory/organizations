@@ -18,7 +18,7 @@ use flipbox\organizations\cp\controllers\traits\Sites;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\events\RegisterOrganizationActionsEvent;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\web\assets\organization\Organization as OrganizationAsset;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -307,7 +307,7 @@ class OrganizationsController extends AbstractController
         // Types
         $variables['types'] = OrganizationPlugin::getInstance()->getTypes()->findAll();
         $variables['typeOptions'] = [];
-        /** @var Type $type */
+        /** @var OrganizationType $type */
         foreach ($variables['types'] as $type) {
             $variables['typeOptions'][] = [
                 'label' => Craft::t('site', $type->name),

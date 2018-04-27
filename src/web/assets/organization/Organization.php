@@ -25,7 +25,7 @@ class Organization extends AssetBundle
     {
         $this->js = [
             'js/HUDEditor' . $this->dotJs(),
-            'js/OrganizationUserCategoryEditor' . $this->dotJs(),
+            'js/OrganizationUserTypeEditor' . $this->dotJs(),
             'js/TableOrganizationUserIndexView' . $this->dotJs(),
             'js/OrganizationUserIndex' . $this->dotJs(),
             'js/OrganizationTypeSwitcher' . $this->dotJs(),

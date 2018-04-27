@@ -39,7 +39,7 @@ class UserIndexesController extends ElementIndexesController
                 ];
             },
             [
-                'organization' => $this->getOrganizationIdFromRequest()
+                'organization' => $this->getOrganizationFromRequest()
             ]
         );
 
@@ -51,7 +51,7 @@ class UserIndexesController extends ElementIndexesController
                 $event->htmlAttributes['data-organization'] = $event->data['organization'] ?? null;
             },
             [
-                'organization' => $this->getOrganizationIdFromRequest()
+                'organization' => $this->getOrganizationFromRequest()
             ]
         );
 
@@ -61,7 +61,7 @@ class UserIndexesController extends ElementIndexesController
     /**
      * @return mixed
      */
-    private function getOrganizationIdFromRequest()
+    private function getOrganizationFromRequest()
     {
         return Craft::$app->getRequest()->getParam('organization');
     }

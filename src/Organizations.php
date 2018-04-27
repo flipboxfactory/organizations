@@ -23,12 +23,12 @@ use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use flipbox\organizations\db\behaviors\OrganizationAttributesToUserQueryBehavior;
-use flipbox\organizations\elements\behaviors\UserCategoriesBehavior;
+use flipbox\organizations\elements\behaviors\UserTypesBehavior;
 use flipbox\organizations\elements\behaviors\UserOrganizationsBehavior;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\fields\Organization as OrganizationField;
 use flipbox\organizations\models\Settings as OrganizationSettings;
-use flipbox\organizations\records\Type as OrganizationType;
+use flipbox\organizations\records\OrganizationType as OrganizationType;
 use flipbox\organizations\web\twig\variables\Organization as OrganizationVariable;
 use yii\base\Event;
 use yii\log\Logger;
@@ -104,7 +104,7 @@ class Organizations extends BasePlugin
 
                 $user->attachBehaviors([
                     'organizations' => UserOrganizationsBehavior::class,
-                    'categories' => UserCategoriesBehavior::class
+                    'types' => UserTypesBehavior::class
                 ]);
             }
         );
@@ -127,7 +127,7 @@ class Organizations extends BasePlugin
             }
         );
 
-        // User Category sources
+        // User Type sources
         Event::on(
             User::class,
             User::EVENT_REGISTER_SOURCES,
@@ -137,12 +137,12 @@ class Organizations extends BasePlugin
                         'heading' => "Organization Groups"
                     ];
 
-                    $userCategories = static::getInstance()->getUserCategories()->findAll();
-                    foreach ($userCategories as $userCategory) {
+                    $types = static::getInstance()->getUserTypes()->findAll();
+                    foreach ($types as $type) {
                         $event->sources[] = [
-                            'key' => 'category:' . $userCategory->id,
-                            'label' => Craft::t('organizations', $userCategory->name),
-                            'criteria' => ['organization' => ['userCategory' => $userCategory->id]],
+                            'key' => 'type:' . $type->id,
+                            'label' => Craft::t('organizations', $type->name),
+                            'criteria' => ['organization' => ['userType' => $type->id]],
                             'hasThumbs' => true
                         ];
                     }
@@ -167,11 +167,11 @@ class Organizations extends BasePlugin
                 // SETTINGS
                 'organizations/settings' => 'organizations/cp/settings/view/general/index',
 
-                'organizations/settings/user-categories' => 'organizations/cp/settings/view/user-categories/index',
-                'organizations/settings/user-categories/new' =>
-                    'organizations/cp/settings/view/user-categories/upsert',
-                'organizations/settings/user-categories/<identifier:\d+>' =>
-                    'organizations/cp/settings/view/user-categories/upsert',
+                'organizations/settings/user-types' => 'organizations/cp/settings/view/user-types/index',
+                'organizations/settings/user-types/new' =>
+                    'organizations/cp/settings/view/user-types/upsert',
+                'organizations/settings/user-types/<identifier:\d+>' =>
+                    'organizations/cp/settings/view/user-types/upsert',
 
                 'organizations/settings/types' => 'organizations/cp/settings/view/types/index',
                 'organizations/settings/types/new' => 'organizations/cp/settings/view/types/upsert',
@@ -340,22 +340,6 @@ class Organizations extends BasePlugin
     }
 
     /**
-     * @return services\UserCategories
-     */
-    public function getUserCategories()
-    {
-        return $this->get('userCategories');
-    }
-
-    /**
-     * @return services\UserCategoryAssociations
-     */
-    public function getUserCategoryAssociations()
-    {
-        return $this->get('userCategoryAssociations');
-    }
-
-    /**
      * @return services\Users
      */
     public function getUsers()
@@ -369,6 +353,22 @@ class Organizations extends BasePlugin
     public function getUserAssociations()
     {
         return $this->get('userAssociations');
+    }
+
+    /**
+     * @return services\UserTypes
+     */
+    public function getUserTypes()
+    {
+        return $this->get('userTypes');
+    }
+
+    /**
+     * @return services\UserTypeAssociations
+     */
+    public function getUserTypeAssociations()
+    {
+        return $this->get('userTypeAssociations');
     }
 
     /*******************************************

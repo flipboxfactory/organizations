@@ -6,34 +6,34 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\users\categories;
+namespace flipbox\organizations\actions\users\types;
 
-use flipbox\ember\actions\model\ModelUpdate;
-use flipbox\organizations\records\UserCategory;
+use flipbox\ember\actions\model\ModelDelete;
+use flipbox\organizations\records\UserType;
 use yii\base\Model;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class Update extends ModelUpdate
+class Delete extends ModelDelete
 {
-    use traits\Lookup, traits\Populate;
+    use traits\Lookup;
 
     /**
      * @inheritdoc
      */
-    public function run($category)
+    public function run($type)
     {
-        return parent::run($category);
+        return parent::run($type);
     }
 
     /**
      * @inheritdoc
-     * @param UserCategory $model
+     * @param UserType $model
      */
     protected function performAction(Model $model): bool
     {
-        return $model->update();
+        return $model->delete();
     }
 }

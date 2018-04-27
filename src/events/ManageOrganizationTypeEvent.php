@@ -10,7 +10,7 @@ namespace flipbox\organizations\events;
 
 use craft\events\CancelableEvent;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -24,7 +24,7 @@ class ManageOrganizationTypeEvent extends CancelableEvent
     public $organization;
 
     /**
-     * @var Type
+     * @var OrganizationType
      */
     public $type;
 }

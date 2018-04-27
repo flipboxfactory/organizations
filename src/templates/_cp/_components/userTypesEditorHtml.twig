@@ -1,0 +1,20 @@
+{% import "_includes/forms" as forms %}
+<div class="meta">
+    {% set selectedTypeIds = [] %}
+    {% for type in types %}
+        {% set selectedTypeIds = selectedTypeIds|merge([type.id]) %}
+    {% endfor %}
+
+    {% namespace 'types' %}
+        {% for userType in craft.organizations.userTypes.findAll() %}
+            {% set selected = userType.id in selectedTypeIds %}
+            {{ forms.lightswitchField({
+                label: userType.name|t('organizations'),
+                id: userType.handle,
+                name: userType.id,
+                on: selected,
+            }) }}
+        {% endfor %}
+    {% endnamespace %}
+</div>
+

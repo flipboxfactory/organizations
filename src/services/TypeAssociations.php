@@ -13,8 +13,8 @@ use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\db\TypeAssociationQuery;
-use flipbox\organizations\records\TypeAssociation;
-use flipbox\organizations\records\TypeAssociation as TypeAssociationRecord;
+use flipbox\organizations\records\OrganizationTypeAssociation;
+use flipbox\organizations\records\OrganizationTypeAssociation as TypeAssociationRecord;
 use yii\db\ActiveQuery;
 
 /**
@@ -22,17 +22,17 @@ use yii\db\ActiveQuery;
  * @since 1.0.0
  *
  * @method TypeAssociationQuery parentGetQuery($config = [])
- * @method TypeAssociation create(array $attributes = [])
- * @method TypeAssociation find($identifier)
- * @method TypeAssociation get($identifier)
- * @method TypeAssociation findByCondition($condition = [])
- * @method TypeAssociation getByCondition($condition = [])
- * @method TypeAssociation findByCriteria($criteria = [])
- * @method TypeAssociation getByCriteria($criteria = [])
- * @method TypeAssociation[] findAllByCondition($condition = [])
- * @method TypeAssociation[] getAllByCondition($condition = [])
- * @method TypeAssociation[] findAllByCriteria($criteria = [])
- * @method TypeAssociation[] getAllByCriteria($criteria = [])
+ * @method OrganizationTypeAssociation create(array $attributes = [])
+ * @method OrganizationTypeAssociation find($identifier)
+ * @method OrganizationTypeAssociation get($identifier)
+ * @method OrganizationTypeAssociation findByCondition($condition = [])
+ * @method OrganizationTypeAssociation getByCondition($condition = [])
+ * @method OrganizationTypeAssociation findByCriteria($criteria = [])
+ * @method OrganizationTypeAssociation getByCriteria($criteria = [])
+ * @method OrganizationTypeAssociation[] findAllByCondition($condition = [])
+ * @method OrganizationTypeAssociation[] getAllByCondition($condition = [])
+ * @method OrganizationTypeAssociation[] findAllByCriteria($criteria = [])
+ * @method OrganizationTypeAssociation[] getAllByCriteria($criteria = [])
  */
 class TypeAssociations extends SortableAssociations
 {
@@ -43,19 +43,19 @@ class TypeAssociations extends SortableAssociations
     /**
      * @return string
      */
-    const SOURCE_ATTRIBUTE = TypeAssociation::SOURCE_ATTRIBUTE;
+    const SOURCE_ATTRIBUTE = OrganizationTypeAssociation::SOURCE_ATTRIBUTE;
 
     /**
      * @return string
      */
-    const TARGET_ATTRIBUTE = TypeAssociation::TARGET_ATTRIBUTE;
+    const TARGET_ATTRIBUTE = OrganizationTypeAssociation::TARGET_ATTRIBUTE;
 
     /**
      * @inheritdoc
      */
     protected static function tableAlias(): string
     {
-        return TypeAssociation::tableAlias();
+        return OrganizationTypeAssociation::tableAlias();
     }
 
     /**
@@ -72,7 +72,7 @@ class TypeAssociations extends SortableAssociations
      */
     public static function recordClass(): string
     {
-        return TypeAssociation::class;
+        return OrganizationTypeAssociation::class;
     }
 
     /**

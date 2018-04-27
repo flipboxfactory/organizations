@@ -12,7 +12,7 @@ use Craft;
 use flipbox\craft\sortable\associations\records\SortableAssociation;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\helpers\ModelHelper;
-use flipbox\organizations\db\UserCategoryAssociationQuery;
+use flipbox\organizations\db\UserTypeAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
 
@@ -24,17 +24,17 @@ use yii\db\ActiveQueryInterface;
  * @property int $sortOrder
  * @property Organization $organization
  */
-class UserCategoryAssociation extends SortableAssociation
+class UserTypeAssociation extends SortableAssociation
 {
     /**
      * The table name
      */
-    const TABLE_ALIAS = UserCategory::TABLE_ALIAS . '_associations';
+    const TABLE_ALIAS = UserType::TABLE_ALIAS . '_associations';
 
     /**
      * @inheritdoc
      */
-    const TARGET_ATTRIBUTE = 'categoryId';
+    const TARGET_ATTRIBUTE = 'typeId';
 
     /**
      * @inheritdoc
@@ -46,7 +46,7 @@ class UserCategoryAssociation extends SortableAssociation
      */
     protected function associationService(): SortableAssociations
     {
-        return OrganizationPlugin::getInstance()->getUserCategoryAssociations();
+        return OrganizationPlugin::getInstance()->getUserTypeAssociations();
     }
 
     /**
@@ -54,7 +54,7 @@ class UserCategoryAssociation extends SortableAssociation
      */
     public static function find()
     {
-        return Craft::createObject(UserCategoryAssociationQuery::class, [get_called_class()]);
+        return Craft::createObject(UserTypeAssociationQuery::class, [get_called_class()]);
     }
 
     /**
@@ -79,13 +79,13 @@ class UserCategoryAssociation extends SortableAssociation
                     'unique',
                     'targetAttribute' => [
                         'userId',
-                        'categoryId'
+                        'typeId'
                     ]
                 ],
                 [
                     [
                         'userId',
-                        'categoryId'
+                        'typeId'
                     ],
                     'safe',
                     'on' => [
@@ -107,12 +107,12 @@ class UserCategoryAssociation extends SortableAssociation
     }
 
     /**
-     * Returns the category association.
+     * Returns the type association.
      *
      * @return ActiveQueryInterface The relational query object.
      */
-    public function getCategory(): ActiveQueryInterface
+    public function getType(): ActiveQueryInterface
     {
-        return $this->hasOne(UserCategory::class, ['id' => 'categoryId']);
+        return $this->hasOne(UserType::class, ['id' => 'typeId']);
     }
 }

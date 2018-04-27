@@ -6,19 +6,19 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\types;
+namespace flipbox\organizations\actions\users\types;
 
-use flipbox\ember\actions\model\ModelDelete;
-use flipbox\organizations\records\OrganizationType;
+use flipbox\ember\actions\model\ModelUpdate;
+use flipbox\organizations\records\UserType;
 use yii\base\Model;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class Delete extends ModelDelete
+class Update extends ModelUpdate
 {
-    use traits\Lookup;
+    use traits\Lookup, traits\Populate;
 
     /**
      * @inheritdoc
@@ -30,11 +30,10 @@ class Delete extends ModelDelete
 
     /**
      * @inheritdoc
-     * @param OrganizationType|Model $model
-     * @throws \Exception
+     * @param UserType $model
      */
     protected function performAction(Model $model): bool
     {
-        return $model->delete();
+        return $model->update();
     }
 }

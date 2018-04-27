@@ -30,7 +30,7 @@ class Organization extends ServiceLocator
                     'organizations' => OrganizationPlugin::getInstance()->getOrganizations(),
                     'types' => OrganizationPlugin::getInstance()->getTypes(),
                     'users' => OrganizationPlugin::getInstance()->getUsers(),
-                    'categories' => OrganizationPlugin::getInstance()->getUserCategories()
+                    'userTypes' => OrganizationPlugin::getInstance()->getUserTypes()
                 ]
             ]
         ));

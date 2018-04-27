@@ -9,7 +9,7 @@
 namespace flipbox\organizations\traits;
 
 use flipbox\organizations\Organizations;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 
 /**
  * @property int|null $typeId
@@ -20,7 +20,7 @@ use flipbox\organizations\records\Type;
 trait TypeMutator
 {
     /**
-     * @var Type|null
+     * @var OrganizationType|null
      */
     private $type;
 
@@ -71,7 +71,7 @@ trait TypeMutator
     }
 
     /**
-     * @return Type|null
+     * @return OrganizationType|null
      */
     public function getType()
     {
@@ -93,7 +93,7 @@ trait TypeMutator
     }
 
     /**
-     * @return Type|null
+     * @return OrganizationType|null
      */
     protected function resolveType()
     {
@@ -105,7 +105,7 @@ trait TypeMutator
     }
 
     /**
-     * @return Type|null
+     * @return OrganizationType|null
      */
     private function resolveTypeFromId()
     {

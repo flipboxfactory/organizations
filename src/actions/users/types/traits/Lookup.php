@@ -6,10 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\users\categories\traits;
+namespace flipbox\organizations\actions\users\types\traits;
 
 use flipbox\organizations\Organizations;
-use flipbox\organizations\records\UserCategory;
+use flipbox\organizations\records\UserType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -19,10 +19,10 @@ trait Lookup
 {
     /**
      * @inheritdoc
-     * @return UserCategory
+     * @return UserType
      */
     protected function find($identifier)
     {
-        return Organizations::getInstance()->getUserCategories()->find($identifier);
+        return Organizations::getInstance()->getUserTypes()->find($identifier);
     }
 }

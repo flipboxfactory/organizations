@@ -9,7 +9,7 @@
 namespace flipbox\organizations\actions\types\traits;
 
 use flipbox\organizations\Organizations;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -19,7 +19,7 @@ trait Lookup
 {
     /**
      * @inheritdoc
-     * @return Type
+     * @return OrganizationType
      */
     protected function find($identifier)
     {

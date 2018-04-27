@@ -10,7 +10,7 @@ namespace flipbox\organizations\records;
 
 use flipbox\ember\records\ActiveRecordWithId;
 use flipbox\ember\traits\HandleRules;
-use flipbox\organizations\db\UserCategoryQuery;
+use flipbox\organizations\db\UserTypeQuery;
 use yii\validators\UniqueValidator;
 
 /**
@@ -19,22 +19,22 @@ use yii\validators\UniqueValidator;
  *
  * @property string $name
  */
-class UserCategory extends ActiveRecordWithId
+class UserType extends ActiveRecordWithId
 {
     use HandleRules;
 
     /**
      * The table name
      */
-    const TABLE_ALIAS = Organization::TABLE_ALIAS . '_user_categories';
+    const TABLE_ALIAS = Organization::TABLE_ALIAS . '_user_types';
 
     /**
      * @inheritdoc
-     * @return UserCategoryQuery
+     * @return UserTypeQuery
      */
     public static function find()
     {
-        return new UserCategoryQuery;
+        return new UserTypeQuery;
     }
 
     /**

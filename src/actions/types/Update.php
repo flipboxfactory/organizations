@@ -9,7 +9,7 @@
 namespace flipbox\organizations\actions\types;
 
 use flipbox\ember\actions\model\ModelUpdate;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 use yii\base\BaseObject;
 use yii\base\Model;
 
@@ -31,8 +31,8 @@ class Update extends ModelUpdate
 
     /**
      * @inheritdoc
-     * @param Type|BaseObject $object
-     * @return Type|BaseObject
+     * @param OrganizationType|BaseObject $object
+     * @return OrganizationType|BaseObject
      */
     protected function populate(BaseObject $object): BaseObject
     {
@@ -46,7 +46,7 @@ class Update extends ModelUpdate
 
     /**
      * @inheritdoc
-     * @param Type|Model $model
+     * @param OrganizationType|Model $model
      */
     protected function performAction(Model $model): bool
     {

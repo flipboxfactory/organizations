@@ -14,12 +14,12 @@ use craft\records\FieldLayout as FieldLayoutRecord;
 use craft\records\Site as SiteRecord;
 use craft\records\User as UserRecord;
 use flipbox\organizations\records\Organization as OrganizationRecord;
-use flipbox\organizations\records\Type as OrganizationTypeRecord;
-use flipbox\organizations\records\TypeAssociation as OrganizationTypeAssociationRecord;
-use flipbox\organizations\records\TypeSiteSettings as OrganizationTypeSiteSettingsRecord;
+use flipbox\organizations\records\OrganizationType as OrganizationTypeRecord;
+use flipbox\organizations\records\OrganizationTypeAssociation as OrganizationTypeAssociationRecord;
+use flipbox\organizations\records\OrganizationTypeSiteSettings as OrganizationTypeSiteSettingsRecord;
 use flipbox\organizations\records\UserAssociation as OrganizationUserRecord;
-use flipbox\organizations\records\UserCategory as OrganizationUserCategoryRecord;
-use flipbox\organizations\records\UserCategoryAssociation as OrganizationUserCategoryAssociationRecord;
+use flipbox\organizations\records\UserType as OrganizationUserTypeRecord;
+use flipbox\organizations\records\UserTypeAssociation as OrganizationUserTypeAssociationRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -44,8 +44,8 @@ class Install extends Migration
      */
     public function safeDown()
     {
-        $this->dropTableIfExists(OrganizationUserCategoryAssociationRecord::tableName());
-        $this->dropTableIfExists(OrganizationUserCategoryRecord::tableName());
+        $this->dropTableIfExists(OrganizationUserTypeAssociationRecord::tableName());
+        $this->dropTableIfExists(OrganizationUserTypeRecord::tableName());
         $this->dropTableIfExists(OrganizationUserRecord::tableName());
         $this->dropTableIfExists(OrganizationTypeAssociationRecord::tableName());
         $this->dropTableIfExists(OrganizationTypeSiteSettingsRecord::tableName());
@@ -112,7 +112,7 @@ class Install extends Migration
             'uid' => $this->uid()
         ]);
 
-        $this->createTable(OrganizationUserCategoryRecord::tableName(), [
+        $this->createTable(OrganizationUserTypeRecord::tableName(), [
             'id' => $this->primaryKey(),
             'handle' => $this->string()->notNull(),
             'name' => $this->string()->notNull(),
@@ -121,9 +121,9 @@ class Install extends Migration
             'uid' => $this->uid()
         ]);
 
-        $this->createTable(OrganizationUserCategoryAssociationRecord::tableName(), [
+        $this->createTable(OrganizationUserTypeAssociationRecord::tableName(), [
             'userId' => $this->integer()->notNull(),
-            'categoryId' => $this->integer()->notNull(),
+            'typeId' => $this->integer()->notNull(),
             'sortOrder' => $this->smallInteger()->unsigned(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
@@ -277,53 +277,53 @@ class Install extends Migration
 
         $this->createIndex(
             $this->db->getIndexName(
-                OrganizationUserCategoryRecord::tableName(),
+                OrganizationUserTypeRecord::tableName(),
                 'handle',
                 true
             ),
-            OrganizationUserCategoryRecord::tableName(),
+            OrganizationUserTypeRecord::tableName(),
             'handle',
             true
         );
 
         $this->addPrimaryKey(
             $this->db->getPrimaryKeyName(
-                OrganizationUserCategoryAssociationRecord::tableName(),
-                ['userId', 'categoryId']
+                OrganizationUserTypeAssociationRecord::tableName(),
+                ['userId', 'typeId']
             ),
-            OrganizationUserCategoryAssociationRecord::tableName(),
-            ['userId', 'categoryId']
+            OrganizationUserTypeAssociationRecord::tableName(),
+            ['userId', 'typeId']
         );
         $this->createIndex(
             $this->db->getIndexName(
-                OrganizationUserCategoryAssociationRecord::tableName(),
+                OrganizationUserTypeAssociationRecord::tableName(),
                 'userId',
                 false,
                 true
             ),
-            OrganizationUserCategoryAssociationRecord::tableName(),
+            OrganizationUserTypeAssociationRecord::tableName(),
             'userId',
             false
         );
         $this->createIndex(
             $this->db->getIndexName(
-                OrganizationUserCategoryAssociationRecord::tableName(),
-                'categoryId',
+                OrganizationUserTypeAssociationRecord::tableName(),
+                'typeId',
                 false,
                 true
             ),
-            OrganizationUserCategoryAssociationRecord::tableName(),
-            'categoryId',
+            OrganizationUserTypeAssociationRecord::tableName(),
+            'typeId',
             false
         );
         $this->createIndex(
             $this->db->getIndexName(
-                OrganizationUserCategoryAssociationRecord::tableName(),
-                'userId,categoryId',
+                OrganizationUserTypeAssociationRecord::tableName(),
+                'userId,typeId',
                 true
             ),
-            OrganizationUserCategoryAssociationRecord::tableName(),
-            'userId,categoryId',
+            OrganizationUserTypeAssociationRecord::tableName(),
+            'userId,typeId',
             true
         );
     }
@@ -439,22 +439,22 @@ class Install extends Migration
 
         $this->addForeignKey(
             $this->db->getForeignKeyName(
-                OrganizationUserCategoryAssociationRecord::tableName(),
-                'categoryId'
+                OrganizationUserTypeAssociationRecord::tableName(),
+                'typeId'
             ),
-            OrganizationUserCategoryAssociationRecord::tableName(),
-            'categoryId',
-            OrganizationUserCategoryRecord::tableName(),
+            OrganizationUserTypeAssociationRecord::tableName(),
+            'typeId',
+            OrganizationUserTypeRecord::tableName(),
             'id',
             'CASCADE',
             'CASCADE'
         );
         $this->addForeignKey(
             $this->db->getForeignKeyName(
-                OrganizationUserCategoryAssociationRecord::tableName(),
+                OrganizationUserTypeAssociationRecord::tableName(),
                 'userId'
             ),
-            OrganizationUserCategoryAssociationRecord::tableName(),
+            OrganizationUserTypeAssociationRecord::tableName(),
             'userId',
             OrganizationUserRecord::tableName(),
             'id',

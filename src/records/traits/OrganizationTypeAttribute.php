@@ -10,7 +10,7 @@ namespace flipbox\organizations\records\traits;
 
 use flipbox\ember\records\traits\ActiveRecord;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\Type as TypeRecord;
+use flipbox\organizations\records\OrganizationType as TypeRecord;
 use flipbox\organizations\traits\TypeMutator;
 use flipbox\organizations\traits\TypeRules;
 use yii\db\ActiveQueryInterface;
@@ -21,7 +21,7 @@ use yii\db\ActiveQueryInterface;
  *
  * @method TypeRecord parentResolveType()
  */
-trait TypeAttribute
+trait OrganizationTypeAttribute
 {
     use ActiveRecord,
         TypeRules,

@@ -9,7 +9,7 @@
 namespace flipbox\organizations\traits;
 
 use flipbox\ember\helpers\ModelHelper;
-use flipbox\organizations\records\Type as TypeModel;
+use flipbox\organizations\records\OrganizationType as TypeModel;
 
 /**
  * @property int|null $typeId

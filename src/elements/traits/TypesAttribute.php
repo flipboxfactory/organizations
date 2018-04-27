@@ -13,8 +13,8 @@ use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
 use flipbox\organizations\db\TypeQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\Type;
-use flipbox\organizations\records\Type as TypeModel;
+use flipbox\organizations\records\OrganizationType;
+use flipbox\organizations\records\OrganizationType as TypeModel;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -152,7 +152,7 @@ trait TypesAttribute
 
         foreach ($types as $key => $type) {
             // Ensure we have a model
-            if (!$type instanceof Type) {
+            if (!$type instanceof OrganizationType) {
                 $type = OrganizationPlugin::getInstance()->getTypes()->resolve($type);
             }
 
@@ -165,10 +165,10 @@ trait TypesAttribute
     /**
      * Associate a type to an organization
      *
-     * @param Type $type
+     * @param OrganizationType $type
      * @return $this
      */
-    public function addType(Type $type)
+    public function addType(OrganizationType $type)
     {
         $currentTypes = $this->getTypes()->all();
 
@@ -199,7 +199,7 @@ trait TypesAttribute
         }
 
         foreach ($types as $key => $type) {
-            if (!$type instanceof Type) {
+            if (!$type instanceof OrganizationType) {
                 $type = OrganizationPlugin::getInstance()->getTypes()->resolve($type);
             }
 
@@ -212,10 +212,10 @@ trait TypesAttribute
     /**
      * Dissociate a type from an organization
      *
-     * @param Type $type
+     * @param OrganizationType $type
      * @return $this
      */
-    public function removeType(Type $type)
+    public function removeType(OrganizationType $type)
     {
         $indexedTypes = ArrayHelper::index(
             $this->getTypes()->all(),

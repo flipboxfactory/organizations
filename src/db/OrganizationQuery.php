@@ -15,12 +15,12 @@ use craft\records\UserGroup_User as UserGroupUsersRecord;
 use flipbox\ember\db\traits\UserAttribute;
 use flipbox\ember\db\traits\UserGroupAttribute;
 use flipbox\organizations\db\traits\TypeAttribute;
-use flipbox\organizations\db\traits\UserCategoryAttribute;
+use flipbox\organizations\db\traits\UserTypeAttribute;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\records\Organization as OrganizationRecord;
-use flipbox\organizations\records\TypeAssociation as TypeAssociationRecord;
+use flipbox\organizations\records\OrganizationTypeAssociation as TypeAssociationRecord;
 use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
-use flipbox\organizations\records\UserCategoryAssociation as UserCategoryAssociationRecord;
+use flipbox\organizations\records\UserTypeAssociation as UserTypeAssociationRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -37,7 +37,7 @@ class OrganizationQuery extends ElementQuery
 {
     use UserAttribute,
         UserGroupAttribute,
-        UserCategoryAttribute,
+        UserTypeAttribute,
         TypeAttribute;
 
     /**
@@ -114,7 +114,7 @@ class OrganizationQuery extends ElementQuery
         // Type
         $this->applyTypeParam();
 
-        if (empty($this->user) && empty($this->userGroup) && empty($this->userCategory)) {
+        if (empty($this->user) && empty($this->userGroup) && empty($this->userType)) {
             return;
         }
 
@@ -122,7 +122,7 @@ class OrganizationQuery extends ElementQuery
 
         $this->applyUserParam($alias);
         $this->applyUserGroupParam($alias);
-        $this->applyUserCategoryParam($alias);
+        $this->applyUserTypeParam($alias);
     }
 
 
@@ -220,21 +220,21 @@ class OrganizationQuery extends ElementQuery
      *
      * @return void
      */
-    protected function applyUserCategoryParam(string $alias)
+    protected function applyUserTypeParam(string $alias)
     {
-        if (empty($this->userCategory)) {
+        if (empty($this->userType)) {
             return;
         }
 
-        $categoryAlias = 'uc_user';
+        $typeAlias = 'ut_user';
 
         $this->subQuery->innerJoin(
-            UserCategoryAssociationRecord::tableName() . ' ' . $categoryAlias,
-            '[[' . $categoryAlias . '.userId]] = [[' . $alias . '.userId]]'
+            UserTypeAssociationRecord::tableName() . ' ' . $typeAlias,
+            '[[' . $typeAlias . '.userId]] = [[' . $alias . '.userId]]'
         );
 
         $this->subQuery->andWhere(
-            Db::parseParam($categoryAlias . '.categoryId', $this->parseUserCategoryValue($this->userCategory))
+            Db::parseParam($typeAlias . '.typeId', $this->parseUserTypeValue($this->userType))
         );
     }
 

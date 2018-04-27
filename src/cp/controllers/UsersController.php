@@ -81,8 +81,7 @@ class UsersController extends AbstractController
 
         /** @var Associate $action */
         $action = Craft::createObject([
-            'class' => Associate::class,
-            'checkAccess' => [$this, 'checkAssociateAccess']
+            'class' => Associate::class
         ], [
             'associate',
             $this
@@ -112,8 +111,7 @@ class UsersController extends AbstractController
 
         /** @var Dissociate $action */
         $action = Craft::createObject([
-            'class' => Dissociate::class,
-            'checkAccess' => [$this, 'checkDissociateAccess']
+            'class' => Dissociate::class
         ], [
             'dissociate',
             $this
@@ -123,30 +121,5 @@ class UsersController extends AbstractController
             'organization' => $organization,
             'user' => $user
         ]);
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkAssociateAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    public function checkDissociateAccess(): bool
-    {
-        return $this->checkAdminAccess();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function checkAdminAccess()
-    {
-        $this->requireLogin();
-        return Craft::$app->getUser()->getIsAdmin();
     }
 }

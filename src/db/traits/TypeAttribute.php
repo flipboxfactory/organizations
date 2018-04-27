@@ -11,7 +11,7 @@ namespace flipbox\organizations\db\traits;
 use flipbox\ember\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\Type;
+use flipbox\organizations\records\OrganizationType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -22,12 +22,12 @@ trait TypeAttribute
     /**
      * The organization type(s) that the results must have.
      *
-     * @var string|string[]|int|int[]|Type|Type[]|null $value
+     * @var string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      */
     public $type;
 
     /**
-     * @param string|string[]|int|int[]|Type|Type[]|null $value
+     * @param string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      * @return self The query object itself
      */
     public function setType($value)
@@ -37,7 +37,7 @@ trait TypeAttribute
     }
 
     /**
-     * @param string|string[]|int|int[]|Type|Type[]|null $value
+     * @param string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      * @return static The query object
      */
     public function type($value)
@@ -46,7 +46,7 @@ trait TypeAttribute
     }
 
     /**
-     * @param string|string[]|int|int[]|Type|Type[]|null $value
+     * @param string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      * @return $this
      */
     public function setTypeId($value)
@@ -55,7 +55,7 @@ trait TypeAttribute
     }
 
     /**
-     * @param string|string[]|int|int[]|Type|Type[]|null $value
+     * @param string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      * @return self The query object itself
      */
     public function typeId($value)
@@ -96,7 +96,7 @@ trait TypeAttribute
                 $value = $this->resolveTypeStringValue($value);
             }
 
-            if ($value instanceof Type) {
+            if ($value instanceof OrganizationType) {
                 $value = $value->id;
             }
 

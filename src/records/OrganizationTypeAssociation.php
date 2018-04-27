@@ -21,18 +21,18 @@ use flipbox\organizations\Organizations as OrganizationPlugin;
  * @property int $typeId
  * @property int $organizationId
  * @property int $sortOrder
- * @property Type $type
+ * @property OrganizationType $type
  * @property Organization $organization
  */
-class TypeAssociation extends SortableAssociation
+class OrganizationTypeAssociation extends SortableAssociation
 {
-    use traits\TypeAttribute,
+    use traits\OrganizationTypeAttribute,
         traits\OrganizationAttribute;
 
     /**
      * The table name
      */
-    const TABLE_ALIAS = Type::TABLE_ALIAS . '_associations';
+    const TABLE_ALIAS = OrganizationType::TABLE_ALIAS . '_associations';
 
     /**
      * @inheritdoc

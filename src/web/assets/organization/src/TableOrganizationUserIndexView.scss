@@ -1,7 +1,7 @@
 @charset "UTF-8";
-@import "../../../../../../../vendor/craftcms/cms/lib/craftcms-sass/mixins";
+@import "../../../../../vendor/craftcms/cms/lib/craftcms-sass/mixins";
 
-.manage-categories {
+.manage-types {
   opacity: .075;
   cursor: pointer;
 
@@ -20,7 +20,7 @@
 
 body {
   &.ltr {
-    .manage-categories.loading {
+    .manage-types.loading {
       padding-right: 0;
 
       &:after {
@@ -50,7 +50,7 @@ tr:hover {
 
   > td {
 
-    .manage-categories {
+    .manage-types {
       opacity: 1;
       color: $blue;
 

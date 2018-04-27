@@ -15,19 +15,19 @@ use flipbox\ember\db\traits\AuditAttributes;
 use flipbox\ember\db\traits\FixedOrderBy;
 use flipbox\ember\db\traits\UserAttribute;
 use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
-use flipbox\organizations\records\UserCategory as UserCategoryRecord;
-use flipbox\organizations\records\UserCategoryAssociation as UserCategoryAssociationsRecord;
+use flipbox\organizations\records\UserType as UserTypeRecord;
+use flipbox\organizations\records\UserTypeAssociation as UserTypeAssociationsRecord;
 use yii\base\ArrayableTrait;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method UserCategoryRecord one($db = null)
- * @method UserCategoryRecord[] all($db = null)
- * @method UserCategoryRecord[] getCachedResult($db = null)
+ * @method UserTypeRecord one($db = null)
+ * @method UserTypeRecord[] all($db = null)
+ * @method UserTypeRecord[] getCachedResult($db = null)
  */
-class UserCategoryQuery extends CacheableActiveQuery
+class UserTypeQuery extends CacheableActiveQuery
 {
     use traits\OrganizationAttribute,
         UserAttribute,
@@ -41,7 +41,7 @@ class UserCategoryQuery extends CacheableActiveQuery
      */
     public function __construct($config = [])
     {
-        parent::__construct(UserCategoryRecord::class, $config);
+        parent::__construct(UserTypeRecord::class, $config);
     }
 
     /**
@@ -69,7 +69,7 @@ class UserCategoryQuery extends CacheableActiveQuery
      *
      * @var bool
      */
-    private $categoryAssociationTableJoined = false;
+    private $typeAssociationTableJoined = false;
 
     /**
      * Flag if the table is already joined (to prevent subsequent joins)
@@ -86,12 +86,12 @@ class UserCategoryQuery extends CacheableActiveQuery
         parent::init();
 
         if ($this->select === null) {
-            $this->select = [UserCategoryRecord::tableAlias() . '.*'];
+            $this->select = [UserTypeRecord::tableAlias() . '.*'];
         }
 
         // Set table name
         if ($this->from === null) {
-            $this->from([UserCategoryRecord::tableName() . ' ' . UserCategoryRecord::tableAlias()]);
+            $this->from([UserTypeRecord::tableName() . ' ' . UserTypeRecord::tableAlias()]);
         }
     }
 
@@ -119,7 +119,7 @@ class UserCategoryQuery extends CacheableActiveQuery
 
         foreach ($attributes as $attribute) {
             if (null !== ($value = $this->$attribute)) {
-                $this->andWhere(Db::parseParam(UserCategoryRecord::tableAlias() . '.' . $attribute, $value));
+                $this->andWhere(Db::parseParam(UserTypeRecord::tableAlias() . '.' . $attribute, $value));
             }
         }
     }
@@ -159,17 +159,17 @@ class UserCategoryQuery extends CacheableActiveQuery
     /**
      * @return string
      */
-    protected function joinUserCategoryAssociationsTable(): string
+    protected function joinUserTypeAssociationsTable(): string
     {
-        $alias = UserCategoryAssociationsRecord::tableAlias();
+        $alias = UserTypeAssociationsRecord::tableAlias();
 
-        if ($this->categoryAssociationTableJoined === false) {
+        if ($this->typeAssociationTableJoined === false) {
             $this->leftJoin(
-                UserCategoryAssociationsRecord::tableName() . ' ' . $alias,
-                '[[' . UserCategoryRecord::tableAlias() . '.id]]=[[' . $alias . '.categoryId]]'
+                UserTypeAssociationsRecord::tableName() . ' ' . $alias,
+                '[[' . UserTypeRecord::tableAlias() . '.id]]=[[' . $alias . '.typeId]]'
             );
 
-            $this->categoryAssociationTableJoined = true;
+            $this->typeAssociationTableJoined = true;
         }
 
         return $alias;
@@ -183,10 +183,10 @@ class UserCategoryQuery extends CacheableActiveQuery
         $userAlias = OrganizationUsersRecord::tableAlias();
 
         if ($this->userAssociationTableJoined === false) {
-            $categoryAlias = $this->joinUserCategoryAssociationsTable();
+            $typeAlias = $this->joinUserTypeAssociationsTable();
             $this->leftJoin(
                 OrganizationUsersRecord::tableName() . ' ' . $userAlias,
-                '[[' . $userAlias . '.id]] = [[' . $categoryAlias . '.userId]]'
+                '[[' . $userAlias . '.id]] = [[' . $typeAlias . '.userId]]'
             );
 
             $this->userAssociationTableJoined = true;

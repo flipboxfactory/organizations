@@ -10,15 +10,15 @@ namespace flipbox\organizations\db;
 
 use craft\helpers\Db;
 use flipbox\craft\sortable\associations\db\SortableAssociationQuery;
-use flipbox\organizations\records\TypeAssociation;
+use flipbox\organizations\records\OrganizationTypeAssociation;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method TypeAssociation one($db = null)
- * @method TypeAssociation[] all($db = null)
- * @method TypeAssociation[] getCachedResult($db = null)
+ * @method OrganizationTypeAssociation one($db = null)
+ * @method OrganizationTypeAssociation[] all($db = null)
+ * @method OrganizationTypeAssociation[] getCachedResult($db = null)
  */
 class TypeAssociationQuery extends SortableAssociationQuery
 {
@@ -41,7 +41,7 @@ class TypeAssociationQuery extends SortableAssociationQuery
 
         if ($this->from === null) {
             $this->from([
-                TypeAssociation::tableName() . ' ' . TypeAssociation::tableAlias()
+                OrganizationTypeAssociation::tableName() . ' ' . OrganizationTypeAssociation::tableAlias()
             ]);
         }
     }
