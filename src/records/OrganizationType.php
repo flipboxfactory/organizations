@@ -23,13 +23,16 @@ use yii\validators\UniqueValidator;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
+ * @method FieldLayoutModel parentResolveFieldLayout()
  * @property string $name
  * @property OrganizationTypeSiteSettings[] $siteSettingRecords
  */
 class OrganizationType extends ActiveRecordWithId
 {
     use FieldLayoutAttribute,
-        HandleRules;
+        HandleRules {
+        resolveFieldLayout as parentResolveFieldLayout;
+    }
 
     /**
      * The table name
@@ -47,6 +50,18 @@ class OrganizationType extends ActiveRecordWithId
     protected static function fieldLayoutType(): string
     {
         return self::class;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function resolveFieldLayout()
+    {
+        if (null === ($fieldLayout = $this->parentResolveFieldLayout())) {
+            $fieldLayout = OrganizationPlugin::getInstance()->getSettings()->getFieldLayout();
+        }
+
+        return $fieldLayout;
     }
 
     /**
