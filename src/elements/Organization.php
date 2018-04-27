@@ -222,7 +222,7 @@ class Organization extends Element
         return [
             [
                 'key' => '*',
-                'label' => Craft::t('app', 'All organizations'),
+                'label' => Craft::t('organizations', 'All organizations'),
                 'criteria' => ['status' => null],
                 'hasThumbs' => true
             ]
@@ -237,7 +237,7 @@ class Organization extends Element
         $sources = self::defineDefaultSources();
 
         // Array of all organization types
-        $organizationTypes = OrganizationPlugin::getInstance()->getTypes()->findAll();
+        $organizationTypes = OrganizationPlugin::getInstance()->getOrganizationTypes()->findAll();
 
         $sources[] = ['heading' => Craft::t('organizations', 'Types')];
 

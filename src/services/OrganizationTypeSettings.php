@@ -33,7 +33,7 @@ use yii\base\Component;
  * @method TypeSettingsRecord[] findAllByCriteria($criteria = [], string $toScenario = null)
  * @method TypeSettingsRecord[] getAllByCriteria($criteria = [], string $toScenario = null)
  */
-class TypeSettings extends Component
+class OrganizationTypeSettings extends Component
 {
     use Accessor;
 

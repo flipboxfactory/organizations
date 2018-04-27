@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\types;
+namespace flipbox\organizations\actions\organizations\types;
 
 use flipbox\ember\actions\model\ModelCreate;
 use flipbox\organizations\Organizations;
@@ -43,7 +43,7 @@ class Create extends ModelCreate
      */
     protected function newModel(array $config = []): Model
     {
-        return Organizations::getInstance()->getTypes()->create($config);
+        return Organizations::getInstance()->getOrganizationTypes()->create($config);
     }
 
     /**

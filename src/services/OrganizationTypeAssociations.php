@@ -12,7 +12,7 @@ use flipbox\craft\sortable\associations\db\SortableAssociationQueryInterface;
 use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\services\traits\records\Accessor;
-use flipbox\organizations\db\TypeAssociationQuery;
+use flipbox\organizations\db\OrganizationTypeAssociationQuery;
 use flipbox\organizations\records\OrganizationTypeAssociation;
 use flipbox\organizations\records\OrganizationTypeAssociation as TypeAssociationRecord;
 use yii\db\ActiveQuery;
@@ -21,7 +21,7 @@ use yii\db\ActiveQuery;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method TypeAssociationQuery parentGetQuery($config = [])
+ * @method OrganizationTypeAssociationQuery parentGetQuery($config = [])
  * @method OrganizationTypeAssociation create(array $attributes = [])
  * @method OrganizationTypeAssociation find($identifier)
  * @method OrganizationTypeAssociation get($identifier)
@@ -34,7 +34,7 @@ use yii\db\ActiveQuery;
  * @method OrganizationTypeAssociation[] findAllByCriteria($criteria = [])
  * @method OrganizationTypeAssociation[] getAllByCriteria($criteria = [])
  */
-class TypeAssociations extends SortableAssociations
+class OrganizationTypeAssociations extends SortableAssociations
 {
     use Accessor {
         getQuery as parentGetQuery;
@@ -77,7 +77,7 @@ class TypeAssociations extends SortableAssociations
 
     /**
      * @param SortableAssociationInterface|TypeAssociationRecord $record
-     * @return SortableAssociationQueryInterface|TypeAssociationQuery
+     * @return SortableAssociationQueryInterface|OrganizationTypeAssociationQuery
      */
     protected function associationQuery(
         SortableAssociationInterface $record
@@ -89,12 +89,12 @@ class TypeAssociations extends SortableAssociations
 
     /**
      * @param $source
-     * @return SortableAssociationQueryInterface|TypeAssociationQuery
+     * @return SortableAssociationQueryInterface|OrganizationTypeAssociationQuery
      */
     private function query(
         $source
     ): SortableAssociationQueryInterface {
-        /** @var TypeAssociationQuery $query */
+        /** @var OrganizationTypeAssociationQuery $query */
         $query = $this->getQuery();
         return $query->where([
             static::SOURCE_ATTRIBUTE => $source
@@ -103,7 +103,7 @@ class TypeAssociations extends SortableAssociations
     }
 
     /**
-     * @param SortableAssociationQueryInterface|TypeAssociationQuery $query
+     * @param SortableAssociationQueryInterface|OrganizationTypeAssociationQuery $query
      * @return array
      */
     protected function existingAssociations(
@@ -125,7 +125,7 @@ class TypeAssociations extends SortableAssociations
     private function associations(
         $source
     ): array {
-        /** @var TypeAssociationQuery $query */
+        /** @var OrganizationTypeAssociationQuery $query */
         $query = $this->getQuery($source);
         return $query->indexBy(static::TARGET_ATTRIBUTE)
             ->all();

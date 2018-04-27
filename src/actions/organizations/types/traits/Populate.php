@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\types\traits;
+namespace flipbox\organizations\actions\organizations\types\traits;
 
 use Craft;
 use flipbox\ember\exceptions\ModelNotFoundException;

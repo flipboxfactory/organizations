@@ -17,22 +17,22 @@ use flipbox\organizations\records\OrganizationType;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-trait TypeAttribute
+trait OrganizationTypeAttribute
 {
     /**
      * The organization type(s) that the results must have.
      *
      * @var string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      */
-    public $type;
+    public $organizationType;
 
     /**
      * @param string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      * @return self The query object itself
      */
-    public function setType($value)
+    public function setOrganizationType($value)
     {
-        $this->type = $value;
+        $this->organizationType = $value;
         return $this;
     }
 
@@ -40,9 +40,9 @@ trait TypeAttribute
      * @param string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      * @return static The query object
      */
-    public function type($value)
+    public function organizationType($value)
     {
-        return $this->setType($value);
+        return $this->setOrganizationType($value);
     }
 
     /**
@@ -51,16 +51,16 @@ trait TypeAttribute
      */
     public function setTypeId($value)
     {
-        return $this->setType($value);
+        return $this->setOrganizationType($value);
     }
 
     /**
      * @param string|string[]|int|int[]|OrganizationType|OrganizationType[]|null $value
      * @return self The query object itself
      */
-    public function typeId($value)
+    public function organizationTypeId($value)
     {
-        return $this->setType($value);
+        return $this->setOrganizationType($value);
     }
 
     /**
@@ -68,11 +68,11 @@ trait TypeAttribute
      * @param string $join
      * @return array
      */
-    protected function parseTypeValue($value, string $join = 'and'): array
+    protected function parseOrganizationTypeValue($value, string $join = 'and'): array
     {
         if (false === QueryHelper::parseBaseParam($value, $join)) {
             foreach ($value as $operator => &$v) {
-                $this->resolveTypeValue($operator, $v);
+                $this->resolveOrganizationTypeValue($operator, $v);
             }
         }
 
@@ -89,7 +89,7 @@ trait TypeAttribute
      * @param $operator
      * @param $value
      */
-    protected function resolveTypeValue($operator, &$value)
+    protected function resolveOrganizationTypeValue($operator, &$value)
     {
         if (false === QueryHelper::findParamValue($value, $operator)) {
             if (is_string($value)) {
@@ -112,7 +112,7 @@ trait TypeAttribute
      */
     protected function resolveTypeStringValue(string $value)
     {
-        if (!$model = OrganizationPlugin::getInstance()->getTypes()->find($value)) {
+        if (!$model = OrganizationPlugin::getInstance()->getOrganizationTypes()->find($value)) {
             return null;
         }
         return $model->id;

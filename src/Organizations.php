@@ -167,15 +167,17 @@ class Organizations extends BasePlugin
                 // SETTINGS
                 'organizations/settings' => 'organizations/cp/settings/view/general/index',
 
+                // SETTINGS: USER TYPES
                 'organizations/settings/user-types' => 'organizations/cp/settings/view/user-types/index',
                 'organizations/settings/user-types/new' =>
                     'organizations/cp/settings/view/user-types/upsert',
                 'organizations/settings/user-types/<identifier:\d+>' =>
                     'organizations/cp/settings/view/user-types/upsert',
 
-                'organizations/settings/types' => 'organizations/cp/settings/view/types/index',
-                'organizations/settings/types/new' => 'organizations/cp/settings/view/types/upsert',
-                'organizations/settings/types/<identifier:\d+>' => 'organizations/cp/settings/view/types/upsert',
+                // SETTINGS: ORGANIZATION TYPES
+                'organizations/settings/organization-types' => 'organizations/cp/settings/view/organization-types/index',
+                'organizations/settings/organization-types/new' => 'organizations/cp/settings/view/organization-types/upsert',
+                'organizations/settings/organization-types/<identifier:\d+>' => 'organizations/cp/settings/view/organization-types/upsert',
 
 
                 // ORGANIZATION
@@ -308,35 +310,35 @@ class Organizations extends BasePlugin
     }
 
     /**
+     * @return services\OrganizationTypes
+     */
+    public function getOrganizationTypes()
+    {
+        return $this->get('organizationTypes');
+    }
+
+    /**
+     * @return services\OrganizationTypeSettings
+     */
+    public function getOrganizationTypeSettings()
+    {
+        return $this->get('organizationTypeSettings');
+    }
+
+    /**
+     * @return services\OrganizationTypeAssociations
+     */
+    public function getOrganizationTypeAssociations()
+    {
+        return $this->get('organizationTypeAssociations');
+    }
+
+    /**
      * @return services\Records
      */
     public function getRecords()
     {
         return $this->get('records');
-    }
-
-    /**
-     * @return services\Types
-     */
-    public function getTypes()
-    {
-        return $this->get('types');
-    }
-
-    /**
-     * @return services\TypeSettings
-     */
-    public function getTypeSettings()
-    {
-        return $this->get('typeSettings');
-    }
-
-    /**
-     * @return services\TypeAssociations
-     */
-    public function getTypeAssociations()
-    {
-        return $this->get('typeAssociations');
     }
 
     /**

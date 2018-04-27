@@ -26,9 +26,9 @@ use yii\base\ArrayableTrait;
  * @method TypeRecord[] all($db = null)
  * @method TypeRecord[] getCachedResult($db = null)
  */
-class TypeQuery extends CacheableActiveQuery
+class OrganizationTypeQuery extends CacheableActiveQuery
 {
-    use traits\TypeAttribute,
+    use traits\OrganizationTypeAttribute,
         traits\OrganizationAttribute,
         ArrayableTrait,
         FixedOrderBy,
@@ -154,10 +154,10 @@ class TypeQuery extends CacheableActiveQuery
      *******************************************/
 
     /**
-     * @param TypeQuery $query
+     * @param OrganizationTypeQuery $query
      * @return string
      */
-    protected function joinTypeAssociationTable(TypeQuery $query): string
+    protected function joinTypeAssociationTable(OrganizationTypeQuery $query): string
     {
         $alias = TypeAssociationRecord::tableAlias();
 
@@ -178,10 +178,10 @@ class TypeQuery extends CacheableActiveQuery
      *******************************************/
 
     /**
-     * @param TypeQuery $query
+     * @param OrganizationTypeQuery $query
      * @param $organization
      */
-    protected function applyOrganizationParam(TypeQuery $query, $organization)
+    protected function applyOrganizationParam(OrganizationTypeQuery $query, $organization)
     {
         if (empty($organization)) {
             return;

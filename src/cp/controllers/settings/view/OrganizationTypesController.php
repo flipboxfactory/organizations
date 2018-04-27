@@ -17,12 +17,12 @@ use yii\web\Response;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class TypesController extends AbstractController
+class OrganizationTypesController extends AbstractController
 {
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = parent::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'types';
+    const TEMPLATE_INDEX = parent::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'organizationTypes';
 
     /**
      * The insert/update view template path
@@ -30,11 +30,11 @@ class TypesController extends AbstractController
     const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . DIRECTORY_SEPARATOR . 'upsert';
 
     /**
-     * @return \flipbox\organizations\services\Types
+     * @return \flipbox\organizations\services\OrganizationTypes
      */
     protected function typeService()
     {
-        return $this->module->module->getTypes();
+        return $this->module->module->getOrganizationTypes();
     }
 
     /**
@@ -111,7 +111,7 @@ class TypesController extends AbstractController
      */
     protected function getBaseActionPath(): string
     {
-        return parent::getBaseActionPath() . '/types';
+        return parent::getBaseActionPath() . '/organization-types';
     }
 
     /**
@@ -119,7 +119,7 @@ class TypesController extends AbstractController
      */
     protected function getBaseCpPath(): string
     {
-        return parent::getBaseCpPath() . '/types';
+        return parent::getBaseCpPath() . '/organization-types';
     }
 
     /*******************************************

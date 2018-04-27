@@ -11,7 +11,7 @@ namespace flipbox\organizations\records;
 use Craft;
 use flipbox\craft\sortable\associations\records\SortableAssociation;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
-use flipbox\organizations\db\TypeAssociationQuery;
+use flipbox\organizations\db\OrganizationTypeAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
@@ -54,7 +54,7 @@ class OrganizationTypeAssociation extends SortableAssociation
      */
     protected function associationService(): SortableAssociations
     {
-        return OrganizationPlugin::getInstance()->getTypeAssociations();
+        return OrganizationPlugin::getInstance()->getOrganizationTypeAssociations();
     }
 
     /**
@@ -62,7 +62,7 @@ class OrganizationTypeAssociation extends SortableAssociation
      */
     public static function find()
     {
-        return Craft::createObject(TypeAssociationQuery::class, [get_called_class()]);
+        return Craft::createObject(OrganizationTypeAssociationQuery::class, [get_called_class()]);
     }
 
     /**

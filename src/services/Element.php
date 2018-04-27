@@ -215,7 +215,7 @@ class Element extends Component
      */
     private function associateTypes(OrganizationElement $organization)
     {
-        if (!OrganizationPlugin::getInstance()->getTypes()->saveAssociations(
+        if (!OrganizationPlugin::getInstance()->getOrganizationTypes()->saveAssociations(
             $organization->getTypes(),
             $organization
         )) {

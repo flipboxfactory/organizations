@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\types;
+namespace flipbox\organizations\actions\organizations\types;
 
 use flipbox\ember\actions\model\ModelIndex;
 use flipbox\organizations\db\OrganizationQuery;
@@ -25,6 +25,6 @@ class Index extends ModelIndex
      */
     public function createQuery(array $config = []): QueryInterface
     {
-        return Organizations::getInstance()->getTypes()->getQuery($config);
+        return Organizations::getInstance()->getOrganizationTypes()->getQuery($config);
     }
 }

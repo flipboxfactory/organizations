@@ -66,7 +66,7 @@ trait OrganizationTypeAttribute
             return null;
         }
 
-        return OrganizationPlugin::getInstance()->getTypes()->resolve($this->getRelation('typeRecord'));
+        return OrganizationPlugin::getInstance()->getOrganizationTypes()->resolve($this->getRelation('typeRecord'));
     }
 
     /**

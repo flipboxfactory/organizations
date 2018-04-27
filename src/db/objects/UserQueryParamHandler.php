@@ -12,7 +12,7 @@ use craft\elements\db\UserQuery;
 use craft\helpers\Db;
 use flipbox\organizations\db\behaviors\OrganizationAttributesToUserQueryBehavior;
 use flipbox\organizations\db\traits\OrganizationAttribute;
-use flipbox\organizations\db\traits\TypeAttribute;
+use flipbox\organizations\db\traits\OrganizationTypeAttribute;
 use flipbox\organizations\db\traits\UserTypeAttribute;
 use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
 use flipbox\organizations\records\UserTypeAssociation as UserCollectionUsersRecord;
@@ -26,7 +26,7 @@ use yii\db\Query;
 class UserQueryParamHandler extends BaseObject
 {
     use OrganizationAttribute,
-        TypeAttribute,
+        OrganizationTypeAttribute,
         UserTypeAttribute {
         setOrganizationType as parentSetOrganizationType;
         setUserType as parentSetUserType;
@@ -73,7 +73,7 @@ class UserQueryParamHandler extends BaseObject
         if ($query->subQuery === null ||
             (
                 $this->organization === null &&
-                $this->type === null &&
+                $this->organizationType === null &&
                 $this->userType === null
             )
         ) {

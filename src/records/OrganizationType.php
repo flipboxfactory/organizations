@@ -14,7 +14,7 @@ use flipbox\ember\records\ActiveRecordWithId;
 use flipbox\ember\records\traits\FieldLayoutAttribute;
 use flipbox\ember\traits\HandleRules;
 use flipbox\ember\validators\ModelValidator;
-use flipbox\organizations\db\TypeQuery;
+use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
 use yii\validators\UniqueValidator;
@@ -51,11 +51,11 @@ class OrganizationType extends ActiveRecordWithId
 
     /**
      * @inheritdoc
-     * @return TypeQuery
+     * @return OrganizationTypeQuery
      */
     public static function find()
     {
-        return new TypeQuery;
+        return new OrganizationTypeQuery;
     }
 
     /*******************************************
@@ -67,7 +67,7 @@ class OrganizationType extends ActiveRecordWithId
      */
     public function beforeSave($insert)
     {
-        if (false === OrganizationPlugin::getInstance()->getTypes()->beforeSave($this)) {
+        if (false === OrganizationPlugin::getInstance()->getOrganizationTypes()->beforeSave($this)) {
             return false;
         }
 
@@ -79,7 +79,7 @@ class OrganizationType extends ActiveRecordWithId
      */
     public function afterSave($insert, $changedAttributes)
     {
-        OrganizationPlugin::getInstance()->getTypes()->afterSave($this);
+        OrganizationPlugin::getInstance()->getOrganizationTypes()->afterSave($this);
         parent::afterSave($insert, $changedAttributes);
     }
 

@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\types;
+namespace flipbox\organizations\actions\organizations\types;
 
 use flipbox\ember\actions\model\ModelDelete;
 use flipbox\organizations\records\OrganizationType;

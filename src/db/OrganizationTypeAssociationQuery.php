@@ -20,7 +20,7 @@ use flipbox\organizations\records\OrganizationTypeAssociation;
  * @method OrganizationTypeAssociation[] all($db = null)
  * @method OrganizationTypeAssociation[] getCachedResult($db = null)
  */
-class TypeAssociationQuery extends SortableAssociationQuery
+class OrganizationTypeAssociationQuery extends SortableAssociationQuery
 {
     /**
      * @var int|int[]|false|null The source Id(s). Prefix Ids with "not " to exclude them.

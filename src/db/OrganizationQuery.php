@@ -14,7 +14,7 @@ use craft\helpers\Db;
 use craft\records\UserGroup_User as UserGroupUsersRecord;
 use flipbox\ember\db\traits\UserAttribute;
 use flipbox\ember\db\traits\UserGroupAttribute;
-use flipbox\organizations\db\traits\TypeAttribute;
+use flipbox\organizations\db\traits\OrganizationTypeAttribute;
 use flipbox\organizations\db\traits\UserTypeAttribute;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\records\Organization as OrganizationRecord;
@@ -38,7 +38,7 @@ class OrganizationQuery extends ElementQuery
     use UserAttribute,
         UserGroupAttribute,
         UserTypeAttribute,
-        TypeAttribute;
+        OrganizationTypeAttribute;
 
     /**
      * @var string|string[]|null The organization state(s) that the resulting organizations must have.
@@ -248,13 +248,13 @@ class OrganizationQuery extends ElementQuery
      */
     protected function applyTypeParam()
     {
-        if (empty($this->type)) {
+        if (empty($this->organizationType)) {
             return;
         }
 
         $alias = $this->joinOrganizationTypeTable();
         $this->subQuery->andWhere(
-            Db::parseParam($alias . '.typeId', $this->parseTypeValue($this->type))
+            Db::parseParam($alias . '.typeId', $this->parseOrganizationTypeValue($this->organizationType))
         );
     }
 }

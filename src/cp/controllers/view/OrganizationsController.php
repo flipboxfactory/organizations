@@ -101,7 +101,7 @@ class OrganizationsController extends AbstractController
         }
 
         // Type
-        $type = $this->module->module->getTypes()->resolveFromRequest($organization->getPrimaryType());
+        $type = $this->module->module->getOrganizationTypes()->resolveFromRequest($organization->getPrimaryType());
         if ($type !== null) {
             if (!$this->module->module->getSettings()->isSiteEnabled($site->id)) {
                 throw new InvalidConfigException("Type is not enabled for site.");
@@ -305,7 +305,7 @@ class OrganizationsController extends AbstractController
         parent::baseVariables($variables);
 
         // Types
-        $variables['types'] = OrganizationPlugin::getInstance()->getTypes()->findAll();
+        $variables['types'] = OrganizationPlugin::getInstance()->getOrganizationTypes()->findAll();
         $variables['typeOptions'] = [];
         /** @var OrganizationType $type */
         foreach ($variables['types'] as $type) {

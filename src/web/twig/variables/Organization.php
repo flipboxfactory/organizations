@@ -28,7 +28,7 @@ class Organization extends ServiceLocator
             [
                 'components' => [
                     'organizations' => OrganizationPlugin::getInstance()->getOrganizations(),
-                    'types' => OrganizationPlugin::getInstance()->getTypes(),
+                    'organizationTypes' => OrganizationPlugin::getInstance()->getOrganizationTypes(),
                     'users' => OrganizationPlugin::getInstance()->getUsers(),
                     'userTypes' => OrganizationPlugin::getInstance()->getUserTypes()
                 ]

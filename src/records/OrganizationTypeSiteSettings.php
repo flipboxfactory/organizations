@@ -117,7 +117,7 @@ class OrganizationTypeSiteSettings extends ActiveRecord implements SiteSettingsI
      */
     public function afterSave($insert, $changedAttributes)
     {
-        OrganizationPlugin::getInstance()->getTypeSettings()->afterSave($this, $insert, $changedAttributes);
+        OrganizationPlugin::getInstance()->getOrganizationTypeSettings()->afterSave($this, $insert, $changedAttributes);
         parent::afterSave($insert, $changedAttributes);
     }
 }

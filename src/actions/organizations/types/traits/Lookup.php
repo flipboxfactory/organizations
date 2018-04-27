@@ -6,9 +6,8 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\actions\types;
+namespace flipbox\organizations\actions\organizations\types\traits;
 
-use flipbox\ember\actions\model\ModelView;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\records\OrganizationType;
 
@@ -16,22 +15,14 @@ use flipbox\organizations\records\OrganizationType;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class View extends ModelView
+trait Lookup
 {
-    /**
-     * @inheritdoc
-     */
-    public function run($type)
-    {
-        return parent::run($type);
-    }
-
     /**
      * @inheritdoc
      * @return OrganizationType
      */
     protected function find($identifier)
     {
-        return Organizations::getInstance()->getTypes()->get($identifier);
+        return Organizations::getInstance()->getOrganizationTypes()->find($identifier);
     }
 }

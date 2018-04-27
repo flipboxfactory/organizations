@@ -12,7 +12,7 @@ use Craft;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
-use flipbox\organizations\db\TypeQuery;
+use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationType;
@@ -25,7 +25,7 @@ use yii\base\Exception;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method TypeQuery getQuery($config = []): ActiveQuery
+ * @method OrganizationTypeQuery getQuery($config = []): ActiveQuery
  * @method TypeRecord create(array $attributes = [], string $toScenario = null)
  * @method TypeRecord find($identifier, string $toScenario = null)
  * @method TypeRecord get($identifier, string $toScenario = null)
@@ -40,7 +40,7 @@ use yii\base\Exception;
  * @method TypeRecord[] findAllByCriteria($criteria = [], string $toScenario = null)
  * @method TypeRecord[] getAllByCriteria($criteria = [], string $toScenario = null)
  */
-class Types extends Component
+class OrganizationTypes extends Component
 {
     use AccessorByString;
 
@@ -97,7 +97,7 @@ class Types extends Component
     public static function resolveFromRequest(TypeRecord $type = null)
     {
         if ($identifier = Craft::$app->getRequest()->getParam('type')) {
-            return OrganizationPlugin::getInstance()->getTypes()->get($identifier);
+            return OrganizationPlugin::getInstance()->getOrganizationTypes()->get($identifier);
         }
 
         if ($type instanceof TypeRecord) {
@@ -148,26 +148,26 @@ class Types extends Component
      */
     public function afterSave(TypeRecord $type)
     {
-        if (!OrganizationPlugin::getInstance()->getTypeSettings()->saveByType($type)) {
+        if (!OrganizationPlugin::getInstance()->getOrganizationTypeSettings()->saveByType($type)) {
             throw new Exception("Unable to save site settings");
         };
     }
 
     /**
-     * @param TypeQuery $query
+     * @param OrganizationTypeQuery $query
      * @param OrganizationElement $organization
      * @return bool
      * @throws \Exception
      */
     public function saveAssociations(
-        TypeQuery $query,
+        OrganizationTypeQuery $query,
         OrganizationElement $organization
     ): bool {
         if (null === ($models = $query->getCachedResult())) {
             return true;
         }
 
-        $associationService = OrganizationPlugin::getInstance()->getTypeAssociations();
+        $associationService = OrganizationPlugin::getInstance()->getOrganizationTypeAssociations();
 
         $query = $associationService->getQuery([
             $associationService::SOURCE_ATTRIBUTE => $organization->getId() ?: false
@@ -181,52 +181,52 @@ class Types extends Component
     }
 
     /**
-     * @param TypeQuery $query
+     * @param OrganizationTypeQuery $query
      * @param OrganizationElement $organization
      * @return bool
      * @throws \Exception
      */
     public function dissociate(
-        TypeQuery $query,
+        OrganizationTypeQuery $query,
         OrganizationElement $organization
     ): bool {
         return $this->associations(
             $query,
             $organization,
             [
-                OrganizationPlugin::getInstance()->getTypeAssociations(),
+                OrganizationPlugin::getInstance()->getOrganizationTypeAssociations(),
                 'dissociate'
             ]
         );
     }
 
     /**
-     * @param TypeQuery $query
+     * @param OrganizationTypeQuery $query
      * @param OrganizationElement $organization
      * @return bool
      * @throws \Exception
      */
     public function associate(
-        TypeQuery $query,
+        OrganizationTypeQuery $query,
         OrganizationElement $organization
     ): bool {
         return $this->associations(
             $query,
             $organization,
             [
-                OrganizationPlugin::getInstance()->getTypeAssociations(),
+                OrganizationPlugin::getInstance()->getOrganizationTypeAssociations(),
                 'associate'
             ]
         );
     }
 
     /**
-     * @param TypeQuery $query
+     * @param OrganizationTypeQuery $query
      * @param OrganizationElement $organization
      * @param callable $callable
      * @return bool
      */
-    protected function associations(TypeQuery $query, OrganizationElement $organization, callable $callable)
+    protected function associations(OrganizationTypeQuery $query, OrganizationElement $organization, callable $callable)
     {
         if (null === ($models = $query->getCachedResult())) {
             return true;
@@ -248,7 +248,7 @@ class Types extends Component
             $success = false;
         }
 
-        $query->typeId($ids);
+        $query->organizationTypeId($ids);
 
         if ($success === false) {
             $query->setCachedResult($models);

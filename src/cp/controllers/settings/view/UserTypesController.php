@@ -22,7 +22,7 @@ class UserTypesController extends AbstractController
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'types';
+    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'userTypes';
 
     /**
      * The insert/update view template path

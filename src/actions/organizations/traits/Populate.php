@@ -98,7 +98,7 @@ trait Populate
 
         // Active type
         $organization->setActiveType(
-            Organizations::getInstance()->getTypes()->resolveFromRequest()
+            Organizations::getInstance()->getOrganizationTypes()->resolveFromRequest()
         );
 
         // Set types

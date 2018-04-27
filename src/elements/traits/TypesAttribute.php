@@ -11,7 +11,7 @@ namespace flipbox\organizations\elements\traits;
 use Craft;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\helpers\QueryHelper;
-use flipbox\organizations\db\TypeQuery;
+use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationType as TypeModel;
@@ -23,7 +23,7 @@ use flipbox\organizations\records\OrganizationType as TypeModel;
 trait TypesAttribute
 {
     /**
-     * @var TypeQuery
+     * @var OrganizationTypeQuery
      */
     private $types;
 
@@ -93,12 +93,12 @@ trait TypesAttribute
      * Get an array of types associated to an organization
      *
      * @param array $criteria
-     * @return TypeQuery
+     * @return OrganizationTypeQuery
      */
     public function getTypes($criteria = [])
     {
         if (null === $this->types) {
-            $this->types = OrganizationPlugin::getInstance()->getTypes()->getQuery([
+            $this->types = OrganizationPlugin::getInstance()->getOrganizationTypes()->getQuery([
                 'organization' => $this
             ]);
         }
@@ -121,13 +121,13 @@ trait TypesAttribute
      */
     public function setTypes($types)
     {
-        if ($types instanceof TypeQuery) {
+        if ($types instanceof OrganizationTypeQuery) {
             $this->types = $types;
             return $this;
         }
 
         // Reset the query
-        $this->types = OrganizationPlugin::getInstance()->getTypes()->getQuery([
+        $this->types = OrganizationPlugin::getInstance()->getOrganizationTypes()->getQuery([
             'organization' => $this
         ]);
 
@@ -153,7 +153,7 @@ trait TypesAttribute
         foreach ($types as $key => $type) {
             // Ensure we have a model
             if (!$type instanceof OrganizationType) {
-                $type = OrganizationPlugin::getInstance()->getTypes()->resolve($type);
+                $type = OrganizationPlugin::getInstance()->getOrganizationTypes()->resolve($type);
             }
 
             $this->addType($type);
@@ -200,7 +200,7 @@ trait TypesAttribute
 
         foreach ($types as $key => $type) {
             if (!$type instanceof OrganizationType) {
-                $type = OrganizationPlugin::getInstance()->getTypes()->resolve($type);
+                $type = OrganizationPlugin::getInstance()->getOrganizationTypes()->resolve($type);
             }
 
             $this->removeType($type);

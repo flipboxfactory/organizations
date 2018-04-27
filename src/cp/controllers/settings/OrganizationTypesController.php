@@ -10,16 +10,16 @@ namespace flipbox\organizations\cp\controllers\settings;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\actions\types\Create;
-use flipbox\organizations\actions\types\Delete;
-use flipbox\organizations\actions\types\Update;
+use flipbox\organizations\actions\organizations\types\Create;
+use flipbox\organizations\actions\organizations\types\Delete;
+use flipbox\organizations\actions\organizations\types\Update;
 use flipbox\organizations\cp\controllers\AbstractController;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class TypesController extends AbstractController
+class OrganizationTypesController extends AbstractController
 {
     /**
      * @return array
