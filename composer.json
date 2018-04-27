@@ -1,7 +1,7 @@
 {
 	"name": "flipboxfactory/organizations",
 	"description": "Simple parent + child management",
-	"version": "1.0.0-rc.4",
+	"version": "1.0.0-rc.5",
 	"type": "craft-plugin",
 	"keywords": [
 		"flipbox",
@@ -57,10 +57,10 @@
 		"components": {
 			"element": "flipbox\\organizations\\services\\Element",
 			"organizations": "flipbox\\organizations\\services\\Organizations",
+			"organizationTypes": "flipbox\\organizations\\services\\OrganizationTypes",
+			"organizationTypeSettings": "flipbox\\organizations\\services\\OrganizationTypeSettings",
+			"organizationTypeAssociations": "flipbox\\organizations\\services\\OrganizationTypeAssociations",
 			"records": "flipbox\\organizations\\services\\Records",
-			"types": "flipbox\\organizations\\services\\Types",
-			"typeSettings": "flipbox\\organizations\\services\\TypeSettings",
-			"typeAssociations": "flipbox\\organizations\\services\\TypeAssociations",
 			"users": "flipbox\\organizations\\services\\Users",
 			"userAssociations": "flipbox\\organizations\\services\\UserAssociations",
 			"userTypes": "flipbox\\organizations\\services\\UserTypes",

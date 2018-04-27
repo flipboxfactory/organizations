@@ -1,7 +1,11 @@
 Changelog
 =========
-## Unreleased
+
+## ## 1.0.0-rc.5 - 2018-04-28
 ### Changed
+- Renamed the concept of user categories to user types (not backwards compatible)
+
+## ## 1.0.0-rc.4 - 2018-04-23
 - Updated dependencies
 
 ## 1.0.0-rc.3 - 2018-04-17
