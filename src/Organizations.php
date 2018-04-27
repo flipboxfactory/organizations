@@ -175,9 +175,12 @@ class Organizations extends BasePlugin
                     'organizations/cp/settings/view/user-types/upsert',
 
                 // SETTINGS: ORGANIZATION TYPES
-                'organizations/settings/organization-types' => 'organizations/cp/settings/view/organization-types/index',
-                'organizations/settings/organization-types/new' => 'organizations/cp/settings/view/organization-types/upsert',
-                'organizations/settings/organization-types/<identifier:\d+>' => 'organizations/cp/settings/view/organization-types/upsert',
+                'organizations/settings/organization-types' =>
+                    'organizations/cp/settings/view/organization-types/index',
+                'organizations/settings/organization-types/new' =>
+                    'organizations/cp/settings/view/organization-types/upsert',
+                'organizations/settings/organization-types/<identifier:\d+>' =>
+                    'organizations/cp/settings/view/organization-types/upsert',
 
 
                 // ORGANIZATION

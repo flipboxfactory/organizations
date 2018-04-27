@@ -62,7 +62,7 @@ trait Populate
     {
         $layoutOverride = (bool) Craft::$app->getRequest()->getBodyParam('fieldLayoutOverride');
 
-        if($layoutOverride) {
+        if ($layoutOverride) {
             $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
         } else {
             $fieldLayout = Organizations::getInstance()->getSettings()->getFieldLayout();
