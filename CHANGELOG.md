@@ -1,6 +1,11 @@
 Changelog
 =========
 
+## 1.0.0-rc.6 - 2018-04-28
+### Fixed
+- Default field layout was being deleted with organization type layout was selected
+- Organization type field layout defaults to main default if null (instead of loading an empty layout).
+
 ## ## 1.0.0-rc.5 - 2018-04-28
 ### Changed
 - Renamed the concept of user categories to user types (not backwards compatible)
