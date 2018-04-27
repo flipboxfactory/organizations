@@ -76,8 +76,24 @@
     </div>
 
     <div id="layout" class="hidden">
-        {% include "_includes/fieldlayoutdesigner" with {
-            fieldLayout: type.getFieldLayout()
-        } only %}
+
+        {% set defaultFieldLayout = craft.organizations.settings.fieldLayout %}
+        {% set fieldLayout = type.fieldLayout %}
+        {% set usesDefaultFieldLayout = defaultFieldLayout.id == fieldLayout.id %}
+
+        {{ forms.lightSwitchField({
+            label: "Custom Field Layout"|t('organizations'),
+            instructions: "Override the default field layout with one specific to this type."|t('organizations'),
+            id: 'fieldLayoutOverride',
+            name: 'fieldLayoutOverride',
+            on: not usesDefaultFieldLayout,
+            toggle: "#field-layout-override"
+        }) }}
+
+        <div id="field-layout-override"{% if usesDefaultFieldLayout %} class="hidden"{% endif %}>
+            {% include "_includes/fieldlayoutdesigner" with {
+                fieldLayout: usesDefaultFieldLayout ? null : fieldLayout
+            } only %}
+        </div>
     </div>
 {% endblock %}

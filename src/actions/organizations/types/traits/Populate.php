@@ -11,6 +11,7 @@ namespace flipbox\organizations\actions\organizations\types\traits;
 use Craft;
 use flipbox\ember\exceptions\ModelNotFoundException;
 use flipbox\organizations\cp\actions\general\traits\SiteSettingAttributes;
+use flipbox\organizations\Organizations;
 use flipbox\organizations\records\OrganizationType;
 use yii\base\BaseObject;
 
@@ -59,9 +60,15 @@ trait Populate
      */
     private function populateSiteLayout(OrganizationType $model): OrganizationType
     {
-        if ($fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost()) {
-            $model->setFieldLayout($fieldLayout);
+        $layoutOverride = (bool) Craft::$app->getRequest()->getBodyParam('fieldLayoutOverride');
+
+        if($layoutOverride) {
+            $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
+        } else {
+            $fieldLayout = Organizations::getInstance()->getSettings()->getFieldLayout();
         }
+
+        $model->setFieldLayout($fieldLayout);
 
         return $model;
     }

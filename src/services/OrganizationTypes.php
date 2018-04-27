@@ -132,6 +132,14 @@ class OrganizationTypes extends Component
             return true;
         }
 
+        if ($fieldLayout->id === OrganizationPlugin::getInstance()->getSettings()->getFieldLayout()->id) {
+            if(null !== ($fieldLayoutId = $type->getOldAttribute('fieldLayoutId'))) {
+                Craft::$app->getFields()->deleteLayoutById($fieldLayoutId);
+            }
+
+            return true;
+        }
+
         if (!Craft::$app->getFields()->saveLayout($fieldLayout)) {
             return false;
         }
