@@ -10,6 +10,7 @@ namespace flipbox\organizations\services;
 
 use Craft;
 use craft\helpers\ArrayHelper;
+use craft\models\FieldLayout;
 use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
 use flipbox\organizations\db\OrganizationTypeQuery;
@@ -128,15 +129,11 @@ class OrganizationTypes extends Component
      */
     public function beforeSave(TypeRecord $type): bool
     {
-        if (null === ($fieldLayout = $type->getFieldLayout())) {
-            return true;
-        }
+        $fieldLayout = $type->getFieldLayout();
 
-        if ($fieldLayout->id === OrganizationPlugin::getInstance()->getSettings()->getFieldLayout()->id) {
-            if(null !== ($fieldLayoutId = $type->getOldAttribute('fieldLayoutId'))) {
-                Craft::$app->getFields()->deleteLayoutById($fieldLayoutId);
-            }
+        $this->handleOldFieldLayout($type, $fieldLayout);
 
+        if ($fieldLayout === null || $fieldLayout->id == $this->getDefaultFieldLayoutId()) {
             return true;
         }
 
@@ -145,6 +142,30 @@ class OrganizationTypes extends Component
         }
 
         return true;
+    }
+
+    /**
+     * @param TypeRecord $type
+     * @param FieldLayout|null $fieldLayout
+     */
+    private function handleOldFieldLayout(TypeRecord $type, FieldLayout $fieldLayout = null)
+    {
+        $oldFieldLayoutId = (int) $type->getOldAttribute('fieldLayoutId');
+
+        if ($oldFieldLayoutId !== null &&
+            $oldFieldLayoutId != $fieldLayout->id &&
+            $oldFieldLayoutId != $this->getDefaultFieldLayoutId()
+        ) {
+            Craft::$app->getFields()->deleteLayoutById($oldFieldLayoutId);
+        }
+    }
+
+    /**
+     * @return int
+     */
+    private function getDefaultFieldLayoutId(): int
+    {
+        return (int) OrganizationPlugin::getInstance()->getSettings()->getFieldLayout()->id;
     }
 
     /**
