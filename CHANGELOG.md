@@ -1,5 +1,8 @@
 Changelog
 =========
+## Unreleased
+### Fixed
+- Element and Query behaviors were not getting set due to new Craft CMS register behaviors event. 
 
 ## 1.0.0-rc.6 - 2018-04-28
 ### Fixed

@@ -13,6 +13,7 @@ use craft\base\Plugin as BasePlugin;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\events\CancelableEvent;
+use craft\events\DefineBehaviorsEvent;
 use craft\events\RegisterComponentTypesEvent;
 use craft\events\RegisterElementSourcesEvent;
 use craft\events\RegisterUrlRulesEvent;
@@ -69,13 +70,9 @@ class Organizations extends BasePlugin
         // User Query (attach behavior)
         Event::on(
             UserQuery::class,
-            UserQuery::EVENT_INIT,
-            function (Event $e) {
-                /** @var UserQuery $query */
-                $query = $e->sender;
-                $query->attachBehaviors([
-                    'organization' => OrganizationAttributesToUserQueryBehavior::class
-                ]);
+            UserQuery::EVENT_DEFINE_BEHAVIORS,
+            function (DefineBehaviorsEvent $e) {
+                $e->behaviors['organization'] = OrganizationAttributesToUserQueryBehavior::class;
             }
         );
 
@@ -94,18 +91,13 @@ class Organizations extends BasePlugin
             }
         );
 
-        // User Query (attach behavior)
+        // User (attach behavior)
         Event::on(
             User::class,
-            User::EVENT_INIT,
-            function (Event $e) {
-                /** @var User $user */
-                $user = $e->sender;
-
-                $user->attachBehaviors([
-                    'organizations' => UserOrganizationsBehavior::class,
-                    'types' => UserTypesBehavior::class
-                ]);
+            User::EVENT_DEFINE_BEHAVIORS,
+            function (DefineBehaviorsEvent $e) {
+                $e->behaviors['organizations'] = UserOrganizationsBehavior::class;
+                $e->behaviors['types'] = UserTypesBehavior::class;
             }
         );
 
