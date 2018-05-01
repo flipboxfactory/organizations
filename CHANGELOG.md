@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 1.0.0-rc.8 - 2018-05-01
 ### Added
 - Organization Type single select field type
 
