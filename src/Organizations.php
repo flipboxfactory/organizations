@@ -28,6 +28,7 @@ use flipbox\organizations\elements\behaviors\UserTypesBehavior;
 use flipbox\organizations\elements\behaviors\UserOrganizationsBehavior;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\fields\Organization as OrganizationField;
+use flipbox\organizations\fields\OrganizationType as OrganizationTypeField;
 use flipbox\organizations\models\Settings as OrganizationSettings;
 use flipbox\organizations\records\OrganizationType as OrganizationType;
 use flipbox\organizations\web\twig\variables\Organization as OrganizationVariable;
@@ -55,6 +56,7 @@ class Organizations extends BasePlugin
             Fields::EVENT_REGISTER_FIELD_TYPES,
             function (RegisterComponentTypesEvent $event) {
                 $event->types[] = OrganizationField::class;
+                $event->types[] = OrganizationTypeField::class;
             }
         );
 

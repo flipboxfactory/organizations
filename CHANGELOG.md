@@ -1,5 +1,10 @@
 Changelog
 =========
+
+## Unreleased
+### Added
+- Organization Type single select field type
+
 ## 1.0.0-rc.7 - 2018-04-30
 ### Fixed
 - Element and Query behaviors were not getting set due to new Craft CMS register behaviors event. 
