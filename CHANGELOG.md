@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.9 - 2018-05-07
 ### Changed
 - User associations can be sorted by user and organization.
 
