@@ -23,6 +23,7 @@ use craft\services\Elements;
 use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
+use flipbox\ember\modules\LoggerTrait;
 use flipbox\organizations\db\behaviors\OrganizationAttributesToUserQueryBehavior;
 use flipbox\organizations\elements\behaviors\UserTypesBehavior;
 use flipbox\organizations\elements\behaviors\UserOrganizationsBehavior;
@@ -43,6 +44,8 @@ use yii\log\Logger;
  */
 class Organizations extends BasePlugin
 {
+    use LoggerTrait;
+
     /**
      * @inheritdoc
      */
@@ -165,6 +168,13 @@ class Organizations extends BasePlugin
         );
     }
 
+    /**
+     * @return string
+     */
+    protected static function getLogFileName(): string
+    {
+        return 'organizations';
+    }
 
     /*******************************************
      * EVENTS
@@ -396,72 +406,5 @@ class Organizations extends BasePlugin
     public function getUserTypeAssociations()
     {
         return $this->get('userTypeAssociations');
-    }
-
-    /*******************************************
-     * LOGGING
-     *******************************************/
-
-    /**
-     * Logs a trace message.
-     * Trace messages are logged mainly for development purpose to see
-     * the execution work flow of some code.
-     * @param string $message the message to be logged.
-     * @param string $category the category of the message.
-     */
-    public static function trace($message, string $category = null)
-    {
-        Craft::getLogger()->log($message, Logger::LEVEL_TRACE, self::normalizeCategory($category));
-    }
-
-    /**
-     * Logs an error message.
-     * An error message is typically logged when an unrecoverable error occurs
-     * during the execution of an application.
-     * @param string $message the message to be logged.
-     * @param string $category the category of the message.
-     */
-    public static function error($message, string $category = null)
-    {
-        Craft::getLogger()->log($message, Logger::LEVEL_ERROR, self::normalizeCategory($category));
-    }
-
-    /**
-     * Logs a warning message.
-     * A warning message is typically logged when an error occurs while the execution
-     * can still continue.
-     * @param string $message the message to be logged.
-     * @param string $category the category of the message.
-     */
-    public static function warning($message, string $category = null)
-    {
-        Craft::getLogger()->log($message, Logger::LEVEL_WARNING, self::normalizeCategory($category));
-    }
-
-    /**
-     * Logs an informative message.
-     * An informative message is typically logged by an application to keep record of
-     * something important (e.g. an administrator logs in).
-     * @param string $message the message to be logged.
-     * @param string $category the category of the message.
-     */
-    public static function info($message, string $category = null)
-    {
-        Craft::getLogger()->log($message, Logger::LEVEL_INFO, self::normalizeCategory($category));
-    }
-
-    /**
-     * @param string|null $category
-     * @return string
-     */
-    private static function normalizeCategory(string $category = null)
-    {
-        $normalizedCategory = 'Organizations';
-
-        if ($category === null) {
-            return $normalizedCategory;
-        }
-
-        return $normalizedCategory . ': ' . $category;
     }
 }
