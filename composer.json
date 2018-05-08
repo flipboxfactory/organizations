@@ -23,10 +23,10 @@
 		"rss": "https://github.com/flipboxfactory/organizations/commits/master.atom"
 	},
 	"require": {
-		"craftcms/cms": "~3.0.0",
-		"flipboxfactory/craft-ember": "~1.0.0",
-		"flipboxfactory/craft-elements-nested-index": "~1.0.0",
-		"flipboxfactory/craft-sortable-associations": "~1.0.0"
+		"craftcms/cms": "^3.0.0",
+		"flipboxfactory/craft-ember": "^1.0.0",
+		"flipboxfactory/craft-elements-nested-index": "^1.0.0",
+		"flipboxfactory/craft-sortable-associations": "^1.0.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "^5.0",
@@ -53,26 +53,6 @@
 		"downloadUrl": "https://github.com/flipboxfactory/organizations/archive/master.zip",
 		"hasCpSettings": true,
 		"hasCpSection": true,
-		"schemaVersion": "1.0.0",
-		"components": {
-			"element": "flipbox\\organizations\\services\\Element",
-			"organizations": "flipbox\\organizations\\services\\Organizations",
-			"organizationTypes": "flipbox\\organizations\\services\\OrganizationTypes",
-			"organizationTypeSettings": "flipbox\\organizations\\services\\OrganizationTypeSettings",
-			"organizationTypeAssociations": "flipbox\\organizations\\services\\OrganizationTypeAssociations",
-			"records": "flipbox\\organizations\\services\\Records",
-			"users": "flipbox\\organizations\\services\\Users",
-			"userAssociations": "flipbox\\organizations\\services\\UserAssociations",
-			"userTypes": "flipbox\\organizations\\services\\UserTypes",
-			"userTypeAssociations": "flipbox\\organizations\\services\\UserTypeAssociations"
-		},
-		"modules": {
-			"cp": {
-				"class": "flipbox\\organizations\\cp\\Cp",
-				"components": {
-					"settings": "flipbox\\organizations\\cp\\services\\Settings"
-				}
-			}
-		}
+		"schemaVersion": "1.1.0"
 	}
 }

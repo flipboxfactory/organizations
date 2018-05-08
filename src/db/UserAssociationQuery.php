@@ -23,6 +23,11 @@ use flipbox\organizations\records\UserAssociation;
 class UserAssociationQuery extends SortableAssociationQuery
 {
     /**
+     * The sort order attribute
+     */
+    const SORT_ORDER_ATTRIBUTE = null;
+
+    /**
      * @var int|int[]|false|null The source Id(s). Prefix Ids with "not " to exclude them.
      */
     public $userId;
@@ -51,7 +56,7 @@ class UserAssociationQuery extends SortableAssociationQuery
      */
     protected function fixedOrderColumn(): string
     {
-        return 'userId';
+        return 'id';
     }
 
     /**

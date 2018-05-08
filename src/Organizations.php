@@ -48,6 +48,26 @@ class Organizations extends BasePlugin
      */
     public function init()
     {
+        // Services
+        $this->setComponents([
+            'element' => services\Element::class,
+            'organizations' => services\Organizations::class,
+            'organizationTypes' => services\OrganizationTypes::class,
+            'organizationTypeSettings' => services\OrganizationTypeSettings::class,
+            'organizationTypeAssociations' => services\OrganizationTypeAssociations::class,
+            'organizationUserAssociations' => services\OrganizationUserAssociations::class,
+            'records' => services\Records::class,
+            'users' => services\Users::class,
+            'userAssociations' => services\UserOrganizationAssociations::class,
+            'userTypes' => services\UserTypes::class,
+            'userTypeAssociations' => services\UserTypeAssociations::class,
+        ]);
+
+        // Sub-Modules
+        $this->setModules([
+            'cp' => cp\Cp::class
+        ]);
+
         parent::init();
 
         // Fields
@@ -331,6 +351,14 @@ class Organizations extends BasePlugin
     }
 
     /**
+     * @return services\OrganizationUserAssociations
+     */
+    public function getOrganizationUserAssociations()
+    {
+        return $this->get('organizationUserAssociations');
+    }
+
+    /**
      * @return services\Records
      */
     public function getRecords()
@@ -347,7 +375,7 @@ class Organizations extends BasePlugin
     }
 
     /**
-     * @return services\UserAssociations
+     * @return services\UserOrganizationAssociations
      */
     public function getUserAssociations()
     {

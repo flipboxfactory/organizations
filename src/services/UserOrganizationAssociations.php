@@ -8,19 +8,22 @@
 
 namespace flipbox\organizations\services;
 
+use Craft;
 use flipbox\craft\sortable\associations\db\SortableAssociationQueryInterface;
 use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
+use flipbox\ember\helpers\QueryHelper;
 use flipbox\ember\services\traits\records\Accessor;
-use flipbox\organizations\db\UserAssociationQuery;
+use flipbox\organizations\db\UserOrganizationAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 use yii\db\ActiveQuery;
 
 /**
+ * Manage the Organization associations for a user.  A user may have multiple organization associations.
+ *
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method UserAssociationQuery parentGetQuery($config = [])
  * @method UserAssociation create(array $attributes = [])
  * @method UserAssociation find($identifier)
  * @method UserAssociation get($identifier)
@@ -33,11 +36,9 @@ use yii\db\ActiveQuery;
  * @method UserAssociation[] findAllByCriteria($criteria = [])
  * @method UserAssociation[] getAllByCriteria($criteria = [])
  */
-class UserAssociations extends SortableAssociations
+class UserOrganizationAssociations extends SortableAssociations
 {
-    use Accessor {
-        getQuery as parentGetQuery;
-    }
+    use Accessor;
 
     /**
      * @return string
@@ -50,6 +51,12 @@ class UserAssociations extends SortableAssociations
     const TARGET_ATTRIBUTE = UserAssociation::TARGET_ATTRIBUTE;
 
     /**
+     * The sort order attribute name
+     * @return string
+     */
+    const SORT_ORDER_ATTRIBUTE = 'userOrder';
+
+    /**
      * @inheritdoc
      */
     protected static function tableAlias(): string
@@ -58,12 +65,23 @@ class UserAssociations extends SortableAssociations
     }
 
     /**
-     * @param array $config
-     * @return SortableAssociationQueryInterface|ActiveQuery
+     * @inheritdoc
+     * @return UserOrganizationAssociationQuery
      */
     public function getQuery($config = []): SortableAssociationQueryInterface
     {
-        return $this->parentGetQuery($config);
+        /** @var UserOrganizationAssociationQuery $query */
+        $query = Craft::createObject(
+            UserOrganizationAssociationQuery::class,
+            [UserAssociation::class]
+        );
+
+        QueryHelper::configure(
+            $query,
+            $this->prepareQueryConfig($config)
+        );
+
+        return $query;
     }
 
     /**
@@ -76,7 +94,7 @@ class UserAssociations extends SortableAssociations
 
     /**
      * @param SortableAssociationInterface|UserAssociation $record
-     * @return SortableAssociationQueryInterface|UserAssociationQuery
+     * @return SortableAssociationQueryInterface|UserOrganizationAssociationQuery
      */
     protected function associationQuery(
         SortableAssociationInterface $record
@@ -87,7 +105,7 @@ class UserAssociations extends SortableAssociations
     }
 
     /**
-     * @param SortableAssociationQueryInterface|UserAssociationQuery $query
+     * @param SortableAssociationQueryInterface|UserOrganizationAssociationQuery $query
      * @return array
      */
     protected function existingAssociations(
@@ -104,17 +122,17 @@ class UserAssociations extends SortableAssociations
 
     /**
      * @param $source
-     * @return SortableAssociationQueryInterface|UserAssociationQuery
+     * @return SortableAssociationQueryInterface|UserOrganizationAssociationQuery
      */
     private function query(
         $source
     ): SortableAssociationQueryInterface {
-        /** @var UserAssociationQuery $query */
+        /** @var UserOrganizationAssociationQuery $query */
         $query = $this->getQuery();
         return $query->where([
-            static::SOURCE_ATTRIBUTE => $source
+            static::TARGET_ATTRIBUTE => $source
         ])
-            ->orderBy(['sortOrder' => SORT_ASC]);
+            ->orderBy([static::SORT_ORDER_ATTRIBUTE => SORT_ASC]);
     }
 
     /**
@@ -124,9 +142,9 @@ class UserAssociations extends SortableAssociations
     private function associations(
         $source
     ): array {
-        /** @var UserAssociationQuery $query */
-        $query = $this->getQuery($source);
-        return $query->indexBy(static::TARGET_ATTRIBUTE)
+        /** @var UserOrganizationAssociationQuery $query */
+        $query = $this->query($source);
+        return $query->indexBy(static::SOURCE_ATTRIBUTE)
             ->all();
     }
 }

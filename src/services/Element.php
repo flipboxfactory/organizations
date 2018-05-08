@@ -244,7 +244,7 @@ class Element extends Component
      */
     private function associateUsers(OrganizationElement $organization)
     {
-        if (!OrganizationPlugin::getInstance()->getUsers()->saveAssociations(
+        if (!OrganizationPlugin::getInstance()->getOrganizations()->saveAssociations(
             $organization->getUsers(),
             $organization
         )) {

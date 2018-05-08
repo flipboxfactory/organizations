@@ -13,6 +13,7 @@ use craft\elements\db\UserQuery;
 use craft\elements\User as UserElement;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\services\traits\elements\Accessor;
+use flipbox\organizations\db\OrganizationQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\UserAssociation;
@@ -104,46 +105,48 @@ class Users extends Component
     }
 
     /**
-     * @param UserQuery $query
-     * @param OrganizationElement $organization
+     * @param OrganizationQuery $query
+     * @param UserElement $user
      * @return bool
      * @throws \Exception
      */
     public function saveAssociations(
-        UserQuery $query,
-        OrganizationElement $organization
+        OrganizationQuery $query,
+        UserElement $user
     ): bool {
         /** @var UserElement[] $models */
         if (null === ($models = $query->getCachedResult())) {
             return true;
         }
 
+        $models = $query->all();
+
         $associationService = OrganizationPlugin::getInstance()->getUserAssociations();
 
         $query = $associationService->getQuery([
-            $associationService::SOURCE_ATTRIBUTE => $organization->getId() ?: false
+            $associationService::SOURCE_ATTRIBUTE => $user->getId() ?: false
         ]);
 
         $query->setCachedResult(
-            $this->toAssociations($models, $organization->getId())
+            $this->toAssociations($models, $user->getId())
         );
 
         return $associationService->save($query);
     }
 
     /**
-     * @param UserQuery $query
-     * @param OrganizationElement $organization
+     * @param OrganizationQuery $query
+     * @param UserElement $user
      * @return bool
      * @throws \Exception
      */
     public function dissociate(
-        UserQuery $query,
-        OrganizationElement $organization
+        OrganizationQuery $query,
+        UserElement $user
     ): bool {
         return $this->associations(
             $query,
-            $organization,
+            $user,
             [
                 OrganizationPlugin::getInstance()->getUserAssociations(),
                 'dissociate'
@@ -152,18 +155,18 @@ class Users extends Component
     }
 
     /**
-     * @param UserQuery $query
-     * @param OrganizationElement $organization
+     * @param OrganizationQuery $query
+     * @param UserElement $user
      * @return bool
      * @throws \Exception
      */
     public function associate(
-        UserQuery $query,
-        OrganizationElement $organization
+        OrganizationQuery $query,
+        UserElement $user
     ): bool {
         return $this->associations(
             $query,
-            $organization,
+            $user,
             [
                 OrganizationPlugin::getInstance()->getUserAssociations(),
                 'associate'
@@ -172,13 +175,16 @@ class Users extends Component
     }
 
     /**
-     * @param UserQuery $query
-     * @param OrganizationElement $organization
+     * @param OrganizationQuery $query
+     * @param UserElement $user
      * @param callable $callable
      * @return bool
      */
-    protected function associations(UserQuery $query, OrganizationElement $organization, callable $callable)
-    {
+    protected function associations(
+        OrganizationQuery $query,
+        UserElement $user,
+        callable $callable
+    ) {
         /** @var UserElement[] $models */
         if (null === ($models = $query->getCachedResult())) {
             return true;
@@ -190,7 +196,7 @@ class Users extends Component
         $ids = [];
         $count = count($models);
         $i = 0;
-        foreach ($this->toAssociations($models, $organization->getId()) as $association) {
+        foreach ($this->toAssociations($models, $user->getId()) as $association) {
             if (true === call_user_func_array($callable, [$association, ++$i === $count])) {
                 ArrayHelper::remove($models, $association->userId);
                 $ids[] = $association->userId;
@@ -210,22 +216,38 @@ class Users extends Component
     }
 
     /**
-     * @param UserElement[] $users
-     * @param int $organizationId
+     * @param OrganizationElement[] $organizations
+     * @param int $userId
      * @return UserAssociation[]
      */
     private function toAssociations(
-        array $users,
-        int $organizationId
+        array $organizations,
+        int $userId
     ) {
         $associations = [];
         $sortOrder = 1;
-        foreach ($users as $user) {
-            $associations[] = new UserAssociation([
-                'organizationId' => $organizationId,
-                'userId' => $user->getId(),
-                'sortOrder' => $sortOrder++
-            ]);
+
+        $associationService = OrganizationPlugin::getInstance()->getUserAssociations();
+        $sortOrderAttribute = $associationService::SORT_ORDER_ATTRIBUTE;
+
+        $existingAssociations = $associationService->findAllByCriteria([
+            'where' => [
+                $associationService::SOURCE_ATTRIBUTE => ArrayHelper::getColumn($organizations, 'id'),
+                $associationService::TARGET_ATTRIBUTE => $userId,
+            ],
+            'indexBy' => $associationService::SOURCE_ATTRIBUTE
+        ]);
+
+        foreach ($organizations as $organization) {
+            if (null === ($association = ArrayHelper::remove($existingAssociations, $organization->getId()))) {
+                $association = $associationService->create([
+                    'userId' => (int) $userId,
+                    'organizationId' => (int) $organization->getId()
+                ]);
+            }
+
+            $association->{$sortOrderAttribute} = $sortOrder++;
+            $associations[] = $association;
         }
 
         return $associations;

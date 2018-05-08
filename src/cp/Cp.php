@@ -29,6 +29,11 @@ class Cp extends BaseModule
      */
     public function init()
     {
+        // Services
+        $this->setComponents([
+            'settings' => services\Settings::class
+        ]);
+
         parent::init();
 
         // Base template directory

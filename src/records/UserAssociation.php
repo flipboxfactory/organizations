@@ -9,25 +9,29 @@
 namespace flipbox\organizations\records;
 
 use Craft;
-use flipbox\craft\sortable\associations\records\SortableAssociation;
-use flipbox\craft\sortable\associations\services\SortableAssociations;
+use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
+use flipbox\ember\helpers\ModelHelper;
+use flipbox\ember\records\traits\IdAttribute;
 use flipbox\ember\records\traits\UserAttribute;
 use flipbox\organizations\db\UserAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
+use flipbox\ember\records\ActiveRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
  * @property int $organizationId
- * @property int $sortOrder
+ * @property int $organizationOrder
+ * @property int $userOrder
  * @property Organization $organization
  * @property UserType[] $types
  */
-class UserAssociation extends SortableAssociation
+class UserAssociation extends ActiveRecord implements SortableAssociationInterface
 {
     use UserAttribute,
+        IdAttribute,
         traits\OrganizationAttribute;
 
     /**
@@ -48,14 +52,6 @@ class UserAssociation extends SortableAssociation
     /**
      * @inheritdoc
      */
-    protected function associationService(): SortableAssociations
-    {
-        return OrganizationPlugin::getInstance()->getUserAssociations();
-    }
-
-    /**
-     * @inheritdoc
-     */
     public static function find()
     {
         return Craft::createObject(UserAssociationQuery::class, [get_called_class()]);
@@ -64,21 +60,60 @@ class UserAssociation extends SortableAssociation
     /**
      * @inheritdoc
      */
-    public function rules(): array
+    public function associate(bool $autoReorder = true): bool
+    {
+        return OrganizationPlugin::getInstance()->getUserAssociations()->associate(
+            $this,
+            $autoReorder
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function dissociate(bool $autoReorder = true): bool
+    {
+        return OrganizationPlugin::getInstance()->getUserAssociations()->dissociate(
+            $this,
+            $autoReorder
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function rules()
     {
         return array_merge(
             parent::rules(),
+            $this->idRules(),
             $this->userRules(),
             $this->organizationRules(),
+            $this->auditRules(),
             [
                 [
                     [
-                        'userId'
+                        static::SOURCE_ATTRIBUTE,
+                        static::TARGET_ATTRIBUTE,
                     ],
-                    'unique',
-                    'targetAttribute' => [
-                        'userId',
-                        'organizationId'
+                    'required'
+                ],
+                [
+                    [
+                        'userOrder',
+                        'organizationOrder'
+                    ],
+                    'number',
+                    'integerOnly' => true
+                ],
+                [
+                    [
+                        static::SOURCE_ATTRIBUTE,
+                        static::TARGET_ATTRIBUTE,
+                    ],
+                    'safe',
+                    'on' => [
+                        ModelHelper::SCENARIO_DEFAULT
                     ]
                 ]
             ]

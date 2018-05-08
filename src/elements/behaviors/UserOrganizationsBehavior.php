@@ -118,15 +118,10 @@ class UserOrganizationsBehavior extends Behavior
      */
     private function associateOrganizations(User $user)
     {
-        $associationService = OrganizationPlugin::getInstance()->getUserAssociations();
-        foreach ($user->getOrganizations()->all() as $organization) {
-            $associationService->associate(
-                $associationService->create([
-                    'userId' => $user->getId(),
-                    'organizationId' => $organization->getId()
-                ])
-            );
-        }
+        OrganizationPlugin::getInstance()->getUsers()->saveAssociations(
+            $this->getOrganizations(),
+            $user
+        );
     }
 
     /**
