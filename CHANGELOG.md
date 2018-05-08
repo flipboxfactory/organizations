@@ -1,5 +1,9 @@
 Changelog
 =========
+## 1.0.0-rc.10 - 2018-05-08
+### Fixed
+- Typo in migration file renaming which prevented the migration from running
+
 ## 1.0.0-rc.9 - 2018-05-07
 ### Changed
 - User associations can be sorted by user and organization.

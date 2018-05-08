@@ -14,7 +14,7 @@ use flipbox\organizations\records\UserAssociation;
 /**
  * This migration adds a new column to support multiple user association sort types.
  */
-class m180507_1212141_user_association_sort extends Migration
+class m180507_121214_user_association_sort extends Migration
 {
     /**
      * @return bool|void
