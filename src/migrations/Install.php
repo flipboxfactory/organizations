@@ -106,7 +106,8 @@ class Install extends Migration
             'id' => $this->primaryKey(),
             'userId' => $this->integer()->notNull(),
             'organizationId' => $this->integer()->notNull(),
-            'sortOrder' => $this->smallInteger()->unsigned(),
+            'userOrder' => $this->smallInteger()->unsigned(),
+            'organizationOrder' => $this->smallInteger()->unsigned(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),
             'uid' => $this->uid()

@@ -25,7 +25,7 @@ class Associate extends Action
     protected function performAction(Model $model): bool
     {
         if (true === $this->ensureUserAssociation($model)) {
-            return OrganizationPlugin::getInstance()->getUserAssociations()->associate(
+            return OrganizationPlugin::getInstance()->getUserOrganizationAssociations()->associate(
                 $model
             );
         }

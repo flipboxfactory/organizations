@@ -61,7 +61,7 @@ class Organizations extends BasePlugin
             'organizationUserAssociations' => services\OrganizationUserAssociations::class,
             'records' => services\Records::class,
             'users' => services\Users::class,
-            'userAssociations' => services\UserOrganizationAssociations::class,
+            'userOrganizationAssociations' => services\UserOrganizationAssociations::class,
             'userTypes' => services\UserTypes::class,
             'userTypeAssociations' => services\UserTypeAssociations::class,
         ]);
@@ -387,9 +387,9 @@ class Organizations extends BasePlugin
     /**
      * @return services\UserOrganizationAssociations
      */
-    public function getUserAssociations()
+    public function getUserOrganizationAssociations()
     {
-        return $this->get('userAssociations');
+        return $this->get('userOrganizationAssociations');
     }
 
     /**

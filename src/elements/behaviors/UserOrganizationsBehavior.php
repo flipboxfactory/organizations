@@ -88,7 +88,7 @@ class UserOrganizationsBehavior extends Behavior
      */
     private function dissociateOrganizations(User $user)
     {
-        $associationService = OrganizationPlugin::getInstance()->getUserAssociations();
+        $associationService = OrganizationPlugin::getInstance()->getUserOrganizationAssociations();
         foreach ($user->getOrganizations()->all() as $organization) {
             $associationService->dissociate(
                 $associationService->create([

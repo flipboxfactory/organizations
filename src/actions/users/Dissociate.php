@@ -25,7 +25,7 @@ class Dissociate extends Action
     protected function performAction(Model $model): bool
     {
         if (true === $this->ensureUserAssociation($model)) {
-            return OrganizationPlugin::getInstance()->getUserAssociations()->dissociate(
+            return OrganizationPlugin::getInstance()->getUserOrganizationAssociations()->dissociate(
                 $model
             );
         }

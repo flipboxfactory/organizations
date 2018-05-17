@@ -121,7 +121,7 @@ class Users extends Component
 
         $models = $query->all();
 
-        $associationService = OrganizationPlugin::getInstance()->getUserAssociations();
+        $associationService = OrganizationPlugin::getInstance()->getUserOrganizationAssociations();
 
         $query = $associationService->getQuery([
             $associationService::SOURCE_ATTRIBUTE => $user->getId() ?: false
@@ -148,7 +148,7 @@ class Users extends Component
             $query,
             $user,
             [
-                OrganizationPlugin::getInstance()->getUserAssociations(),
+                OrganizationPlugin::getInstance()->getUserOrganizationAssociations(),
                 'dissociate'
             ]
         );
@@ -168,7 +168,7 @@ class Users extends Component
             $query,
             $user,
             [
-                OrganizationPlugin::getInstance()->getUserAssociations(),
+                OrganizationPlugin::getInstance()->getUserOrganizationAssociations(),
                 'associate'
             ]
         );
@@ -227,7 +227,7 @@ class Users extends Component
         $associations = [];
         $sortOrder = 1;
 
-        $associationService = OrganizationPlugin::getInstance()->getUserAssociations();
+        $associationService = OrganizationPlugin::getInstance()->getUserOrganizationAssociations();
         $sortOrderAttribute = $associationService::SORT_ORDER_ATTRIBUTE;
 
         $existingAssociations = $associationService->findAllByCriteria([

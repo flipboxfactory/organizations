@@ -76,7 +76,7 @@ abstract class Action extends \yii\base\Action
         $model = new UserAssociation([
             'userId' => $user->getId(),
             'organizationId' => $organization->getId(),
-            'sortOrder' => $sortOrder
+            Organizations::getInstance()->getUserOrganizationAssociations()::SORT_ORDER_ATTRIBUTE => $sortOrder
         ]);
 
         return $this->runInternal($model);

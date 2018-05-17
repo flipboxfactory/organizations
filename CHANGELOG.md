@@ -1,5 +1,9 @@
 Changelog
 =========
+## 1.0.0-rc.11 - 2018-05-08
+### Fixed
+- Reference to legacy sort order property
+
 ## 1.0.0-rc.10 - 2018-05-08
 ### Fixed
 - Typo in migration file renaming which prevented the migration from running

@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\migrations;
 
+use Craft;
 use craft\db\Migration;
 use flipbox\organizations\records\UserAssociation;
 
@@ -21,17 +22,25 @@ class m180507_121214_user_association_sort extends Migration
      */
     public function safeUp()
     {
-        $this->renameColumn(
-            UserAssociation::tableName(),
-            'sortOrder',
-            'organizationOrder'
+        $table = Craft::$app->getDb()->getSchema()->getTableSchema(
+            UserAssociation::tableName()
         );
 
-        $this->addColumn(
-            UserAssociation::tableName(),
-            'userOrder',
-            $this->smallInteger()->unsigned()
-        );
+        if (isset($table->columns['sortOrder'])) {
+            $this->renameColumn(
+                UserAssociation::tableName(),
+                'sortOrder',
+                'organizationOrder'
+            );
+        }
+
+        if (!isset($table->columns['userOrder'])) {
+            $this->addColumn(
+                UserAssociation::tableName(),
+                'userOrder',
+                $this->smallInteger()->unsigned()
+            );
+        }
     }
 
     /**

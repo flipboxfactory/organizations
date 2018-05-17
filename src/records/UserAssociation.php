@@ -23,8 +23,8 @@ use flipbox\ember\records\ActiveRecord;
  * @since 1.0.0
  *
  * @property int $organizationId
- * @property int $organizationOrder
- * @property int $userOrder
+ * @property int $organizationOrder The order which an organization lists its users
+ * @property int $userOrder The order which a user lists its organizations
  * @property Organization $organization
  * @property UserType[] $types
  */
@@ -62,7 +62,7 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
      */
     public function associate(bool $autoReorder = true): bool
     {
-        return OrganizationPlugin::getInstance()->getUserAssociations()->associate(
+        return OrganizationPlugin::getInstance()->getUserOrganizationAssociations()->associate(
             $this,
             $autoReorder
         );
@@ -73,7 +73,7 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
      */
     public function dissociate(bool $autoReorder = true): bool
     {
-        return OrganizationPlugin::getInstance()->getUserAssociations()->dissociate(
+        return OrganizationPlugin::getInstance()->getUserOrganizationAssociations()->dissociate(
             $this,
             $autoReorder
         );
