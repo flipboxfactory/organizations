@@ -1,6 +1,6 @@
 Changelog
 =========
-## 1.0.0-rc.11 - 2018-05-08
+## 1.0.0-rc.11 - 2018-05-17
 ### Fixed
 - Reference to legacy sort order property
 
