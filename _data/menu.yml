@@ -1,0 +1,34 @@
+- text: Getting Started
+  url: /
+  expandable: true
+  items:
+  - text: Introduction
+    url: /
+  - text: Installation / Upgrading
+    url: /install/
+  - text: Support
+    url: /support/
+
+- text: Configure
+  url: /configure/
+  items:
+  - text: General
+    url: /configure/
+  - text: Organizations
+    url: /configure/organizations/
+  - text: Organization Types
+    url: /configure/organization-types/
+  - text: User Types
+    url: /configure/user-types/
+
+- text: Templating
+  url: /templating/
+  items:
+  - text: Overview
+    url: /templating/
+
+- text: Developers
+  url: /developers/
+  items:
+    - text: Overview
+      url: /developers/
