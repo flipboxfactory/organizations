@@ -1,5 +1,5 @@
 ---
-title: Configure: Organization Types 
+title: 'Configure: Organization Types'
 permalink: configure/organization-types/
 ---
 

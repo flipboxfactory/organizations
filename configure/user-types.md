@@ -1,5 +1,5 @@
 ---
-title: Configure: User Types 
+title: 'Configure: User Types'
 permalink: configure/user-types/
 ---
 

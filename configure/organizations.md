@@ -1,5 +1,5 @@
 ---
-title: Configure: Organizations 
+title: 'Configure: Organizations'
 permalink: configure/organizations/
 ---
 
