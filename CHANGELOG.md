@@ -1,5 +1,9 @@
 Changelog
 =========
+## Unreleased
+### Fixed
+- Removing user from organization was causing an error
+
 ## 1.0.0-rc.11 - 2018-05-17
 ### Fixed
 - Reference to legacy sort order property

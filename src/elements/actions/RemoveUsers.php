@@ -74,7 +74,7 @@ class RemoveUsers extends ElementAction
             $query->all()
         );
 
-        if (false === OrganizationPlugin::getInstance()->getUsers()->dissociate(
+        if (false === OrganizationPlugin::getInstance()->getOrganizations()->dissociate(
             $query,
             $organization
         )) {
