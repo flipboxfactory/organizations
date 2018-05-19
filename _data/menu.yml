@@ -26,6 +26,20 @@
   items:
   - text: Overview
     url: /templating/
+  - text: Elements
+    url: /templating/services/elements/
+  - text: Organization Types
+    url: /templating/services/organization-types/
+  - text: User Types
+    url: /templating/services/user-types/
+
+- text: Objects
+  url: /objects/
+  items:
+  - text: Organization
+    url: /objects/organization/
+  - text: Organization Type
+    url: /objects/organization-type/
 
 - text: Developers
   url: /developers/
