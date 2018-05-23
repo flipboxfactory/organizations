@@ -32,6 +32,8 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
 
         this.availableMenuBtn = this.$availableButton.menubtn().data('menubtn');
         this.availableMenuBtn.on('optionSelect', $.proxy(this, 'onAvailableSelect'));
+
+        this.changeToUrlTypeHandleOption();
     },
 
     // When a type is selected
@@ -158,7 +160,6 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
         }
 
         return $active;
-
     },
 
     getFirstActiveOption: function () {
@@ -168,6 +169,15 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
         }
 
         return $active;
+    },
+
+    changeToUrlTypeHandleOption: function () {
+        var typeHandle = window.location.pathname.split('/').pop();
+        var $active = this.activeMenuBtn.menu.$options.filter('[data-handle="' + typeHandle + '"]');
+
+        if ($active.length) {
+            this.changeType($active);
+        }
     },
 
     associateType: function (type, organization) {

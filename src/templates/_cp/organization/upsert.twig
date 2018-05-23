@@ -161,7 +161,7 @@
                                 {% for type in types %}
                                     {% set typeOptionIds = typeOptionIds|merge([type.id]) %}
                                     <li>
-                                        <a data-id="{{ type.id }}" {% if activeTypeValue == type.id %} class="sel"{% endif %}>{{ type.name }}</a>
+                                        <a data-id="{{ type.id }}" data-handle="{{ type.handle }}" {% if activeTypeValue == type.id %} class="sel"{% endif %}>{{ type.name }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -180,8 +180,10 @@
                         <ul>
                             {% for typeOption in typeOptions %}
                                 <li>
-                                    <a data-organization="{{ organization.id }}" data-type="{{ typeOption.value }}"
-                                       data-label="{{ typeOption.label }}">
+                                    <a data-organization="{{ organization.id }}"
+                                       data-type="{{ typeOption.value }}"
+                                       data-label="{{ typeOption.label }}"
+                                    >
                                         <span class="status{{ typeOption.value in typeOptionIds ? ' active' : '' }}"></span> {{ typeOption.label }}
                                     </a>
                                 </li>
