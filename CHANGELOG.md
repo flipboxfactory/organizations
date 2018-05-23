@@ -3,6 +3,7 @@ Changelog
 ## Unreleased
 ### Fixed
 - Removing user from organization was causing an error
+- Change organization type urls in organization listing
 
 ## 1.0.0-rc.11 - 2018-05-17
 ### Fixed

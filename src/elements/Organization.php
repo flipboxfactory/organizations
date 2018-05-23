@@ -387,7 +387,7 @@ class Organization extends Element
                 $typeHtmlParts = [];
                 foreach ($this->getTypes()->all() as $type) {
                     $typeHtmlParts[] = '<a href="' .
-                        UrlHelper::cpUrl('/organizations/' . $this->id . '/' . $type->handle) .
+                        UrlHelper::cpUrl('organizations/' . $this->id . '/' . $type->handle) .
                         '">' .
                         $type->name .
                         '</a>';
