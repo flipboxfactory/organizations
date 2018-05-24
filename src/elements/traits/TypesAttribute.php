@@ -134,7 +134,15 @@ trait TypesAttribute
         // Remove all types
         $this->types->setCachedResult([]);
 
-        return $this->addTypes($types);
+        if (!empty($types)) {
+            if (!is_array($types)) {
+                $types = [$types];
+            }
+
+            $this->addTypes($types);
+        }
+
+        return $this;
     }
 
     /**

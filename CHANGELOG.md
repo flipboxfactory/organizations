@@ -2,8 +2,9 @@ Changelog
 =========
 ## Unreleased
 ### Fixed
+- Error when passed attempting to set types on an organization with a null value
 - Removing user from organization was causing an error
-- Fix organization type urls on listing page and handle slug on detail page 
+- Organization type urls on listing page and handle slug on detail page 
 
 ## 1.0.0-rc.11 - 2018-05-17
 ### Fixed
