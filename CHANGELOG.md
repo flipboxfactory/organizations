@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.12 - 2018-05-24
 ### Fixed
 - Error when passed attempting to set types on an organization with a null value
 - Removing user from organization was causing an error
