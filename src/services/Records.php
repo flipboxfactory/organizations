@@ -19,17 +19,17 @@ use flipbox\organizations\Organizations as OrganizationPlugin;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method OrganizationRecord create(array $attributes = [], string $toScenario = null)
- * @method OrganizationRecord find($identifier, string $toScenario = null)
- * @method OrganizationRecord get($identifier, string $toScenario = null)
- * @method OrganizationRecord findByCondition($condition = [], string $toScenario = null)
- * @method OrganizationRecord getByCondition($condition = [], string $toScenario = null)
- * @method OrganizationRecord findByCriteria($criteria = [], string $toScenario = null)
- * @method OrganizationRecord getByCriteria($criteria = [], string $toScenario = null)
- * @method OrganizationRecord[] findAllByCondition($condition = [], string $toScenario = null)
- * @method OrganizationRecord[] getAllByCondition($condition = [], string $toScenario = null)
- * @method OrganizationRecord[] findAllByCriteria($criteria = [], string $toScenario = null)
- * @method OrganizationRecord[] getAllByCriteria($criteria = [], string $toScenario = null)
+ * @method OrganizationRecord create(array $attributes = [])
+ * @method OrganizationRecord find($identifier)
+ * @method OrganizationRecord get($identifier)
+ * @method OrganizationRecord findByCondition($condition = [])
+ * @method OrganizationRecord getByCondition($condition = [])
+ * @method OrganizationRecord findByCriteria($criteria = [])
+ * @method OrganizationRecord getByCriteria($criteria = [])
+ * @method OrganizationRecord[] findAllByCondition($condition = [])
+ * @method OrganizationRecord[] getAllByCondition($condition = [])
+ * @method OrganizationRecord[] findAllByCriteria($criteria = [])
+ * @method OrganizationRecord[] getAllByCriteria($criteria = [])
  */
 class Records extends Component
 {

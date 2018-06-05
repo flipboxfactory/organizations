@@ -34,7 +34,6 @@ use flipbox\organizations\models\Settings as OrganizationSettings;
 use flipbox\organizations\records\OrganizationType as OrganizationType;
 use flipbox\organizations\web\twig\variables\Organization as OrganizationVariable;
 use yii\base\Event;
-use yii\log\Logger;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

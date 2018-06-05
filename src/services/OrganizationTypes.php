@@ -27,19 +27,19 @@ use yii\base\Exception;
  * @since 1.0.0
  *
  * @method OrganizationTypeQuery getQuery($config = []): ActiveQuery
- * @method TypeRecord create(array $attributes = [], string $toScenario = null)
- * @method TypeRecord find($identifier, string $toScenario = null)
- * @method TypeRecord get($identifier, string $toScenario = null)
- * @method TypeRecord findByString($identifier, string $toScenario = null)
- * @method TypeRecord getByString($identifier, string $toScenario = null)
- * @method TypeRecord findByCondition($condition = [], string $toScenario = null)
- * @method TypeRecord getByCondition($condition = [], string $toScenario = null)
- * @method TypeRecord findByCriteria($criteria = [], string $toScenario = null)
- * @method TypeRecord getByCriteria($criteria = [], string $toScenario = null)
- * @method TypeRecord[] findAllByCondition($condition = [], string $toScenario = null)
- * @method TypeRecord[] getAllByCondition($condition = [], string $toScenario = null)
- * @method TypeRecord[] findAllByCriteria($criteria = [], string $toScenario = null)
- * @method TypeRecord[] getAllByCriteria($criteria = [], string $toScenario = null)
+ * @method TypeRecord create(array $attributes = [])
+ * @method TypeRecord find($identifier)
+ * @method TypeRecord get($identifier)
+ * @method TypeRecord findByString($identifier)
+ * @method TypeRecord getByString($identifier)
+ * @method TypeRecord findByCondition($condition = [])
+ * @method TypeRecord getByCondition($condition = [])
+ * @method TypeRecord findByCriteria($criteria = [])
+ * @method TypeRecord getByCriteria($criteria = [])
+ * @method TypeRecord[] findAllByCondition($condition = [])
+ * @method TypeRecord[] getAllByCondition($condition = [])
+ * @method TypeRecord[] findAllByCriteria($criteria = [])
+ * @method TypeRecord[] getAllByCriteria($criteria = [])
  */
 class OrganizationTypes extends Component
 {

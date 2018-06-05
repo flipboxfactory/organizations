@@ -26,21 +26,21 @@ use yii\base\Component;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method UserType create(array $attributes = [], string $toScenario = null)
- * @method UserType find($identifier, string $toScenario = null)
- * @method UserType get($identifier, string $toScenario = null)
- * @method UserType findByString($identifier, string $toScenario = null)
- * @method UserType getByString($identifier, string $toScenario = null)
- * @method UserType findByCondition($condition = [], string $toScenario = null)
- * @method UserType getByCondition($condition = [], string $toScenario = null)
- * @method UserType findByCriteria($criteria = [], string $toScenario = null)
- * @method UserType getByCriteria($criteria = [], string $toScenario = null)
+ * @method UserType create(array $attributes = [])
+ * @method UserType find($identifier)
+ * @method UserType get($identifier)
+ * @method UserType findByString($identifier)
+ * @method UserType getByString($identifier)
+ * @method UserType findByCondition($condition = [])
+ * @method UserType getByCondition($condition = [])
+ * @method UserType findByCriteria($criteria = [])
+ * @method UserType getByCriteria($criteria = [])
  * @method UserType[] findAll(string $toScenario = null)
- * @method UserType[] findAllByCondition($condition = [], string $toScenario = null)
- * @method UserType[] getAllByCondition($condition = [], string $toScenario = null)
- * @method UserType[] findAllByCriteria($criteria = [], string $toScenario = null)
- * @method UserType[] getAllByCriteria($criteria = [], string $toScenario = null)
- * @method UserTypeQuery getQuery($config = []): ActiveQuery($criteria = [], string $toScenario = null)
+ * @method UserType[] findAllByCondition($condition = [])
+ * @method UserType[] getAllByCondition($condition = [])
+ * @method UserType[] findAllByCriteria($criteria = [])
+ * @method UserType[] getAllByCriteria($criteria = [])
+ * @method UserTypeQuery getQuery($config = []): ActiveQuery($criteria = [])
  */
 class UserTypes extends Component
 {
