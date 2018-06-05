@@ -10,6 +10,7 @@ namespace flipbox\organizations\web\twig\variables;
 
 use flipbox\organizations\models\Settings;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\services\Element;
 use yii\di\ServiceLocator;
 
 /**
@@ -27,13 +28,23 @@ class Organization extends ServiceLocator
             $config,
             [
                 'components' => [
-                    'organizations' => OrganizationPlugin::getInstance()->getOrganizations(),
+                    'elements' => OrganizationPlugin::getInstance()->getElement(),
                     'organizationTypes' => OrganizationPlugin::getInstance()->getOrganizationTypes(),
                     'users' => OrganizationPlugin::getInstance()->getUsers(),
                     'userTypes' => OrganizationPlugin::getInstance()->getUserTypes()
                 ]
             ]
         ));
+    }
+
+    /**
+     * @return Element
+     *
+     * @deprecated
+     */
+    public function getOrganizations(): Element
+    {
+        return OrganizationPlugin::getInstance()->getElement();
     }
 
     /**
