@@ -162,7 +162,7 @@ class OrganizationTypes extends Component
      */
     private function handleOldFieldLayout(TypeRecord $type, FieldLayout $fieldLayout = null)
     {
-        $oldFieldLayoutId = (int) $type->getOldAttribute('fieldLayoutId');
+        $oldFieldLayoutId = (int)$type->getOldAttribute('fieldLayoutId');
 
         if ($oldFieldLayoutId !== null &&
             $oldFieldLayoutId != $fieldLayout->id &&
@@ -177,7 +177,7 @@ class OrganizationTypes extends Component
      */
     private function getDefaultFieldLayoutId(): int
     {
-        return (int) OrganizationPlugin::getInstance()->getSettings()->getFieldLayout()->id;
+        return (int)OrganizationPlugin::getInstance()->getSettings()->getFieldLayout()->id;
     }
 
     /**

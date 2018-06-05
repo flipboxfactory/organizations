@@ -60,7 +60,7 @@ trait Populate
      */
     private function populateSiteLayout(OrganizationType $model): OrganizationType
     {
-        $layoutOverride = (bool) Craft::$app->getRequest()->getBodyParam('fieldLayoutOverride');
+        $layoutOverride = (bool)Craft::$app->getRequest()->getBodyParam('fieldLayoutOverride');
 
         if ($layoutOverride) {
             $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();

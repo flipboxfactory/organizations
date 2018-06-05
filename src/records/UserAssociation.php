@@ -11,12 +11,12 @@ namespace flipbox\organizations\records;
 use Craft;
 use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
 use flipbox\ember\helpers\ModelHelper;
+use flipbox\ember\records\ActiveRecord;
 use flipbox\ember\records\traits\IdAttribute;
 use flipbox\ember\records\traits\UserAttribute;
 use flipbox\organizations\db\UserAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
-use flipbox\ember\records\ActiveRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

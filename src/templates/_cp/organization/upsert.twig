@@ -161,7 +161,8 @@
                                 {% for type in types %}
                                     {% set typeOptionIds = typeOptionIds|merge([type.id]) %}
                                     <li>
-                                        <a data-id="{{ type.id }}" data-handle="{{ type.handle }}" {% if activeTypeValue == type.id %} class="sel"{% endif %}>{{ type.name }}</a>
+                                        <a data-id="{{ type.id }}"
+                                           data-handle="{{ type.handle }}" {% if activeTypeValue == type.id %} class="sel"{% endif %}>{{ type.name }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -207,7 +208,7 @@
             id: 'dateJoined',
             name: 'dateJoined',
             value: (organization.dateJoined ? organization.dateJoined : null),
-        errors: organization.getErrors('dateJoined')
+            errors: organization.getErrors('dateJoined')
         }) }}
 
     </div>

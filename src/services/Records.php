@@ -11,9 +11,9 @@ namespace flipbox\organizations\services;
 use Craft;
 use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\events\ChangeStateEvent;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\Organization as OrganizationRecord;
 use yii\base\Component;
-use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

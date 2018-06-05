@@ -15,11 +15,11 @@ use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
 use flipbox\organizations\db\UserTypeQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
 use flipbox\organizations\records\UserTypeAssociation;
-use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\base\Component;
 
 /**

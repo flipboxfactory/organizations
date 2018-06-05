@@ -9,7 +9,6 @@
 namespace flipbox\organizations\services;
 
 use Craft;
-use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use flipbox\organizations\elements\Organization as OrganizationElement;

@@ -238,6 +238,6 @@ class OrganizationType extends ActiveRecordWithId
      */
     public function __toString()
     {
-        return (string) $this->getAttribute('name');
+        return (string)$this->getAttribute('name');
     }
 }

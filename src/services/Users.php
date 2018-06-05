@@ -9,7 +9,6 @@
 namespace flipbox\organizations\services;
 
 use Craft;
-use craft\elements\db\UserQuery;
 use craft\elements\User as UserElement;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\services\traits\elements\Accessor;
@@ -253,8 +252,8 @@ class Users extends Component
         foreach ($organizations as $organization) {
             if (null === ($association = ArrayHelper::remove($existingAssociations, $organization->getId()))) {
                 $association = $associationService->create([
-                    'userId' => (int) $userId,
-                    'organizationId' => (int) $organization->getId()
+                    'userId' => (int)$userId,
+                    'organizationId' => (int)$organization->getId()
                 ]);
             }
 

@@ -15,8 +15,8 @@ use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\helpers\QueryHelper;
 use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\db\UserOrganizationAssociationQuery;
-use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\UserAssociation;
 
 /**
  * Manage the Organization associations for a user.  A user may have multiple organization associations.

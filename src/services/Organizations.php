@@ -9,6 +9,7 @@
 namespace flipbox\organizations\services;
 
 use craft\elements\db\UserQuery;
+use craft\elements\User as UserElement;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\exceptions\RecordNotFoundException;
 use flipbox\ember\helpers\SiteHelper;
@@ -16,7 +17,6 @@ use flipbox\ember\services\traits\elements\MultiSiteAccessor;
 use flipbox\organizations\db\OrganizationQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use craft\elements\User as UserElement;
 use flipbox\organizations\records\UserAssociation;
 use yii\base\Component;
 
@@ -231,8 +231,8 @@ class Organizations extends Component
         foreach ($users as $user) {
             if (null === ($association = ArrayHelper::remove($existingAssociations, $user->getId()))) {
                 $association = $associationService->create([
-                    'userId' => (int) $user->getId(),
-                    'organizationId' => (int) $organizationId
+                    'userId' => (int)$user->getId(),
+                    'organizationId' => (int)$organizationId
                 ]);
             }
 

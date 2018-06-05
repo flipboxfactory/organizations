@@ -13,10 +13,10 @@ use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\db\OrganizationTypeAssociationQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationTypeAssociation;
 use flipbox\organizations\records\OrganizationTypeAssociation as TypeAssociationRecord;
 use yii\db\ActiveQuery;
-use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
