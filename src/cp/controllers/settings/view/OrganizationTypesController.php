@@ -22,12 +22,12 @@ class OrganizationTypesController extends AbstractController
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = parent::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'organizationTypes';
+    const TEMPLATE_INDEX = parent::TEMPLATE_BASE . '/organizationTypes';
 
     /**
      * The insert/update view template path
      */
-    const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . DIRECTORY_SEPARATOR . 'upsert';
+    const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . '/upsert';
 
     /**
      * @return \flipbox\organizations\services\OrganizationTypes

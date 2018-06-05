@@ -20,7 +20,7 @@ class GeneralController extends AbstractController
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'general';
+    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . '/general';
 
     /**
      * Index

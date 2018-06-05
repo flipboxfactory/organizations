@@ -35,7 +35,7 @@ class OrganizationsController extends AbstractController
     /**
      * The template base path
      */
-    const TEMPLATE_BASE = parent::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'organization';
+    const TEMPLATE_BASE = parent::TEMPLATE_BASE . '/organization';
 
     /**
      * @event RegisterOrganizationActionsEvent
@@ -45,12 +45,12 @@ class OrganizationsController extends AbstractController
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = self::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'index';
+    const TEMPLATE_INDEX = self::TEMPLATE_BASE . '/index';
 
     /**
      * The index view template path
      */
-    const TEMPLATE_UPSERT = self::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'upsert';
+    const TEMPLATE_UPSERT = self::TEMPLATE_BASE . '/upsert';
 
     /**
      * @return \flipbox\organizations\services\Organizations

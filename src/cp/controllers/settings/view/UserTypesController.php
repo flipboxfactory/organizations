@@ -22,12 +22,12 @@ class UserTypesController extends AbstractController
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'userTypes';
+    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . '/userTypes';
 
     /**
      * The insert/update view template path
      */
-    const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . DIRECTORY_SEPARATOR . 'upsert';
+    const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . '/upsert';
 
     /**
      * @return \flipbox\organizations\services\UserTypes

@@ -24,7 +24,7 @@ abstract class AbstractController extends BaseAbstractController
     /**
      * The index view template path
      */
-    const TEMPLATE_BASE = parent::TEMPLATE_BASE . DIRECTORY_SEPARATOR . 'settings';
+    const TEMPLATE_BASE = parent::TEMPLATE_BASE . '/settings';
 
     /*******************************************
      * BASE PATHS
