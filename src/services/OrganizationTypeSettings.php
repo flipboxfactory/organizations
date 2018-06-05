@@ -16,6 +16,7 @@ use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\records\OrganizationType as TypeModel;
 use flipbox\organizations\records\OrganizationTypeSiteSettings as TypeSettingsRecord;
 use yii\base\Component;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -36,6 +37,18 @@ use yii\base\Component;
 class OrganizationTypeSettings extends Component
 {
     use Accessor;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->organizationTypeSettingsCacheDuration;
+        $this->cacheDependency = $settings->organizationTypeSettingsCacheDependency;
+
+        parent::init();
+    }
 
     /**
      * @inheritdoc

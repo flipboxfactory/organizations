@@ -16,7 +16,7 @@ use flipbox\ember\helpers\QueryHelper;
 use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\db\UserOrganizationAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
-use yii\db\ActiveQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * Manage the Organization associations for a user.  A user may have multiple organization associations.
@@ -39,6 +39,18 @@ use yii\db\ActiveQuery;
 class UserOrganizationAssociations extends SortableAssociations
 {
     use Accessor;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->userOrganizationAssociationsCacheDuration;
+        $this->cacheDependency = $settings->userOrganizationAssociationsCacheDependency;
+
+        parent::init();
+    }
 
     /**
      * @return string

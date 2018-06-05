@@ -15,6 +15,7 @@ use flipbox\ember\helpers\SiteHelper;
 use flipbox\ember\traits\FieldLayoutAttribute;
 use flipbox\ember\validators\ModelValidator;
 use flipbox\organizations\elements\Organization;
+use yii\caching\Dependency;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -34,6 +35,106 @@ class Settings extends Model
      * @var string
      */
     public $defaultState;
+
+    /**
+     * @var int|null|false
+     */
+    public $recordsCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $recordsCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $organizationsCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $organizationsCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $organizationTypesCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $organizationTypesCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $organizationTypeAssociationsCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $organizationTypeAssociationsCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $organizationTypeSettingsCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $organizationTypeSettingsCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $organizationUserAssociationsCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $organizationUserAssociationsCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $usersCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $usersCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $userTypesCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $userTypesCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $userOrganizationAssociationsCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $userOrganizationAssociationsCacheDependency = null;
+
+    /**
+     * @var int|null|false
+     */
+    public $userTypeAssociationsCacheDuration = false;
+
+    /**
+     * @var null|Dependency
+     */
+    public $userTypeAssociationsCacheDependency = null;
 
     /**
      * @return string

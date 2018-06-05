@@ -13,6 +13,7 @@ use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\db\UserTypeAssociationQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\UserTypeAssociation;
 
 /**
@@ -36,6 +37,18 @@ class UserTypeAssociations extends SortableAssociations
 {
     use Accessor {
         getQuery as parentGetQuery;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->userTypeAssociationsCacheDuration;
+        $this->cacheDependency = $settings->userTypeAssociationsCacheDependency;
+
+        parent::init();
     }
 
     /**

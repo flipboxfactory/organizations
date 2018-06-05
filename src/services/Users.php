@@ -35,6 +35,18 @@ class Users extends Component
     /**
      * @inheritdoc
      */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->usersCacheDuration;
+        $this->cacheDependency = $settings->usersCacheDependency;
+
+        parent::init();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function elementClass(): string
     {
         return UserElement::class;

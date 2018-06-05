@@ -19,6 +19,7 @@ use flipbox\organizations\Organizations as OrganizationsPlugin;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
 use flipbox\organizations\records\UserTypeAssociation;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\base\Component;
 
 /**
@@ -44,6 +45,18 @@ use yii\base\Component;
 class UserTypes extends Component
 {
     use AccessorByString;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->userTypesCacheDuration;
+        $this->cacheDependency = $settings->userTypesCacheDependency;
+
+        parent::init();
+    }
 
     /**
      * @return string

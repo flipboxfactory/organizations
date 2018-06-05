@@ -16,6 +16,7 @@ use flipbox\organizations\db\OrganizationTypeAssociationQuery;
 use flipbox\organizations\records\OrganizationTypeAssociation;
 use flipbox\organizations\records\OrganizationTypeAssociation as TypeAssociationRecord;
 use yii\db\ActiveQuery;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -49,6 +50,18 @@ class OrganizationTypeAssociations extends SortableAssociations
      * @return string
      */
     const TARGET_ATTRIBUTE = OrganizationTypeAssociation::TARGET_ATTRIBUTE;
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->organizationTypeAssociationsCacheDuration;
+        $this->cacheDependency = $settings->organizationTypeAssociationsCacheDependency;
+
+        parent::init();
+    }
 
     /**
      * @inheritdoc

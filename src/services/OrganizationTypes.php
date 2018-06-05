@@ -48,6 +48,18 @@ class OrganizationTypes extends Component
     /**
      * @inheritdoc
      */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->organizationTypesCacheDuration;
+        $this->cacheDependency = $settings->organizationTypesCacheDependency;
+
+        parent::init();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function recordClass(): string
     {
         return TypeRecord::class;

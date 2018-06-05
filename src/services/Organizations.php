@@ -36,6 +36,18 @@ class Organizations extends Component
     /**
      * @inheritdoc
      */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->organizationsCacheDuration;
+        $this->cacheDependency = $settings->organizationsCacheDependency;
+
+        parent::init();
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function elementClass(): string
     {
         return OrganizationElement::class;

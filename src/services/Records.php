@@ -13,6 +13,7 @@ use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\events\ChangeStateEvent;
 use flipbox\organizations\records\Organization as OrganizationRecord;
 use yii\base\Component;
+use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -47,6 +48,18 @@ class Records extends Component
      * You may set [[ChangeStateEvent::isValid]] to `false` to prevent the organization changing the status.
      */
     const EVENT_AFTER_STATE_CHANGE = 'afterStateChange';
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        $settings = OrganizationPlugin::getInstance()->getSettings();
+        $this->cacheDuration = $settings->recordsCacheDuration;
+        $this->cacheDependency = $settings->recordsCacheDependency;
+
+        parent::init();
+    }
 
     /**
      * @inheritdoc
