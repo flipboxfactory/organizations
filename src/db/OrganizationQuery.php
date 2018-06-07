@@ -50,27 +50,6 @@ class OrganizationQuery extends ElementQuery
      */
     public $dateJoined;
 
-    public function init()
-    {
-        parent::init();
-        $this->applyDefaultEagerLoadingParams();
-    }
-
-    /**
-     * Apply the default eager loading definitions
-     */
-    private function applyDefaultEagerLoadingParams()
-    {
-        if (null !== ($with = $this->with)) {
-            if (!is_array($with)) {
-                $with = [$with];
-            }
-        };
-        $with[] = 'types';
-
-        $this->with = $with;
-    }
-
     /**
      * @inheritdoc
      */

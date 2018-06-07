@@ -1,5 +1,12 @@
 Changelog
 =========
+## 1.0.0-rc.13 - 2018-06-07
+### Added
+- Services have a configurable cache duration and dependency that can be set via the plugin's settings config.
+
+### Removed
+- OrganizationQuery no longer automatically adds 'types' as an eager loading key 
+
 ## 1.0.0-rc.12 - 2018-05-24
 ### Fixed
 - Error when passed attempting to set types on an organization with a null value
