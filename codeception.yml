@@ -1,0 +1,32 @@
+paths:
+    tests: tests
+    output: tests/_output
+    data: tests/_data
+    support: tests/_support
+    envs: tests/_envs
+actor_suffix: Tester
+settings:
+  bootstrap: _bootstrap.php
+coverage:
+    enabled: true
+    include:
+        - src/*
+    exclude:
+        - src/icon.svg
+extensions:
+    enabled:
+        - Codeception\Extension\RunFailed
+modules:
+  config:
+      Yii2:
+          configFile: 'tests/_config/test.php'
+  enabled:
+#      - Db:
+#          dsn: 'mysql:host=127.0.0.1;dbname=%TEST_DB_NAME%;'
+#          user: '%TEST_DB_USER%'
+#          password: '%TEST_DB_PASS%'
+#          dump: 'tests/_data/dump.sql'
+#          populate: true
+#          cleanup: true
+#          reconnect: true
+

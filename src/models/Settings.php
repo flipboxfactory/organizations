@@ -259,6 +259,7 @@ class Settings extends Model
     /**
      * @param int|null $siteId
      * @return bool
+     * @throws \craft\errors\SiteNotFoundException
      */
     public function isSiteEnabled(int $siteId = null): bool
     {
@@ -271,6 +272,7 @@ class Settings extends Model
 
     /**
      * @return array
+     * @throws \craft\errors\SiteNotFoundException
      */
     public function getEnabledSiteIds(): array
     {
