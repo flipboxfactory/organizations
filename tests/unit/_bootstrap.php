@@ -1,7 +1,5 @@
 <?php
 
-define('YII_ENV', 'test');
-
 // Use the current installation of Craft
 define('CRAFT_STORAGE_PATH', dirname(__DIR__).'/_craft/storage');
 define('CRAFT_TEMPLATES_PATH', dirname(__DIR__).'/_craft/templates');
@@ -26,6 +24,7 @@ ini_set('error_log', $storagePath.'/logs/phperrors.log');
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 defined('YII_DEBUG') || define('YII_DEBUG', true);
+defined('YII_ENV') || define('YII_ENV', 'test');
 defined('CRAFT_ENVIRONMENT') || define('CRAFT_ENVIRONMENT', '');
 
 defined('CURLOPT_TIMEOUT_MS') || define('CURLOPT_TIMEOUT_MS', 155);
