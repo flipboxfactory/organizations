@@ -77,6 +77,14 @@ class OrganizationUserAssociations extends SortableAssociations
     }
 
     /**
+     * @return string
+     */
+    public static function recordClass()
+    {
+        return UserAssociation::class;
+    }
+
+    /**
      * @inheritdoc
      * @return OrganizationUserAssociationQuery
      */
@@ -94,14 +102,6 @@ class OrganizationUserAssociations extends SortableAssociations
         );
 
         return $query;
-    }
-
-    /**
-     * @return string
-     */
-    public static function recordClass()
-    {
-        return UserAssociation::class;
     }
 
     /**
