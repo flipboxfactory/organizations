@@ -47,5 +47,38 @@ class OrganizationUserAssociationsTest extends Unit
             OrganizationUserAssociationQuery::class,
             $query
         );
+
+        // Make sure the configuration is applied
+        $query = $this->service->getQuery([
+            'indexBy' => 'organizationId',
+            'userId' => [1,2,3],
+            'where' => [
+                'or',
+                [
+                    'dateCreated' => ':empty:'
+                ]
+            ],
+            'foo' => 'bar' // This is not valid and should fail silently
+        ]);
+
+        $this->assertEquals(
+            $query->indexBy,
+            'organizationId'
+        );
+
+        $this->assertEquals(
+            $query->userId,
+            [1,2,3]
+        );
+
+        $this->assertEquals(
+            $query->where,
+            [
+                'or',
+                [
+                    'dateCreated' => ':empty:'
+                ]
+            ]
+        );
     }
 }

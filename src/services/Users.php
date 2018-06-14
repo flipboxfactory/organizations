@@ -9,6 +9,7 @@
 namespace flipbox\organizations\services;
 
 use Craft;
+use craft\elements\db\UserQuery;
 use craft\elements\User as UserElement;
 use craft\helpers\ArrayHelper;
 use flipbox\ember\services\traits\elements\Accessor;
@@ -24,6 +25,9 @@ use yii\base\InvalidConfigException;
  * @since 1.0.0
  *
  * @method UserElement parentFind($identifier)
+ * @method UserElement create($config = [])
+ * @method UserElement get($identifier)
+ * @method UserQuery getQuery($criteria = [])
  */
 class Users extends Component
 {

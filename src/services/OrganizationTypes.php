@@ -102,14 +102,14 @@ class OrganizationTypes extends Component
         return $object;
     }
 
-
     /**
      * @param TypeRecord|null $type
      * @return TypeRecord|null
+     * @throws \flipbox\ember\exceptions\NotFoundException
      */
-    public static function resolveFromRequest(TypeRecord $type = null)
+    public function resolveFromRequest(TypeRecord $type = null)
     {
-        if ($identifier = Craft::$app->getRequest()->getParam('type')) {
+        if (null !== ($identifier = Craft::$app->getRequest()->getParam('type'))) {
             return OrganizationPlugin::getInstance()->getOrganizationTypes()->get($identifier);
         }
 
