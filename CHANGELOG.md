@@ -1,8 +1,11 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.14 - 2018-06-13
 ### Fixed
 - User Type associations were not saving correctly when all associations were un-selected.
+
+### Added
+- Intro to unit tests
 
 ## 1.0.0-rc.13 - 2018-06-07
 ### Added
