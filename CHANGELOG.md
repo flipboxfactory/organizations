@@ -1,5 +1,9 @@
 Changelog
 =========
+## Unreleased
+### Fixed
+- User Type associations were not saving correctly when all associations were un-selected.
+
 ## 1.0.0-rc.13 - 2018-06-07
 ### Added
 - Services have a configurable cache duration and dependency that can be set via the plugin's settings config.

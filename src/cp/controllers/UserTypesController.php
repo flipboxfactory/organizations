@@ -77,8 +77,9 @@ class UserTypesController extends AbstractController
             $request->getRequiredBodyParam('organization')
         );
 
+        $types = array_keys(array_filter((array)$request->getRequiredBodyParam('types')));
         $query = Organizations::getInstance()->getUserTypes()->getQuery([
-            'id' => array_keys(array_filter((array)$request->getRequiredBodyParam('types')))
+            'id' => empty($types) ? ':empty:' : $types
         ]);
 
         $query->setCachedResult(
