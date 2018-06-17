@@ -24,35 +24,6 @@
 
     <div id="general">
         {{ uriSettings(settings, true) }}
-
-        <hr/>
-
-        {% set cols = {
-            'label' : {
-                type: 'singleline',
-                heading: 'Label',
-                width: '50'
-            },
-            'value' : {
-                type: 'singleline',
-                heading: 'Value',
-                width: '50'
-            }} %}
-
-        {% set rows = [] %}
-        {% for stateValue, stateLabel in settings.states %}
-            {% set rows = rows|merge([{label: stateLabel, value: stateValue}]) %}
-        {% endfor %}
-        {{ forms.editableTableField({
-            label: "States"|t('organizations'),
-            instructions: "Enter each state on a new row."|t('organizations'),
-            id: 'states',
-            name: 'states',
-            addRowLabel: "Add a state"|t('organizations'),
-            cols: cols,
-            rows: rows,
-            errors: settings.getErrors('states')
-        }) }}
     </div>
     <div id="layout" class="hidden">
         {% include "_includes/fieldlayoutdesigner" with {

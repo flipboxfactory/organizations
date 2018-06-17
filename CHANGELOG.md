@@ -1,5 +1,9 @@
 Changelog
 =========
+## Unreleased
+### Removed
+- State field from elements 
+
 ## 1.0.0-rc.14 - 2018-06-13
 ### Fixed
 - User Type associations were not saving correctly when all associations were un-selected.

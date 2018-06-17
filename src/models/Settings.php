@@ -27,16 +27,6 @@ class Settings extends Model
         traits\SiteSettingAttribute;
 
     /**
-     * @var array|null
-     */
-    private $states;
-
-    /**
-     * @var string
-     */
-    public $defaultState;
-
-    /**
      * @var int|null|false
      */
     public $recordsCacheDuration = false;
@@ -169,8 +159,7 @@ class Settings extends Model
                 ],
                 [
                     [
-                        'siteSettings',
-                        'states'
+                        'siteSettings'
                     ],
                     'safe',
                     'on' => [
@@ -190,7 +179,6 @@ class Settings extends Model
             parent::attributes(),
             $this->fieldLayoutAttributes(),
             [
-                'states',
                 'siteSettings'
             ]
         );
@@ -205,7 +193,6 @@ class Settings extends Model
             parent::attributeLabels(),
             $this->fieldLayoutAttributeLabels(),
             [
-                'states' => Craft::t('organizations', 'States'),
                 'siteSettings' => Craft::t('organizations', 'Site Settings')
             ]
         );
@@ -218,36 +205,37 @@ class Settings extends Model
 
     /**
      * @return bool
+     * @deprecated
      */
     public function hasStates(): bool
     {
-        return !empty($this->states);
+        return false;
     }
 
     /**
      * @return array
+     * @deprecated
      */
     public function getStates(): array
     {
-        return (array)$this->states;
+        return [];
     }
 
     /**
-     * @param null|array|string $states
      * @return $this
+     * @deprecated
      */
-    public function setStates($states = null)
+    public function setStates()
     {
-        if ($states === null) {
-            $this->states = null;
-            return $this;
-        }
+        return $this;
+    }
 
-        if (!is_array($states)) {
-            $states = [$states];
-        }
-
-        $this->states = $states;
+    /**
+     * @return $this
+     * @deprecated
+     */
+    public function setDefaultStates()
+    {
         return $this;
     }
 

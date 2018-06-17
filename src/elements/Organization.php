@@ -33,11 +33,6 @@ class Organization extends Element
         traits\UsersAttribute;
 
     /**
-     * @var string
-     */
-    public $state;
-
-    /**
      * @inheritdoc
      */
     public static function displayName(): string
@@ -118,7 +113,6 @@ class Organization extends Element
             parent::attributes(),
             $this->dateJoinedAttributes(),
             [
-                'state',
                 //                'types',
                 //                'activeType',
                 //                'primaryType',
@@ -142,7 +136,6 @@ class Organization extends Element
                         'activeType',
                         'primaryType',
                         'users',
-                        'state'
                     ],
                     'safe',
                     'on' => [
@@ -167,7 +160,6 @@ class Organization extends Element
                 //                'activeType' => Craft::t('organizations', 'Active Type'),
                 //                'primaryType' => Craft::t('organizations', 'Primary Type'),
                 //                'users' => Craft::t('organizations', 'Users'),
-                'state' => Craft::t('organizations', 'State')
             ]
         );
     }
@@ -309,8 +301,7 @@ class Organization extends Element
     protected static function defineSearchableAttributes(): array
     {
         return [
-            'id',
-            'state'
+            'id'
         ];
     }
 
@@ -322,7 +313,6 @@ class Organization extends Element
         return [
             'title' => Craft::t('organizations', 'Name'),
             'dateJoined' => Craft::t('organizations', 'Join Date'),
-            'state' => Craft::t('organizations', 'Status')
         ];
     }
 
@@ -363,7 +353,6 @@ class Organization extends Element
         return [
             'id' => ['label' => Craft::t('app', 'Name')],
             'uri' => ['label' => Craft::t('app', 'URI')],
-            'state' => ['label' => Craft::t('organizations', 'State')],
             'types' => ['label' => Craft::t('organizations', 'Type(s)')],
             'dateJoined' => ['label' => Craft::t('organizations', 'Join Date')],
             'dateCreated' => ['label' => Craft::t('app', 'Date Created')],

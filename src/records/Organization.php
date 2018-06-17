@@ -22,7 +22,6 @@ use yii\db\ActiveQueryInterface;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @property string $state
  * @property string $dateJoined
  * @property ElementInterface $element
  * @property OrganizationType[] $types
@@ -47,29 +46,6 @@ class Organization extends ActiveRecordWithId
         }
 
         return parent::beforeSave($insert);
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rules()
-    {
-        $rules = array_merge(
-            parent::rules()
-        );
-
-        $settings = OrganizationPlugin::getInstance()->getSettings();
-        if ($settings->hasStates()) {
-            $rules[] = [
-                [
-                    'state'
-                ],
-                'in',
-                'range' => array_keys($settings->getStates())
-            ];
-        }
-
-        return $rules;
     }
 
     /**

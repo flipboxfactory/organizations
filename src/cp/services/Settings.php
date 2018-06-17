@@ -35,46 +35,9 @@ class Settings extends Component
             throw new InvalidConfigException("Unable to save field layout");
         }
 
-        // Save plugin settings
-        if (Craft::$app->getPlugins()->savePluginSettings(
+        return Craft::$app->getPlugins()->savePluginSettings(
             OrganizationPlugin::getInstance(),
             $settingsModel->toArray()
-        )) {
-            // Alter table
-            return $this->alterStateColumn();
-        }
-
-        return false;
-    }
-
-    /**
-     * @return bool
-     * @throws \Throwable
-     */
-    private function alterStateColumn(): bool
-    {
-        $migration = new AlterOrganizationStates([
-            'states' => $this->getStateDbColumnValue()
-        ]);
-
-        ob_start();
-        $migration->up();
-        ob_end_clean();
-
-        return true;
-    }
-
-    /**
-     * @return array|null
-     */
-    private function getStateDbColumnValue()
-    {
-        $settings = OrganizationPlugin::getInstance()->getSettings();
-        if (!$settings->hasStates()) {
-            return null;
-        }
-
-
-        return array_keys($settings->getStates());
+        );
     }
 }

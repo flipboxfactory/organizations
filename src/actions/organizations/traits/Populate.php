@@ -84,12 +84,6 @@ trait Populate
             $organization->enabledForSite
         );
 
-        // State
-        $organization->state = (string)$request->getBodyParam(
-            'state',
-            $organization->state
-        );
-
         // Site
         $this->populateSiteFromRequest($organization);
 

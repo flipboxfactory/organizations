@@ -170,7 +170,6 @@ class Element extends Component
 
         // Populate the record attributes
         $record->id = $organization->getId();
-        $record->state = $organization->state;
         $record->dateJoined = $organization->dateJoined;
 
         return $record;

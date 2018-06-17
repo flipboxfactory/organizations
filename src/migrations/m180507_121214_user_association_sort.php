@@ -8,7 +8,6 @@
 
 namespace flipbox\organizations\migrations;
 
-use Craft;
 use craft\db\Migration;
 use flipbox\organizations\records\UserAssociation;
 
@@ -18,11 +17,12 @@ use flipbox\organizations\records\UserAssociation;
 class m180507_121214_user_association_sort extends Migration
 {
     /**
-     * @return bool|void
+     * @inheritdoc
+     * @throws \yii\base\NotSupportedException
      */
     public function safeUp()
     {
-        $table = Craft::$app->getDb()->getSchema()->getTableSchema(
+        $table = $this->getDb()->getSchema()->getTableSchema(
             UserAssociation::tableName()
         );
 
@@ -49,6 +49,6 @@ class m180507_121214_user_association_sort extends Migration
     public function safeDown()
     {
         echo "m180507_1212141_user_association_sort cannot be reverted.\n";
-        return false;
+        return true;
     }
 }

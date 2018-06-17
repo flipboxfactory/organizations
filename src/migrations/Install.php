@@ -64,7 +64,6 @@ class Install extends Migration
     {
         $this->createTable(OrganizationRecord::tableName(), [
             'id' => $this->primaryKey(),
-            'state' => $this->string(),
             'dateJoined' => $this->dateTime()->notNull(),
             'dateCreated' => $this->dateTime()->notNull(),
             'dateUpdated' => $this->dateTime()->notNull(),

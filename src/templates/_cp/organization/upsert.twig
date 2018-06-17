@@ -116,18 +116,6 @@
             {% endif %}
         {% endif %}
 
-        {% if craft.organizations.settings.hasStates() %}
-            {{ forms.selectField({
-                label: "State"|t('organizations'),
-                id: 'state',
-                name: "state",
-                value: organization.state,
-                errors: organization.getErrors('state'),
-                required: true,
-                options: craft.organizations.settings.states
-            }) }}
-        {% endif %}
-
         {% set activeTypeValue = '' %}
         {% set activeTypeName = "Default"|t('organizations') %}
         {% set activeType = organization.activeType %}

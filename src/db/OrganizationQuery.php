@@ -41,11 +41,6 @@ class OrganizationQuery extends ElementQuery
         OrganizationTypeAttribute;
 
     /**
-     * @var string|string[]|null The organization state(s) that the resulting organizations must have.
-     */
-    public $state;
-
-    /**
      * @var mixed When the resulting organizations must have joined.
      */
     public $dateJoined;
@@ -59,7 +54,6 @@ class OrganizationQuery extends ElementQuery
         $this->joinElementTable($alias);
 
         $this->query->select([
-            $alias . '.state',
             $alias . '.dateJoined'
         ]);
 
@@ -78,10 +72,6 @@ class OrganizationQuery extends ElementQuery
     {
         if ($this->dateJoined) {
             $this->subQuery->andWhere(Db::parseDateParam($alias . '.dateJoined', $this->dateJoined));
-        }
-
-        if ($this->state) {
-            $this->subQuery->andWhere(Db::parseParam($alias . '.state', $this->state));
         }
     }
 

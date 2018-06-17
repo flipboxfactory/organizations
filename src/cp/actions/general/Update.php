@@ -76,28 +76,7 @@ class Update extends ModelCreate
     protected function attributeValuesFromBody(): array
     {
         $attributes = parent::attributeValuesFromBody();
-        $attributes['states'] = $this->stateValuesFromBody();
         return $attributes;
-    }
-
-    /**
-     * Normalize settings from body
-     *
-     * @return array|null
-     */
-    protected function stateValuesFromBody()
-    {
-        if ($rawStatuses = Craft::$app->getRequest()->getBodyParam('states', [])) {
-            $stateArray = [];
-
-            foreach (ArrayHelper::toArray($rawStatuses) as $rawStatus) {
-                $stateArray = array_merge(
-                    $stateArray,
-                    $this->normalizeStateConfig($rawStatus)
-                );
-            }
-        }
-        return $stateArray ?? null;
     }
 
     /**
