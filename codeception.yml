@@ -7,6 +7,7 @@ paths:
 actor_suffix: Tester
 params:
   - .env
+  - env
 settings:
   bootstrap: _bootstrap.php
 coverage:
