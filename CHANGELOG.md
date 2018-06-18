@@ -1,8 +1,8 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.15 - 2018-06-18
 ### Removed
-- State field from elements 
+- The concept of state from elements per [#4](https://github.com/flipboxfactory/organizations/issues/4).
 
 ## 1.0.0-rc.14 - 2018-06-13
 ### Fixed
