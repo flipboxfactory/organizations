@@ -1,5 +1,10 @@
 Changelog
 =========
+
+## 1.0.0-rc.16 - 2018-06-18
+### Fixed
+- Issue where 'organizationId' and or 'userId' were not getting applied properly to user association queries.
+
 ## 1.0.0-rc.15 - 2018-06-18
 ### Removed
 - The concept of state from elements per [#4](https://github.com/flipboxfactory/organizations/issues/4).
