@@ -5,6 +5,8 @@ paths:
     support: tests/_support
     envs: tests/_envs
 actor_suffix: Tester
+params:
+  - .env
 settings:
   bootstrap: _bootstrap.php
 coverage:
@@ -19,14 +21,13 @@ extensions:
 modules:
   config:
       Yii2:
-          configFile: 'tests/_config/test.php'
+          configFile: 'tests/_craft/config/test.php'
   enabled:
-#      - Db:
-#          dsn: 'mysql:host=127.0.0.1;dbname=%TEST_DB_NAME%;'
-#          user: '%TEST_DB_USER%'
-#          password: '%TEST_DB_PASS%'
-#          dump: 'tests/_data/dump.sql'
-#          populate: true
-#          cleanup: true
-#          reconnect: true
-
+      - Db:
+          dsn: 'mysql:host=%TEST_DB_SERVER%;dbname=%TEST_DB_DATABASE%;'
+          user: '%TEST_DB_USER%'
+          password: '%TEST_DB_PASSWORD%'
+          dump: 'tests/_data/dump.sql'
+          populate: true
+          cleanup: true
+          reconnect: true
