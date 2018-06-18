@@ -75,9 +75,9 @@ class RemoveUsers extends ElementAction
         );
 
         if (false === OrganizationPlugin::getInstance()->getOrganizations()->dissociate(
-                $query,
-                $organization
-            )) {
+            $query,
+            $organization
+        )) {
             $this->setMessage(
                 Craft::t(
                     'organizations',
