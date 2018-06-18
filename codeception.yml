@@ -6,7 +6,7 @@ paths:
     envs: tests/_envs
 actor_suffix: Tester
 params:
-  - .env
+  - tests/_craft/config/params.php
   - env
 settings:
   bootstrap: _bootstrap.php
