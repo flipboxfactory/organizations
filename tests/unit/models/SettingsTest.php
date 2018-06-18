@@ -4,51 +4,20 @@ namespace flipbox\organizations\tests\models;
 
 use Codeception\Test\Unit;
 use flipbox\organizations\models\Settings;
+use flipbox\organizations\models\SiteSettings;
 
 class SettingsTest extends Unit
 {
     /**
      * Set a state as a string and result in an array
      */
-    public function testStateCanBeSetAsString()
+    public function testSiteSettingsClass()
     {
         $settings = new Settings();
 
-        $settings->setStates('foo');
         $this->assertEquals(
-            $settings->getStates(),
-            ['foo']
-        );
-    }
-
-    /**
-     * Set a state as an array and result in an array
-     */
-    public function testStateCanBeSetAsArray()
-    {
-        $settings = new Settings();
-
-        $settings->setStates(['foo', 'bar']);
-        $this->assertEquals(
-            $settings->getStates(),
-            ['foo', 'bar']
-        );
-    }
-
-    /**
-     * Set a state as an array and result in an array
-     */
-    public function testHasState()
-    {
-        $settings = new Settings();
-
-        $this->assertFalse(
-            $settings->hasStates()
-        );
-
-        $settings->setStates(['foo', 'bar']);
-        $this->assertTrue(
-            $settings->hasStates()
+            $settings::siteSettingsClass(),
+            SiteSettings::class
         );
     }
 }

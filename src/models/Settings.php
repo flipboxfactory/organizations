@@ -204,24 +204,6 @@ class Settings extends Model
      *******************************************/
 
     /**
-     * @return bool
-     * @deprecated
-     */
-    public function hasStates(): bool
-    {
-        return false;
-    }
-
-    /**
-     * @return array
-     * @deprecated
-     */
-    public function getStates(): array
-    {
-        return [];
-    }
-
-    /**
      * @return $this
      * @deprecated
      */
