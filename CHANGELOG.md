@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 1.0.0-rc.16 - 2018-06-18
 ### Fixed
 - Issue where 'organizationId' and or 'userId' were not getting applied properly to user association queries.
 
