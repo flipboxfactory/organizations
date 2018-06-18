@@ -1,9 +1,8 @@
 module.exports = {
     title: 'Organizations',
-    description: 'A demo VuePress site',
+    description: 'Simple parent + child management',
     base: '/',
     themeConfig: {
-        repo: 'craftcms/docs',
         docsRepo: 'flipboxfactory/organizations',
         docsDir: 'docs',
         docsBranch: 'master',
