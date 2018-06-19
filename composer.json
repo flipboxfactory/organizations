@@ -53,6 +53,6 @@
 		"downloadUrl": "https://github.com/flipboxfactory/organizations/archive/master.zip",
 		"hasCpSettings": true,
 		"hasCpSection": true,
-		"schemaVersion": "1.1.1"
+		"schemaVersion": "1.2.0"
 	}
 }
