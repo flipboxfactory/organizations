@@ -100,8 +100,15 @@ class OrganizationsController extends AbstractController
             }
         }
 
-        // Type
-        $type = $this->module->module->getOrganizationTypes()->resolveFromRequest($organization->getPrimaryType());
+        $type = Craft::$app->getRequest()->getParam('type');
+        if (!empty($type)){
+            $type = OrganizationPlugin::getInstance()->getOrganizationTypes()->get($identifier);
+        }
+
+        if (!$type instanceof TypeRecord) {
+            $type = $organization->getPrimaryType();
+        }
+
         if ($type !== null) {
             if (!$this->module->module->getSettings()->isSiteEnabled($site->id)) {
                 throw new InvalidConfigException("Type is not enabled for site.");
