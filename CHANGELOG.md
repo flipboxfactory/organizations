@@ -1,5 +1,8 @@
 Changelog
 =========
+## Unreleased
+### Fixed
+- Issue wehre saving a new organization without a type associated would throw and exception.
 
 ## 1.0.0-rc.16 - 2018-06-18
 ### Fixed
