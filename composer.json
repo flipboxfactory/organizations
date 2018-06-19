@@ -1,7 +1,7 @@
 {
 	"name": "flipboxfactory/organizations",
 	"description": "Simple parent + child management",
-	"version": "1.0.0-rc.16",
+	"version": "1.0.0-rc.17",
 	"type": "craft-plugin",
 	"keywords": [
 		"flipbox",
@@ -53,6 +53,6 @@
 		"downloadUrl": "https://github.com/flipboxfactory/organizations/archive/master.zip",
 		"hasCpSettings": true,
 		"hasCpSection": true,
-		"schemaVersion": "1.1.1"
+		"schemaVersion": "1.2.0"
 	}
 }

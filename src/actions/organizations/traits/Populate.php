@@ -55,6 +55,7 @@ trait Populate
 
     /**
      * @param OrganizationElement $organization
+     * @throws \flipbox\ember\exceptions\NotFoundException
      */
     protected function populateFromRequest(OrganizationElement $organization)
     {
@@ -91,9 +92,12 @@ trait Populate
         $this->populateDateFromRequest($organization, 'dateJoined');
 
         // Active type
-        $organization->setActiveType(
-            Organizations::getInstance()->getOrganizationTypes()->resolveFromRequest()
-        );
+        $type = Craft::$app->getRequest()->getParam('type');
+        if (!empty($type)) {
+            $organization->setActiveType(
+                Organizations::getInstance()->getOrganizationTypes()->get($type)
+            );
+        }
 
         // Set types
         $organization->setTypesFromRequest(

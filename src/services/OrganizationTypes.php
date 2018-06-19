@@ -101,25 +101,7 @@ class OrganizationTypes extends Component
 
         return $object;
     }
-
-    /**
-     * @param TypeRecord|null $type
-     * @return TypeRecord|null
-     * @throws \flipbox\ember\exceptions\NotFoundException
-     */
-    public function resolveFromRequest(TypeRecord $type = null)
-    {
-        if (null !== ($identifier = Craft::$app->getRequest()->getParam('type'))) {
-            return OrganizationPlugin::getInstance()->getOrganizationTypes()->get($identifier);
-        }
-
-        if ($type instanceof TypeRecord) {
-            return $type;
-        }
-
-        return null;
-    }
-
+    
     /**
      * @param array $config
      * @return array

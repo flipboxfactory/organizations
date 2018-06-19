@@ -100,8 +100,7 @@ class OrganizationsController extends AbstractController
             }
         }
 
-        // Type
-        $type = $this->module->module->getOrganizationTypes()->resolveFromRequest($organization->getPrimaryType());
+        $type = $this->findActiveType($organization->getPrimaryType());
         if ($type !== null) {
             if (!$this->module->module->getSettings()->isSiteEnabled($site->id)) {
                 throw new InvalidConfigException("Type is not enabled for site.");
@@ -142,6 +141,25 @@ class OrganizationsController extends AbstractController
             static::TEMPLATE_UPSERT,
             $variables
         );
+    }
+
+    /**
+     * @param OrganizationType|null $default
+     * @return OrganizationType|mixed
+     * @throws \flipbox\ember\exceptions\NotFoundException
+     */
+    private function findActiveType(OrganizationType $default = null)
+    {
+        $type = Craft::$app->getRequest()->getParam('type');
+        if (!empty($type)) {
+            $type = OrganizationPlugin::getInstance()->getOrganizationTypes()->get($type);
+        }
+
+        if ($type instanceof OrganizationType) {
+            return $type;
+        }
+
+        return $default;
     }
 
     /**
