@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.19 - 2018-06-20
 ### Added
 - User detail sidebar lists the organizations that a user is associated to.
 
