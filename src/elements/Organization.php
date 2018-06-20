@@ -43,6 +43,14 @@ class Organization extends Element
     /**
      * @inheritdoc
      */
+    public function getIsEditable(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
     public static function hasTitles(): bool
     {
         return true;

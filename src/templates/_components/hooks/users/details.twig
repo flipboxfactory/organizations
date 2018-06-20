@@ -7,21 +7,27 @@
 {% macro listOrganizations(user) %}
     {% set organizations = user.getOrganizations({status: null}).all() %}
     {% if organizations|length %}
+        {% do view.registerAssetBundle("flipbox\\organizations\\web\\assets\\userassociations\\UserAssociations") %}
+        {% js %}
+            new Craft.OrganizationManageAssociations({
+                sourceElementId: {{ user.id }},
+                criteria: {
+                    enabledForSite: null,
+                    siteId: {{ user.siteId ?? craft.app.sites.currentSite.id }}
+                }
+            });
+        {% endjs %}
         <hr />
-        <div class="meta read-only">
+        <div class="meta read-only" id="organization-associations">
             <h4 class="heading">Organizations</h4>
-            <ul>
-            {% for organization in organizations %}
-                <li class="data">
-                    <div class="value flex">
-                        <div class="flex-grow">
-                            <span class="status {{ organization.status }}"></span>
-                            <a href="{{ organization.getCpEditUrl() }}">{{ organization.title }}</a>
-                        </div>
-                    </div>
-                </li>
-            {% endfor %}
-            </ul>
+            <div class="elements">
+                {% set context = 'field' %}
+                {% for element in organizations %}
+                    {% hook "cp.elements.element" %}
+                {% endfor %}
+            </div>
+
+            <div class="btn add icon dashed" tabindex="0">Add Organization</div>
         </div>
     {% endif %}
 {% endmacro %}
