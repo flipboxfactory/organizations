@@ -70,8 +70,7 @@ class UserTypeAssociations extends SortableAssociations
     }
 
     /**
-     * @param array $config
-     * @return SortableAssociationQueryInterface|UserTypeAssociationQuery
+     * @inheritdoc
      */
     public function getQuery($config = []): SortableAssociationQueryInterface
     {

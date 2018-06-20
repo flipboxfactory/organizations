@@ -25,6 +25,7 @@ use flipbox\organizations\records\UserAssociation;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
+ * @method UserOrganizationAssociationQuery parentGetQuery($config = [])
  * @method UserAssociation create(array $attributes = [])
  * @method UserAssociation find($identifier)
  * @method UserAssociation get($identifier)
@@ -39,7 +40,9 @@ use flipbox\organizations\records\UserAssociation;
  */
 class OrganizationUserAssociations extends SortableAssociations
 {
-    use Accessor;
+    use Accessor {
+        getQuery as parentGetQuery;
+    }
 
     /**
      * @inheritdoc
@@ -86,22 +89,10 @@ class OrganizationUserAssociations extends SortableAssociations
 
     /**
      * @inheritdoc
-     * @return OrganizationUserAssociationQuery
      */
     public function getQuery($config = []): SortableAssociationQueryInterface
     {
-        /** @var OrganizationUserAssociationQuery $query */
-        $query = Craft::createObject(
-            OrganizationUserAssociationQuery::class,
-            [UserAssociation::class]
-        );
-
-        QueryHelper::configure(
-            $query,
-            $this->prepareQueryConfig($config)
-        );
-
-        return $query;
+        return $this->parentGetQuery($config);
     }
 
     /**

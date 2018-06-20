@@ -22,6 +22,7 @@ use yii\db\ActiveQuery;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
+ * @method OrganizationTypeAssociationQuery parentGetQuery($config = [])
  * @method OrganizationTypeAssociation create(array $attributes = [])
  * @method OrganizationTypeAssociation find($identifier)
  * @method OrganizationTypeAssociation get($identifier)
@@ -71,8 +72,7 @@ class OrganizationTypeAssociations extends SortableAssociations
     }
 
     /**
-     * @param array $config
-     * @return SortableAssociationQueryInterface|ActiveQuery
+     * @inheritdoc
      */
     public function getQuery($config = []): SortableAssociationQueryInterface
     {
