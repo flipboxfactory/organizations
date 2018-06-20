@@ -62,7 +62,7 @@ class UserOrganizationsBehavior extends Behavior
         Event::on(
             User::class,
             User::EVENT_AFTER_DELETE,
-            function (ModelEvent $e) {
+            function (Event $e) {
                 /** @var User $user */
                 $user = $e->sender;
                 $this->delete($user);
