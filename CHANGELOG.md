@@ -1,5 +1,9 @@
 Changelog
 =========
+## 1.0.0-rc.18 - 2018-06-20
+### Fixed
+- Bug when saving a user association another association may get deleted.
+
 ## 1.0.0-rc.17 - 2018-06-19
 ### Fixed
 - Issue where saving a new organization without a type associated would throw and exception.

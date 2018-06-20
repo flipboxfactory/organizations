@@ -134,7 +134,7 @@ class UserTypeAssociations extends SortableAssociations
         int $userAssociationId
     ): array {
         return $this->query($userAssociationId)
-            ->indexBy('typeId')
+            ->indexBy(static::TARGET_ATTRIBUTE)
             ->all();
     }
 }

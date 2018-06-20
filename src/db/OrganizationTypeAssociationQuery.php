@@ -93,9 +93,9 @@ class OrganizationTypeAssociationQuery extends SortableAssociationQuery
     }
 
     /**
-     * Apply conditions
+     * @inheritdoc
      */
-    protected function applyConditions()
+    public function prepare($builder)
     {
         if ($this->typeId !== null) {
             $this->andWhere(Db::parseParam('typeId', $this->typeId));
@@ -104,5 +104,7 @@ class OrganizationTypeAssociationQuery extends SortableAssociationQuery
         if ($this->organizationId !== null) {
             $this->andWhere(Db::parseParam('organizationId', $this->organizationId));
         }
+
+        return parent::prepare($builder);
     }
 }
