@@ -1,5 +1,9 @@
 Changelog
 =========
+## Unreleased
+### Added
+- User detail sidebar lists the organizations that a user is associated to.
+
 ## 1.0.0-rc.18 - 2018-06-20
 ### Fixed
 - Bug when saving a user association another association may get deleted.
