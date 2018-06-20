@@ -165,6 +165,17 @@ class Organizations extends BasePlugin
                 }
             }
         );
+
+        // Show organization in the sidebar?
+        $userSidebarTemplate = $this->getSettings()->userSidebarTemplate;
+        if (!empty($userSidebarTemplate)) {
+            Craft::$app->getView()->hook('cp.users.edit.details', function(&$context) use ($userSidebarTemplate) {
+                return Craft::$app->getView()->renderTemplate(
+                    $userSidebarTemplate,
+                    ['context' => $context]
+                );
+            });
+        }
     }
 
     /**

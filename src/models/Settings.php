@@ -29,6 +29,11 @@ class Settings extends Model
     /**
      * @var int|null|false
      */
+    public $userSidebarTemplate = 'organizations/_components/hooks/users/details';
+    
+    /**
+     * @var int|null|false
+     */
     public $recordsCacheDuration = false;
 
     /**

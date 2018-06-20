@@ -1,0 +1,27 @@
+{% set user = context.user ?? null %}
+{% if user %}
+    {% from _self import listOrganizations %}
+    {{ listOrganizations(user) }}
+{% endif %}
+
+{% macro listOrganizations(user) %}
+    {% set organizations = user.getOrganizations({status: null}).all() %}
+    {% if organizations|length %}
+        <hr />
+        <div class="meta read-only">
+            <h4 class="heading">Organizations</h4>
+            <ul>
+            {% for organization in organizations %}
+                <li class="data">
+                    <div class="value flex">
+                        <div class="flex-grow">
+                            <span class="status {{ organization.status }}"></span>
+                            <a href="{{ organization.getCpEditUrl() }}">{{ organization.title }}</a>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+{% endmacro %}
