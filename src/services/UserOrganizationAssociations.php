@@ -139,11 +139,10 @@ class UserOrganizationAssociations extends SortableAssociations
     private function query(
         $source
     ): SortableAssociationQueryInterface {
-        /** @var UserOrganizationAssociationQuery $query */
-        $query = $this->getQuery();
-        return $query->where([
-            static::TARGET_ATTRIBUTE => $source
-        ])
+        return $this->getQuery()
+            ->andWhere([
+                static::SOURCE_ATTRIBUTE => $source
+            ])
             ->orderBy([static::SORT_ORDER_ATTRIBUTE => SORT_ASC]);
     }
 
@@ -154,9 +153,8 @@ class UserOrganizationAssociations extends SortableAssociations
     private function associations(
         $source
     ): array {
-        /** @var UserOrganizationAssociationQuery $query */
-        $query = $this->query($source);
-        return $query->indexBy(static::SOURCE_ATTRIBUTE)
+        return $this->query($source)
+            ->indexBy(static::SOURCE_ATTRIBUTE)
             ->all();
     }
 }

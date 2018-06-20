@@ -71,6 +71,7 @@ class UserTypeAssociations extends SortableAssociations
 
     /**
      * @inheritdoc
+     * @return UserTypeAssociationQuery
      */
     public function getQuery($config = []): SortableAssociationQueryInterface
     {
@@ -119,7 +120,7 @@ class UserTypeAssociations extends SortableAssociations
         int $userAssociationId
     ): UserTypeAssociationQuery {
         return $this->getQuery()
-            ->where([
+            ->andWhere([
                 static::SOURCE_ATTRIBUTE => $userAssociationId
             ])
             ->orderBy(['sortOrder' => SORT_ASC]);

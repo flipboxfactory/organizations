@@ -73,6 +73,7 @@ class OrganizationTypeAssociations extends SortableAssociations
 
     /**
      * @inheritdoc
+     * @return OrganizationTypeAssociationQuery
      */
     public function getQuery($config = []): SortableAssociationQueryInterface
     {
@@ -106,11 +107,10 @@ class OrganizationTypeAssociations extends SortableAssociations
     private function query(
         $source
     ): SortableAssociationQueryInterface {
-        /** @var OrganizationTypeAssociationQuery $query */
-        $query = $this->getQuery();
-        return $query->where([
-            static::SOURCE_ATTRIBUTE => $source
-        ])
+        return $this->getQuery()
+            ->andWhere([
+                static::SOURCE_ATTRIBUTE => $source
+            ])
             ->orderBy(['sortOrder' => SORT_ASC]);
     }
 
