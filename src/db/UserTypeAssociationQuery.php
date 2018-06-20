@@ -79,9 +79,9 @@ class UserTypeAssociationQuery extends SortableAssociationQuery
     }
 
     /**
-     * Apply conditions
+     * @inheritdoc
      */
-    protected function applyConditions()
+    public function prepare($builder)
     {
         if ($this->userId !== null) {
             $this->andWhere(Db::parseParam('userId', $this->userId));
@@ -90,5 +90,7 @@ class UserTypeAssociationQuery extends SortableAssociationQuery
         if ($this->typeId !== null) {
             $this->andWhere(Db::parseParam('typeId', $this->typeId));
         }
+
+        return parent::prepare($builder);
     }
 }

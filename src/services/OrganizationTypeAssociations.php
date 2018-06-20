@@ -22,7 +22,6 @@ use yii\db\ActiveQuery;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method OrganizationTypeAssociationQuery parentGetQuery($config = [])
  * @method OrganizationTypeAssociation create(array $attributes = [])
  * @method OrganizationTypeAssociation find($identifier)
  * @method OrganizationTypeAssociation get($identifier)
@@ -132,15 +131,14 @@ class OrganizationTypeAssociations extends SortableAssociations
     }
 
     /**
-     * @param $source
+     * @param int $sourceId
      * @return array
      */
     private function associations(
-        $source
+        int $sourceId
     ): array {
-        /** @var OrganizationTypeAssociationQuery $query */
-        $query = $this->getQuery($source);
-        return $query->indexBy(static::TARGET_ATTRIBUTE)
+        return $this->query($sourceId)
+            ->indexBy(static::TARGET_ATTRIBUTE)
             ->all();
     }
 }
