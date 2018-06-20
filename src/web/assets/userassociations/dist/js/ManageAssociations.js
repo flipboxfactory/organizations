@@ -35,11 +35,11 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         this._initialized = true;
     },
 
-    getElements: function() {
+    getElements: function () {
         return this.$elementsContainer.children();
     },
 
-    resetElements: function() {
+    resetElements: function () {
         if (this.$elements !== null) {
             this.removeElements(this.$elements);
         } else {
@@ -49,7 +49,7 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         this.addElements(this.getElements());
     },
 
-    addElements: function($elements) {
+    addElements: function ($elements) {
         $elements = $.makeArray($elements);
         for (var i = 0; i < $elements.length; i++) {
             this.addElement($($elements[i]));
@@ -61,12 +61,12 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         $element.addClass('removable').removeClass('small')
         $element.prepend('<a class="delete icon" title="' + Craft.t('app', 'Remove') + '"></a>');
 
-        $element.find('.delete').on('click', $.proxy(function(ev) {
+        $element.find('.delete').on('click', $.proxy(function (ev) {
             this.dissociate($(ev.currentTarget).closest('.element'));
         }, this));
 
         if (this.settings.editable) {
-            this._handleShowElementEditor = $.proxy(function(ev) {
+            this._handleShowElementEditor = $.proxy(function (ev) {
                 var $element = $(ev.currentTarget);
                 if (Garnish.hasAttr($element, 'data-editable') && !$element.hasClass('disabled') && !$element.hasClass('loading')) {
                     this.elementEditor = this.createElementEditor($element);
@@ -100,19 +100,19 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         this.updateAddElementsBtn();
     },
 
-    createElementEditor: function($element) {
+    createElementEditor: function ($element) {
         return Craft.createElementEditor(this.settings.elementType, $element);
     },
 
-    createNewElement: function(elementInfo) {
+    createNewElement: function (elementInfo) {
         return elementInfo.$element.clone();
     },
 
-    getDisabledElementIds: function() {
+    getDisabledElementIds: function () {
         return this.getSelectedElementIds();
     },
 
-    getSelectedElementIds: function() {
+    getSelectedElementIds: function () {
         var ids = [];
 
         for (var i = 0; i < this.$elements.length; i++) {
@@ -122,48 +122,45 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         return ids;
     },
 
-    canAddMoreElements: function() {
+    canAddMoreElements: function () {
         return (!this.settings.limit || this.$elements.length < this.settings.limit);
     },
 
-    appendElement: function($element) {
+    appendElement: function ($element) {
         $element.appendTo(this.$elementsContainer);
     },
 
 
-    updateAddElementsBtn: function() {
+    updateAddElementsBtn: function () {
         if (this.canAddMoreElements()) {
             this.enableAddElementsBtn();
-        }
-        else {
+        } else {
             this.disableAddElementsBtn();
         }
     },
 
-    disableAddElementsBtn: function() {
+    disableAddElementsBtn: function () {
         if (this.$addElementBtn && !this.$addElementBtn.hasClass('disabled')) {
             this.$addElementBtn.addClass('disabled');
 
             if (this.settings.limit == 1) {
                 if (this._initialized) {
                     this.$addElementBtn.velocity('fadeOut', Craft.BaseElementSelectInput.ADD_FX_DURATION);
-                }
-                else {
+                } else {
                     this.$addElementBtn.hide();
                 }
             }
         }
     },
 
-    enableAddElementsBtn: function() {
+    enableAddElementsBtn: function () {
         if (this.$addElementBtn && this.$addElementBtn.hasClass('disabled')) {
             this.$addElementBtn.removeClass('disabled');
 
             if (this.settings.limit == 1) {
                 if (this._initialized) {
                     this.$addElementBtn.velocity('fadeIn', Craft.BaseElementSelectInput.REMOVE_FX_DURATION);
-                }
-                else {
+                } else {
                     this.$addElementBtn.show();
                 }
             }
@@ -176,7 +173,7 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         return data;
     },
 
-    associate: function($element, elementInfo) {
+    associate: function ($element, elementInfo) {
         var elementId = $element.data('id');
         if (elementId === null) {
             Craft.cp.displayError(
@@ -203,7 +200,6 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
                 this.appendElement($element);
                 this.addElement($element);
                 // this.animateElementIntoPlace(elementInfo.$element, $element);
-
             } else {
                 Craft.cp.displayError(
                     Craft.t('organizations', 'Association failed')
@@ -214,8 +210,7 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         return true;
     },
 
-    dissociate: function($element)
-    {
+    dissociate: function ($element) {
         var elementId = $element.data('id');
         if (elementId === null) {
             return;
@@ -240,10 +235,9 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
 
                 this.removeElement($element);
 
-                this.animateElementAway($element, function() {
+                this.animateElementAway($element, function () {
                     $element.remove();
                 });
-
             } else {
                 Craft.cp.displayError(
                     Craft.t('organizations', 'Dissociation failed')
@@ -256,7 +250,7 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
 
 
 
-    animateElementAway: function($element, callback) {
+    animateElementAway: function ($element, callback) {
         $element.css('z-index', 0);
 
         var animateCss = {
@@ -271,7 +265,7 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         $element.velocity(animateCss, Craft.BaseElementSelectInput.REMOVE_FX_DURATION, callback);
     },
 
-    getModalSettings: function() {
+    getModalSettings: function () {
         return $.extend({
             closeOtherModals: false,
             storageKey: this.modalStorageKey,
@@ -284,13 +278,13 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         }, this.settings.modalSettings);
     },
 
-    updateDisabledElementsInModal: function() {
+    updateDisabledElementsInModal: function () {
         if (this.modal.elementIndex) {
             this.modal.elementIndex.disableElementsById(this.getDisabledElementIds());
         }
     },
 
-    onModalSelect: function(elements) {
+    onModalSelect: function (elements) {
         if (this.settings.limit) {
             // Cut off any excess elements
             var slotsLeft = this.settings.limit - this.$elements.length;
@@ -311,7 +305,7 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         this.updateDisabledElementsInModal();
     },
 
-    showModal: function() {
+    showModal: function () {
         // Make sure we haven't reached the limit
         if (!this.canAddMoreElements()) {
             return;
@@ -319,13 +313,12 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
 
         if (!this.modal) {
             this.modal = this.createModal();
-        }
-        else {
+        } else {
             this.modal.show();
         }
     },
 
-    createModal: function() {
+    createModal: function () {
         return Craft.createElementSelectorModal(this.settings.elementType, this.getModalSettings());
     },
 
