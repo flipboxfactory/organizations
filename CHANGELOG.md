@@ -1,5 +1,9 @@
 Changelog
 =========
+## Unreleased
+### Fixed
+- User's organization list should appear even if no organizations are present.
+
 ## 1.0.0-rc.20 - 2018-06-21
 ### Changed
 - User detail sidebar can add/remove organizations.
