@@ -116,7 +116,7 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
         var ids = [];
 
         for (var i = 0; i < this.$elements.length; i++) {
-            ids.push(this.$elements.eq(i).data('id'));
+            ids.push(this.$elements[i].data('id'));
         }
 
         return ids;
@@ -199,7 +199,7 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
 
                 this.appendElement($element);
                 this.addElement($element);
-                // this.animateElementIntoPlace(elementInfo.$element, $element);
+                this.updateDisabledElementsInModal();
             } else {
                 Craft.cp.displayError(
                     Craft.t('organizations', 'Association failed')
@@ -301,8 +301,6 @@ Craft.OrganizationManageAssociations = Garnish.Base.extend({
             // Save association
             this.associate($element);
         }
-
-        this.updateDisabledElementsInModal();
     },
 
     showModal: function () {
