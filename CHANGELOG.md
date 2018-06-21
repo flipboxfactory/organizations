@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.20 - 2018-06-21
 ### Changed
 - User detail sidebar can add/remove organizations.
 
