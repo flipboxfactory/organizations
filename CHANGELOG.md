@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.21 - 2018-06-25
 ### Fixed
 - User's organization list should appear even if no organizations are present.
 

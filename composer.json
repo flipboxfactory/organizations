@@ -1,7 +1,7 @@
 {
 	"name": "flipboxfactory/organizations",
 	"description": "Simple parent + child management",
-	"version": "1.0.0-rc.20",
+	"version": "1.0.0-rc.21",
 	"type": "craft-plugin",
 	"keywords": [
 		"flipbox",
