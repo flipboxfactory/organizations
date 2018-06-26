@@ -10,9 +10,9 @@ module.exports = {
         search: true,
         searchMaxSuggestions: 10,
         nav: [
-            {text: 'Details', link: 'https://github.com/craftcms/docs/'},
-            {text: 'Changelog', link: 'https://github.com/craftcms/docs/'},
-            {text: 'Documentation', link: '/'}
+            {text: 'Documentation', link: 'https://SET_URL'},
+            {text: 'Changelog', link: 'https://github.com/flipboxfactory/organizations/blob/master/CHANGELOG.md'},
+            {text: 'Repo', link: 'https://github.com/flipboxfactory/organizations'}
         ],
         sidebar: {
             '/': [
@@ -21,9 +21,9 @@ module.exports = {
                     collapsable: false,
                     children: [
                         ['/', 'Introduction'],
-                        'requirements',
-                        ['installation', 'Installation / Upgrading'],
-                        'support'
+                        ['/requirements', 'Requirements'],
+                        ['/installation', 'Installation / Upgrading'],
+                        ['/support', 'Support'],
                     ]
                 },
                 {
@@ -72,7 +72,6 @@ module.exports = {
                         ['/queries/organization-type', 'Organization Type Query'],
                         ['/queries/user', 'User Query'],
                         ['/queries/user-type', 'User Type Query']
-
                     ]
                 }
             ]

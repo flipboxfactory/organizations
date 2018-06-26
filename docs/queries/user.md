@@ -6,7 +6,7 @@ We have attached an extra `organization` filter criteria to the native [User Que
 
 ## Params
 
-All of the standard [User Query] params are are available.  In addition, the following params are also available:
+All of the standard [User Query] params are available plus the following:
 
 | Property              | Type                                  | Description
 | --------------------- | ------------------------------------- | ---------------------------------------------------------------------------------
@@ -26,7 +26,7 @@ The organization criteria (above) can optionally accept three individual criteri
 
 ## Chain Setting
 
-All of the params (above) can also be accessed and chain-set.  The methods are named the same as the property.
+All of the params above can be accessed and chained together.  The methods are named the same as the property.
 
 Here is an example:
 

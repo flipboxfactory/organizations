@@ -1,6 +1,6 @@
 # User Type
 
-The User Type object is an extension of a native [Active Record].  In addition, the following can be utilized:
+The User Type object is an extension of a native [Active Record] plus the following:
 
 ## Public Properties
 The following properties are available:

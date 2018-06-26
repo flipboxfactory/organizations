@@ -5,7 +5,7 @@ We have attached an extra `organizations` attribute to the native [User Element]
 :::
 
 ## Public Properties
-All of the standard [User Element](https://docs.craftcms.com/api/v3/craft-elements-user.html#public-properties) public properties are available.  In addition, the following properties are also available:
+All of the standard [User Element](https://docs.craftcms.com/api/v3/craft-elements-user.html#public-properties) public properties are available plus the following:
 
 | Property              | Type                                  | Description
 | --------------------- | ------------------------------------- | ---------------------------------------------------------------------------------
@@ -13,7 +13,7 @@ All of the standard [User Element](https://docs.craftcms.com/api/v3/craft-elemen
 
 
 ## Public Methods
-All of the standard [User Element](https://docs.craftcms.com/api/v3/craft-elements-user.html#public-methods) public methods are available.  In addition, the following methods are also available:
+All of the standard [User Element](https://docs.craftcms.com/api/v3/craft-elements-user.html#public-methods) public methods are available plus the following:
 
 ### `getOrganizations( $criteria = [] )` 
 

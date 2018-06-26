@@ -1,6 +1,6 @@
 # Organization Type
 
-One may access the following public properties and methods on an [Organization Type].
+You may access the following public properties and methods on an [Organization Type].
 
 ## Public Properties
 The following properties are available:
@@ -11,7 +11,7 @@ The following properties are available:
 | `handle`              | [string]                              | The organization type's reference name
 | `name`                | [string]                              | The organization type's human readable name
 | `fieldLayoutId`       | [integer], [null]                     | The organization type's layout Id
-| `uid`                 | [string], [null]                      | The unversally unique identifier
+| `uid`                 | [string], [null]                      | The universally unique identifier
 | `dateCreated`         | [DateTime], [null]                    | The date the organization type was created
 | `dateUpdated`         | [DateTime], [null]                    | The date the organization type was last updated
 
@@ -25,7 +25,7 @@ Returns: [Field Layout]
 
 ::: code
 ```twig
-{% set object = craft.organizations.organizationTypes.get('technology') %} // Get an Organization Type
+{% set object = craft.organizations.organizationTypes.get('technology') %} {# Get an Organization Type #}
 {% set fieldLayout = object.getFieldLayout() %}
 <p>{{ fieldLayout.id }}</p>
 ```
@@ -49,7 +49,7 @@ Returns: an array of [Organization Type Site Settings]
 
 ::: code
 ```twig
-{% set object = craft.organizations.organizationTypes.find('technology') %} // Get an Organization Type
+{% set object = craft.organizations.organizationTypes.find('technology') %} {# Get an Organization Type #}
 {% set siteSettings = object.getSiteSettings() %}
 <ul>
 {% for site in siteSettings %} 

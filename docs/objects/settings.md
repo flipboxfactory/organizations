@@ -1,8 +1,8 @@
 # Settings
-The Organization Settings model supports all [Model] operations.  In addition, the following can be utilized:
+The Organization Settings model supports all [Model] operations plus the following:
 
 ## Public Properties
-All of the standard [Model](https://www.yiiframework.com/doc/api/2.0/yii-base-model#properties) public properties are available.  In addition, the following properties are also available:
+All of the standard [Model](https://www.yiiframework.com/doc/api/2.0/yii-base-model#properties) public properties are available plus the following:
 
 | Property              | Type                                  | Description
 | --------------------- | ------------------------------------- | ---------------------------------------------------------------------------------
@@ -10,7 +10,7 @@ All of the standard [Model](https://www.yiiframework.com/doc/api/2.0/yii-base-mo
     
 
 ## Public Methods
-All of the standard [Model](https://www.yiiframework.com/doc/api/2.0/yii-base-model#methods) public methods are available.  In addition, the following methods are also available:
+All of the standard [Model](https://www.yiiframework.com/doc/api/2.0/yii-base-model#methods) public methods are available plus the following:
 
 ### `getFieldLayoutId()` 
 

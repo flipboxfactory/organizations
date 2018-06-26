@@ -11,11 +11,11 @@ Common usages of [Organization Types] are:
 * Membership Tiers
 
 ### Examples
-Spark Technologies is a fortune 500 company; They sponsor (<- an [Organization Type]) an annual conference in exchange for premier advertisement placement and their logo featured on various pages throughout the site.
+Spark Technologies is a fortune 500 company; They sponsor (an [Organization Type]) an annual conference in exchange for premier advertisement placement and their logo featured on various pages throughout the site.
 Since this sponsorship requires a company logo, a special field layout is created to reflects the requirements.  Managing the Organization is intuitive because only the applicable fields are available for content publishing.
 
 ::: tip Notice
-One may opt to classify [Organizations] using a [Category] or other relation which is acceptable.  The suggested use of [Organization Types] occurs when tailored fields or sortable classifications are needed.
+You may opt to classify [Organizations] using a [Category] or other relation which is acceptable.  The suggested use of [Organization Types] occurs when tailored fields or sortable classifications are needed.
 :::
 
 [Category]: https://docs.craftcms.com/api/v3/craft-elements-category.html "Category"

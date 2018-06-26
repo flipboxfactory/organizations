@@ -1,9 +1,9 @@
 # User Type Query
 
-The User Type Query supports all [Active Query] operations.  In addition, the following can be utilized:
+The User Type Query supports all [Active Query] operations plus the following:
  
 ## Params
-All of the standard [Active Query](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery#properties) public properties are available.  In addition, the following properties are also available:
+All of the standard [Active Query](https://www.yiiframework.com/doc/api/2.0/yii-db-activequery#properties) public properties are available plus the following:
 
 | Property              | Type                                  | Description
 | --------------------- | ------------------------------------- | ---------------------------------------------------------------------------------
@@ -18,7 +18,7 @@ All of the standard [Active Query](https://www.yiiframework.com/doc/api/2.0/yii-
 
 ## Chain Setting
 
-All of the params (above) can also be accessed and chain-set.  The methods are named the same as the property.
+All of the params above can be accessed and chained together.  The methods are named the same as the property.
 
 Here is an example:
 

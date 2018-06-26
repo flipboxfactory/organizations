@@ -1,9 +1,9 @@
 # Organization
 
-One may access the following public properties and methods on an [Organization Element].
+You may access the following public properties and methods on an [Organization Element].
 
 ## Public Properties
-All of the standard [Element](https://docs.craftcms.com/api/v3/craft-base-element.html#public-properties) public properties are available.  In addition, the following properties are also available:
+All of the standard [Element](https://docs.craftcms.com/api/v3/craft-base-element.html#public-properties) public properties are available plus the following:
 
 | Property              | Type                                  | Description
 | --------------------- | ------------------------------------- | ---------------------------------------------------------------------------------
@@ -11,7 +11,7 @@ All of the standard [Element](https://docs.craftcms.com/api/v3/craft-base-elemen
 | `dateJoined`          | [DateTime], [null]                     | The date the organization joined
 
 ## Public Methods
-All of the standard [Element](https://docs.craftcms.com/api/v3/craft-base-element.html#public-methods) public methods are available.  In addition, the following methods are also available:
+All of the standard [Element](https://docs.craftcms.com/api/v3/craft-base-element.html#public-methods) public methods are available plus the following:
 
 [[toc]]
 
@@ -25,7 +25,7 @@ Returns: [User Query]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} // Get an Organization Element
+{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
 {% set users = element.getUsers({status: null}).all() %}
 <ul>
 {% for user in users %}
@@ -62,7 +62,7 @@ Returns: [Organization Type Query]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} // Get an Organization Element
+{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
 {% set users = element.getTypes({status: null}).all() %}
 <ul>
 {% for type in types %}
@@ -98,7 +98,7 @@ Returns: [Organization Type], [null]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} // Get an Organization Element
+{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
 {% set type = element.getType('technology') %}
 <p>{{ type.id }} - <strong>{{ type.name }}</strong></p>
 ```
@@ -122,7 +122,7 @@ Returns: [Organization Type], [null]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} // Get an Organization Element
+{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
 {% set type = element.getPrimaryType() %}
 <p>{{ type.id }} - <strong>{{ type.name }}</strong></p>
 ```
@@ -145,7 +145,7 @@ Returns: [Organization Type], [null]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} // Get an Organization Element
+{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
 {% set type = element.getActiveType() %}
 <p>{{ type.id }} - <strong>{{ type.name }}</strong></p>
 ```

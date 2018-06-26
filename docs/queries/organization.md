@@ -1,6 +1,6 @@
 # Organization Query
 
-The Organization Query supports all [Element Query] operations.  In addition, the following can be utilized:
+The Organization Query supports all [Element Query] operations plus the following:
 
 ## Params
 
@@ -15,7 +15,7 @@ The Organization Query supports all [Element Query] operations.  In addition, th
 
 ## Chain Setting
 
-All of the params (above) can also be accessed and chain-set.  The methods are named the same as the property.
+All of the params above can be accessed and chained together.  The methods are named the same as the property.
 
 Here is an example:
 
