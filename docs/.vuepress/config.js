@@ -18,7 +18,7 @@ module.exports = {
             '/': [
                 {
                     title: 'Getting Started',
-                    collapsable: false,
+                    collapsable: true,
                     children: [
                         ['/', 'Introduction'],
                         ['/requirements', 'Requirements'],
@@ -28,7 +28,7 @@ module.exports = {
                 },
                 {
                     title: 'Configure',
-                    collapsable: false,
+                    collapsable: true,
                     children: [
                         ['/configure/', 'Overview'],
                         ['/configure/organization-types', 'Organization Types'],
@@ -37,14 +37,14 @@ module.exports = {
                 },
                 {
                     title: 'Templating',
-                    collapsable: false,
+                    collapsable: true,
                     children: [
                         ['/templating/', 'Overview']
                     ]
                 },
                 {
                     title: 'Services',
-                    collapsable: false,
+                    collapsable: true,
                     children: [
                         ['/services/elements', 'Organization Elements'],
                         ['/services/organization-types', 'Organization Types'],
@@ -54,7 +54,7 @@ module.exports = {
                 },
                 {
                     title: 'Objects',
-                    collapsable: false,
+                    collapsable: true,
                     children: [
                         ['/objects/organization', 'Organization'],
                         ['/objects/organization-type', 'Organization Type'],
@@ -66,7 +66,7 @@ module.exports = {
                 },
                 {
                     title: 'Queries',
-                    collapsable: false,
+                    collapsable: true,
                     children: [
                         ['/queries/organization', 'Organization Query'],
                         ['/queries/organization-type', 'Organization Type Query'],
