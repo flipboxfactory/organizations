@@ -3,7 +3,7 @@
 [User Types] are classifications that you may assign to a user at an [Organization].
 This means, if a user is associated to more than one [Organization], they can be assigned a different user type depending on the Organization.
 
-A user can be assigned to none, one or many [User Types].  In addition, the associated [User Types] can be sorted to establish a priority.
+A user can be assigned to none, one or many [User Types].  In addition, the associated [User Types] can be sorted to establish priority.
 
 Common usages of [User Types] are:
 * Departments
