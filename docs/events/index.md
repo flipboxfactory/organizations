@@ -11,7 +11,7 @@ The majority of events are triggered at the object level through first-party rec
 ## Services
 
 ### Organization State Change
-The Organization state is a [configurable](../configure) option set which assists in managing complex organization statuses or workflows.  The following events are triggered when the state value is altered:
+The Organization state is a [configurable](/configure/) option set which assists in managing complex organization statuses or workflows.  The following events are triggered when the state value is altered:
 
 #### `EVENT_BEFORE_STATE_CHANGE`
 Triggered *before* an organization state change occurs.

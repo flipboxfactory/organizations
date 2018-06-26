@@ -14,5 +14,4 @@ Within your Craft CMS project admin panel, navigate to the 'Plugin Store' and se
 is a button click away.
 
 
-Once the plugin is installed, head over to [Configure](/configure) to 
-see how to configure the plugin.
+Once the plugin is installed, head over to [configure](/configure/) the plugin.
