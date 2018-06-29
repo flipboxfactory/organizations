@@ -10,6 +10,7 @@
   "license": "MIT",
   "devDependencies": {
     "vuepress": "^0.10.2",
-    "vuepress-theme-flipbox": "^1.0.2"
+    "vuepress-theme-flipbox": "file:../../../../docs/vuepress-theme-flipbox",
+    "vuex": "^3.0.1"
   }
 }

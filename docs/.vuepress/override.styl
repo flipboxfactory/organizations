@@ -1,3 +1,123 @@
 // Color configuration
 $accentColor = #ff2099
 $textColor = #353535
+$blockColor = #f1f5f8
+$codeBgColor = $blockColor
+
+.content {
+  dl {
+    display: flex;
+    flex-flow: row wrap;
+    padding: 1.25rem 1.5rem;
+    line-height: 1.7;
+    background: $blockColor;
+    border-radius: 6px;
+
+    dt, dd {
+      margin: 0.25rem 0 0;
+      word-wrap: break-word;
+    }
+
+    dt {
+      width: 9rem;
+      padding-right: 1rem;
+      box-sizing: border-box;
+      display: flex;
+      align-items: top;
+      justify-content: flex-end;
+      font-weight: bold;
+    }
+
+    dd {
+      width: calc(100% - 9rem);
+    }
+  }
+
+  tr:nth-child(2n) {
+    background-color $blockColor
+  }
+
+  code {
+    background toRgba($blockColor)
+  }
+
+  pre, pre[class*="language-"] {
+    white-space: pre;
+  }
+
+  .highlighted-line {
+    background-color darken($blockColor, 5%)
+  }
+
+  .code-toggle {
+    margin: 0.85rem 0;
+
+    ul.code-language-switcher {
+      border-radius: 6px 6px 0 0;
+    }
+
+    div[class*="language-"] {
+      border-radius: 0 0 6px 6px;
+
+      &:before {
+        display: none;
+      }
+    }
+
+    pre, pre[class*="language-"] {
+      margin: 0;
+    }
+  }
+
+  a.outbound-link {
+    color: lighten($textColor, 25%);
+    margin-right: 0.25rem;
+  }
+
+  a + svg.outbound {
+    margin-left: 0.25rem;
+    position: relative;
+    top: 2px;
+  }
+}
+
+ul.code-language-switcher {
+  height: $navbarHeight;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  margin: 0;
+  padding: 0.7rem 1.5rem;
+  font-size: 15px;
+  line-height: 1.4;
+  z-index: 2;
+  background: darken($blockColor, 5%);
+
+  li {
+    margin: 0 5px 0 0;
+    padding: 0;
+    list-style-type: none;
+
+    a {
+      display: block;
+      padding: 0 0.625rem;
+      line-height: 2.2rem;
+      cursor: pointer;
+      border-radius: 4px;
+      color lighten($textColor, 20%)
+
+      &:hover {
+        text-decoration: none !important;
+
+        &:not(.active) {
+          background: rgba(255,255,255,0.5)
+        }
+      }
+
+      &.active {
+        cursor default
+        background-color #fff
+      }
+    }
+  }
+}

@@ -2,6 +2,7 @@ module.exports = {
     title: 'Organizations',
     description: 'Simple parent + child management',
     base: '/',
+    //theme: 'flipbox',
     themeConfig: {
         docsRepo: 'flipboxfactory/organizations',
         docsDir: 'docs',
@@ -9,8 +10,14 @@ module.exports = {
         editLinks: true,
         search: true,
         searchMaxSuggestions: 10,
+        codeLanguages: {
+            twig: 'Twig',
+            php: 'PHP',
+            json: 'JSON',
+            // any other languages you want to include in code toggles...
+        },
         nav: [
-            {text: 'Documentation', link: 'https://SET_URL'},
+            {text: 'Documentation', link: 'https://organizations.flipboxfactory.com'},
             {text: 'Changelog', link: 'https://github.com/flipboxfactory/organizations/blob/master/CHANGELOG.md'},
             {text: 'Repo', link: 'https://github.com/flipboxfactory/organizations'}
         ],
@@ -75,18 +82,14 @@ module.exports = {
                     ]
                 }
             ]
-        },
-        codeLanguages: {
-            twig: 'Twig',
-            php: 'PHP'
         }
     },
     markdown: {
-        anchor: {
-            level: [2, 3, 4]
-        },
-        toc: {
-            includeLevel: [3]
+        anchor: { level: [2, 3] },
+        toc: { includeLevel: [3] },
+        config(md) {
+            let markup = require('./markup') // TODO Change after using theme
+            md.use(markup)
         }
     }
 }
