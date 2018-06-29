@@ -91,39 +91,10 @@ div[class*="language-"]
       background-color $codeBgColor
 
 
-for lang in js ts html md vue css sass scss less stylus go java c sh yaml
+for lang in js ts html md vue css sass scss less stylus go java c sh yaml php twig
   div{'[class~="language-' + lang + '"]'}
     &:before
       content ('' + lang)
-
-div[class~="language-javascript"]
-  &:before
-    content "js"
-
-div[class~="language-typescript"]
-  &:before
-    content "ts"
-
-div[class~="language-markup"]
-  &:before
-    content "html"
-
-div[class~="language-markdown"]
-  &:before
-    content "md"
-
-div[class~="language-json"]:before
-  content "json"
-
-div[class~="language-ruby"]:before
-  content "rb"
-
-div[class~="language-python"]:before
-  content "py"
-
-div[class~="language-bash"]:before
-  content "sh"
-
 
 .content {
   dl {
@@ -154,10 +125,6 @@ div[class~="language-bash"]:before
     }
   }
 
-  tr:nth-child(2n) {
-    background-color $blockColor
-  }
-
   code {
     background toRgba($blockColor)
   }
@@ -175,6 +142,7 @@ div[class~="language-bash"]:before
 
     ul.code-language-switcher {
       border-radius: 6px 6px 0 0;
+      background-color: #dfe2e5;
     }
 
     div[class*="language-"] {
@@ -212,7 +180,7 @@ ul.code-language-switcher {
   font-size: 15px;
   line-height: 1.4;
   z-index: 2;
-  background: darken($blockColor, 5%);
+  background: #999;
 
   li {
     margin: 0 5px 0 0;
