@@ -5,10 +5,10 @@ This means, if a user is associated to more than one [Organization], they can be
 
 A user can be assigned to none, one or many [User Types].  In addition, the associated [User Types] can be sorted to establish priority.
 
-Common usages of [User Types] are:
-* Departments
-* Responsibilities
-* Roles
+Common examples of [User Types] are:
+* Departments: Marketing, Sales, Engineering, Management
+* Responsibilities: Writer, Volunteer, Group Lead
+* Roles: Main Contact, Accounting, Champion
 
 ### Examples
 Rudy Fruity is the CEO (a [User Type]) of Flipbox Enterprises.  Rudy is also a consultant (a [User Type]) and on the 
