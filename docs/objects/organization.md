@@ -25,7 +25,8 @@ Returns: [User Query]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
+{# Get an Organization Type #}
+{% set element = craft.organizations.elements.find('flipbox') %}
 {% set users = element.getUsers({status: null}).all() %}
 <ul>
 {% for user in users %}
@@ -62,7 +63,8 @@ Returns: [Organization Type Query]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
+{# Get an Organization Type #}
+{% set element = craft.organizations.elements.find('flipbox') %}
 {% set users = element.getTypes({status: null}).all() %}
 <ul>
 {% for type in types %}
@@ -98,7 +100,8 @@ Returns: [Organization Type], [null]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
+{# Get an Organization Type #}
+{% set element = craft.organizations.elements.find('flipbox') %}
 {% set type = element.getType('technology') %}
 <p>{{ type.id }} - <strong>{{ type.name }}</strong></p>
 ```
@@ -122,7 +125,8 @@ Returns: [Organization Type], [null]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
+{# Get an Organization Type #}
+{% set element = craft.organizations.elements.find('flipbox') %}
 {% set type = element.getPrimaryType() %}
 <p>{{ type.id }} - <strong>{{ type.name }}</strong></p>
 ```
@@ -145,7 +149,8 @@ Returns: [Organization Type], [null]
 
 ::: code
 ```twig
-{% set element = craft.organizations.elements.find('flipbox') %} {# Get an Organization Element #}
+{# Get an Organization Type #}
+{% set element = craft.organizations.elements.find('flipbox') %}
 {% set type = element.getActiveType() %}
 <p>{{ type.id }} - <strong>{{ type.name }}</strong></p>
 ```

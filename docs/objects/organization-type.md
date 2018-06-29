@@ -25,7 +25,8 @@ Returns: [Field Layout]
 
 ::: code
 ```twig
-{% set object = craft.organizations.organizationTypes.get('technology') %} {# Get an Organization Type #}
+{# Get an Organization Type #}
+{% set object = craft.organizations.organizationTypes.get('technology') %}
 {% set fieldLayout = object.getFieldLayout() %}
 <p>{{ fieldLayout.id }}</p>
 ```
@@ -49,7 +50,8 @@ Returns: an array of [Organization Type Site Settings]
 
 ::: code
 ```twig
-{% set object = craft.organizations.organizationTypes.find('technology') %} {# Get an Organization Type #}
+{# Get an Organization Type #}
+{% set object = craft.organizations.organizationTypes.find('technology') %}
 {% set siteSettings = object.getSiteSettings() %}
 <ul>
 {% for site in siteSettings %} 

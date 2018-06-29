@@ -25,7 +25,8 @@ Returns: [Site]
 
 ::: code
 ```twig
-{% set object = craft.organizations.organizationTypes.get('technology') %} {# Get an Organization Type #}
+{# Get an Organization Type #}
+{% set object = craft.organizations.organizationTypes.get('technology') %}
 {% set siteSettings = object.getSiteSettings() %}
 <ul>
 {% for settings in siteSettings %}
@@ -57,7 +58,8 @@ Returns: [Organization Type]
 
 ::: code
 ```twig
-{% set object = craft.organizations.organizationTypes.get('technology') %} {# Get an Organization Type #}
+{# Get an Organization Type #}
+{% set object = craft.organizations.organizationTypes.get('technology') %}
 {% set siteSettings = object.getSiteSettings() %}
 <ul>
 {% for settings in siteSettings %}
@@ -90,7 +92,8 @@ Returns: [boolean]
 
 ::: code
 ```twig
-{% set object = craft.organizations.organizationTypes.get('technology') %} {# Get an Organization Type #}
+{# Get an Organization Type #}
+{% set object = craft.organizations.organizationTypes.get('technology') %}
 {% set siteSettings = object.getSiteSettings() %}
 <ul>
 {% for settings in siteSettings %}
