@@ -9,7 +9,6 @@
   "author": "Flipbox Digital",
   "license": "MIT",
   "devDependencies": {
-    "vuepress": "^0.10.2",
-    "vuepress-theme-flipbox": "file:../../../../docs/vuepress-theme-flipbox"
+    "vuepress": "^0.10.2"
   }
 }
