@@ -1,156 +1,37 @@
 .content
   code
-    color lighten($textColor, 20%)
-    padding 0.25rem 0.5rem
-    margin 0
-    font-size 0.85em
-    background-color rgba(27,31,35,0.05)
-    border-radius 3px
+    display inline-block
 
 .content
   pre, pre[class*="language-"]
-    line-height 1.4
-    padding 1.25rem 1.5rem
-    margin 0.85rem 0
-    background transparent
+    padding 1.3rem !important
     overflow auto
-    code
-      //color #fff
-      padding 0
-      background-color transparent
-      border-radius 0
-
-div[class*="language-"]
-  position relative
-  background-color $codeBgColor
-  border-radius 6px
-  .highlight-lines
-    user-select none
-    padding-top 1.3rem
-    position absolute
-    top 0
-    left 0
-    width 100%
-    line-height 1.4
-    .highlighted
-      background-color rgba(0, 0, 0, 66%)
-  pre
-    position relative
-    z-index 1
-  &::before
-    position absolute
-    z-index 3
-    top 0.8em
-    right 1em
-    font-size 0.75rem
-    color rgba(255, 255, 255, 0.4)
-  &:not(.line-numbers-mode)
-    .line-numbers-wrapper
-      display none
-  &.line-numbers-mode
-    .highlight-lines .highlighted
-        position relative
-        &:before
-          content ' '
-          position absolute
-          z-index 3
-          left 0
-          top 0
-          display block
-          width $lineNumbersWrapperWidth
-          height 100%
-          background-color rgba(0, 0, 0, 66%)
-    pre
-      padding-left $lineNumbersWrapperWidth + 1 rem
-      vertical-align middle
-    .line-numbers-wrapper
-      position absolute
-      top 0
-      width $lineNumbersWrapperWidth
-      text-align center
-      color rgba(255, 255, 255, 0.3)
-      padding 1.25rem 0
-      line-height 1.4
-      br
-        user-select none
-      .line-number
-        position relative
-        z-index 4
-        user-select none
-        font-size 0.85em
+    border 1px solid #dfdfdf
+    background-image linear-gradient(transparent 50%, rgba(0, 0, 0, 0.025) 50%) !important
+    background-size 2.55em 2.55em !important
+    background-origin content-box !important
+    background-attachment local !important
+    &::before
     &::after
-      content ''
-      position absolute
-      z-index 2
-      top 0
-      left 0
-      width $lineNumbersWrapperWidth
-      height 100%
-      border-radius 6px 0 0 6px
-      border-right 1px solid rgba(0, 0, 0, 66%)
-      background-color $codeBgColor
+      content none
+    code
+      color $textColor !important
 
-
-for lang in js ts html md vue css sass scss less stylus go java c sh yaml php twig
-  div{'[class~="language-' + lang + '"]'}
-    &:before
-      content ('' + lang)
+      background-color transparent
+      border 0
+      width 100%
+      line-height 1.475
+    > code
+      box-shadow none
+      background-image none
 
 .content {
-  dl {
-    display: flex;
-    flex-flow: row wrap;
-    padding: 1.25rem 1.5rem;
-    line-height: 1.7;
-    background: $blockColor;
-    border-radius: 6px;
-
-    dt, dd {
-      margin: 0.25rem 0 0;
-      word-wrap: break-word;
-    }
-
-    dt {
-      width: 9rem;
-      padding-right: 1rem;
-      box-sizing: border-box;
-      display: flex;
-      align-items: top;
-      justify-content: flex-end;
-      font-weight: bold;
-    }
-
-    dd {
-      width: calc(100% - 9rem);
-    }
-  }
-
-  code {
-    background toRgba($blockColor)
-  }
-
-  pre, pre[class*="language-"] {
-    white-space: pre;
-  }
-
-  .highlighted-line {
-    background-color darken($blockColor, 5%)
-  }
-
   .code-toggle {
     margin: 0.85rem 0;
 
     ul.code-language-switcher {
-      border-radius: 6px 6px 0 0;
+      border-radius: 3px 3px 0 0;
       background-color: #dfe2e5;
-    }
-
-    div[class*="language-"] {
-      border-radius: 0 0 6px 6px;
-
-      &:before {
-        display: none;
-      }
     }
 
     pre, pre[class*="language-"] {
@@ -176,7 +57,7 @@ ul.code-language-switcher {
   display: flex;
   flex-direction: row;
   margin: 0;
-  padding: 0.7rem 1.5rem;
+  padding: 0.7rem .7rem;
   font-size: 15px;
   line-height: 1.4;
   z-index: 2;

@@ -29,4 +29,4 @@
     }
 </script>
 
-<style src="prismjs/themes/prism-solarizedlight.css"></style>
+<style src="prismjs/themes/prism-coy.css"></style>
