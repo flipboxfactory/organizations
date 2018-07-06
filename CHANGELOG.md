@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.22 - 2018-07-06
 ### Added
 - Organization Type field type can customize the drop down first option
 
