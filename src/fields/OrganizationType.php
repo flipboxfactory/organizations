@@ -22,6 +22,11 @@ use flipbox\organizations\records\OrganizationType as OrganizationTypeRecord;
 class OrganizationType extends Field
 {
     /**
+     * @var string 
+     */
+    public $defaultSelectionLabel = '-- Select Organization Type --';
+    
+    /**
      * @inheritdoc
      */
     public static function displayName(): string
@@ -40,6 +45,19 @@ class OrganizationType extends Field
                 'field' => $this,
                 'value' => $value,
                 'element' => $element
+            ]
+        );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSettingsHtml()
+    {
+        return Craft::$app->getView()->renderTemplate(
+            'organizations/_components/fieldtypes/OrganizationType/settings',
+            [
+                'field' => $this
             ]
         );
     }
