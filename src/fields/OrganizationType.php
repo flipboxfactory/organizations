@@ -22,7 +22,7 @@ use flipbox\organizations\records\OrganizationType as OrganizationTypeRecord;
 class OrganizationType extends Field
 {
     /**
-     * @var string 
+     * @var string
      */
     public $defaultSelectionLabel = '-- Select Organization Type --';
     
