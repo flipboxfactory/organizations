@@ -1,4 +1,3 @@
 # VuePress dist
 
-.vuepress/dist/*
-!.vuepress/dist/CNAME
+.vuepress/dist
