@@ -4,18 +4,16 @@
     label: 'Select Organization Type'|t('organizations'),
     value: null
 }] %}
-{#{% for type in craft.organizations.organizationTypes.query.all() %}#}
-    {#{% set typeOptions = typeOptions|merge([{#}
-        {#label: type.name,#}
-        {#value: type.id#}
-    {#}]) %}#}
-{#{% endfor %}#}
+{% for type in craft.organizations.organizationTypes.query.all() %}
+    {% set typeOptions = typeOptions|merge([{
+        label: type.name,
+        value: type.id
+    }]) %}
+{% endfor %}
 
-{{ dump(value) }}
-
-{#{{ forms.select({#}
-    {#id: field.handle,#}
-    {#name: field.handle,#}
-    {#value: value ? value.id : null,#}
-    {#options: typeOptions#}
-{#}) }}#}
+{{ forms.select({
+    id: field.handle,
+    name: field.handle,
+    value: value ? value.id : null,
+    options: typeOptions
+}) }}
