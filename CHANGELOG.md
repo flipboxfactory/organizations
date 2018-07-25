@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 1.0.0-rc.23 - 2018-07-25
 ### Added
 - User type association HUD is grouped by source headings
 - Sidebar navigation to easily get to/from settings and elements
