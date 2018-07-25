@@ -57,6 +57,12 @@ abstract class AbstractController extends BaseAbstractController
     {
         parent::baseVariables($variables);
 
+        // Select our sub-nav
+        if (!$activeSubNav = Craft::$app->getRequest()->getSegment(3)) {
+            $activeSubNav = 'general';
+        }
+        $variables['selectedSubnavItem'] = 'organizations.' . $activeSubNav;
+
         $title = Craft::t('organizations', "Settings");
         $variables['title'] = Craft::t('organizations', "Organization") . ' ' . $title;
 

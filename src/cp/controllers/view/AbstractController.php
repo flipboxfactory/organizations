@@ -82,6 +82,9 @@ abstract class AbstractController extends Controller
         // Set the "Continue Editing" URL
         $variables['continueEditingUrl'] = $this->getBaseCpPath();
 
+        // Select our sub-nav
+        $variables['selectedSubnavItem'] = 'organizations.organizations';
+
         // Breadcrumbs
         $variables['crumbs'][] = [
             'label' => $title,
