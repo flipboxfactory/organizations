@@ -2,62 +2,46 @@
 /* Organization
 /* ----------------------------------------*/
 .tabs > ul > li.users {
-    float: right;
-}
+  float: right; }
+
+.user-types-hud .group-heading {
+  margin-bottom: 0;
+  text-transform: uppercase;
+  font-size: 12px; }
+.user-types-hud .field {
+  padding-right: 36px; }
 
 /* delete organization modal */
 .deleteorganizationmodal .options label,
 .changeorganizationstatusmodal .options label {
-    display: inline-block;
-    line-height: 30px;
-}
-
+  display: inline-block;
+  line-height: 30px; }
 .deleteorganizationmodal .elementselect, .changeorganizationstatusmodal .elementselect {
-    display: inline-block;
-    vertical-align: middle;
-}
-
-body.ltr .deleteorganizationmodal .elementselect,
-body.ltr .changeorganizationstatusmodal .elementselect {
-    margin-left: 10px;
-}
-
-body.rtl .deleteorganizationmodal .elementselect, body.rtl .changeorganizationstatusmodal .elementselect {
-    margin-right: 10px;
-}
-
+  display: inline-block;
+  vertical-align: middle; }
+  body.ltr .deleteorganizationmodal .elementselect,
+  body.ltr .changeorganizationstatusmodal .elementselect {
+    margin-left: 10px; }
+  body.rtl .deleteorganizationmodal .elementselect, body.rtl .changeorganizationstatusmodal .elementselect {
+    margin-right: 10px; }
 body.ltr .deleteorganizationmodal .buttons .spinner,
 body.ltr .changeorganizationstatusmodal .buttons .spinner {
-    float: right;
-}
-
+  float: right; }
 body.rtl .deleteorganizationmodal .buttons .spinner, body.rtl .changeorganizationstatusmodal .buttons .spinner {
-    float: left;
-}
-
+  float: left; }
 body.ltr .deleteorganizationmodal .buttons .spinner, body.ltr .changeorganizationstatusmodal .buttons .spinner {
-    margin-right: -20px;
-}
-
+  margin-right: -20px; }
 body.rtl .deleteorganizationmodal .buttons .spinner, body.rtl .changeorganizationstatusmodal .buttons .spinner {
-    margin-left: -20px;
-}
-
+  margin-left: -20px; }
 body.ltr .deleteorganizationmodal .buttons .spinner, body.ltr .changeorganizationstatusmodal .buttons .spinner {
-    margin-left: -4px;
-}
-
+  margin-left: -4px; }
 body.rtl .deleteorganizationmodal .buttons .spinner, body.rtl .changeorganizationstatusmodal .buttons .spinner {
-    margin-right: -4px;
-}
+  margin-right: -4px; }
 
 #main-container #main #main-content #details .meta + .meta {
-    padding-top: 0;
-    margin-top: -16px;
-}
-
-#main-container #main #main-content #details .meta + .meta > .field {
-    border-top: 1px solid rgba(0, 0, 20, 0.1);
-}
+  padding-top: 0;
+  margin-top: -16px; }
+  #main-container #main #main-content #details .meta + .meta > .field {
+    border-top: 1px solid rgba(0, 0, 20, 0.1); }
 
 /*# sourceMappingURL=Organization.css.map */

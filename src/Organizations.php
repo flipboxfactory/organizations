@@ -187,6 +187,40 @@ class Organizations extends BasePlugin
     }
 
     /*******************************************
+     * NAV
+     *******************************************/
+
+    /**
+     * @inheritdoc
+     */
+    public function getCpNavItem()
+    {
+        return array_merge(
+            parent::getCpNavItem(),
+            [
+                'subnav' => [
+                    'organizations.organizations' => [
+                        'label' => Craft::t('organizations', 'Organizations'),
+                        'url' => 'organizations'
+                    ],
+                    'organizations.general' => [
+                        'label' => Craft::t('organizations', 'Settings'),
+                        'url' => 'organizations/settings'
+                    ],
+                    'organizations.organization-types' => [
+                        'label' => Craft::t('organizations', 'Organization Types'),
+                        'url' => 'organizations/settings/organization-types',
+                    ],
+                    'organizations.user-types' => [
+                        'label' => Craft::t('organizations', 'User Types'),
+                        'url' => 'organizations/settings/user-types',
+                    ]
+                ]
+            ]
+        );
+    }
+
+    /*******************************************
      * EVENTS
      *******************************************/
 
