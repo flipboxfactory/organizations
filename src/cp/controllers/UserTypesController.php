@@ -11,7 +11,6 @@ namespace flipbox\organizations\cp\controllers;
 use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\db\UserTypeQuery;
 use flipbox\organizations\Organizations;
 use yii\web\Response;
 
@@ -143,7 +142,7 @@ class UserTypesController extends AbstractController
 
         $lastHeading = null;
         $items = [];
-        foreach (Craft::$app->getElementIndexes()->getSources(User::class) as &$source) {
+        foreach (Craft::$app->getElementIndexes()->getSources(User::class) as $source) {
             if (array_key_exists('heading', $source)) {
                 $lastHeading = $source['heading'];
                 continue;
