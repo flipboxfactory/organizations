@@ -1,20 +1,23 @@
 {% import "_includes/forms" as forms %}
-<div class="meta">
-    {% set selectedTypeIds = [] %}
-    {% for type in types %}
-        {% set selectedTypeIds = selectedTypeIds|merge([type.id]) %}
-    {% endfor %}
+<div class="meta user-types-hud">
+    {% set selectedTypes = craft.organizations.userTypes.getQuery({
+        organization: organization,
+        user: user,
+        select: ['typeId']
+    }).column() %}
 
     {% namespace 'types' %}
-        {% for userType in craft.organizations.userTypes.findAll() %}
-            {% set selected = userType.id in selectedTypeIds %}
-            {{ forms.lightswitchField({
-                label: userType.name|t('organizations'),
-                id: userType.handle,
-                name: userType.id,
-                on: selected,
-            }) }}
+        {% for heading, types in typeOptions %}
+            {% if heading %}<h6 class="group-heading">{{ heading }}</h6>{% endif %}
+            {% for id, label in types %}
+                {% set selected = id in selectedTypes %}
+                {{ forms.lightswitchField({
+                    label: label|t('organizations'),
+                    id: id,
+                    name: id,
+                    on: selected,
+                }) }}
+            {% endfor %}
         {% endfor %}
     {% endnamespace %}
 </div>
-

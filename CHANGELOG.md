@@ -1,5 +1,10 @@
 Changelog
 =========
+## Unreleased
+### Added
+- User type association HUD is grouped by source headings
+- Sidebar navigation to easily get to/from settings and elements
+
 ## 1.0.0-rc.22 - 2018-07-06
 ### Added
 - Organization Type field type can customize the drop down first option

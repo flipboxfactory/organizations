@@ -9,6 +9,7 @@
 namespace flipbox\organizations\cp\controllers;
 
 use Craft;
+use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\organizations\db\UserTypeQuery;
 use flipbox\organizations\Organizations;
@@ -121,15 +122,40 @@ class UserTypesController extends AbstractController
             [
                 'user' => $user,
                 'organization' => $organization,
-                'types' => (new UserTypeQuery([
-                    'organization' => $organization->id,
-                    'user' => $user->id
-                ]))->all()
+                'typeOptions' => $this->getUserTypes()
             ]
         );
         $response['headHtml'] = $view->getHeadHtml();
         $response['footHtml'] = $view->getBodyHtml();
 
         return $this->asJson($response);
+    }
+
+    /**
+     * @return array
+     */
+    private function getUserTypes(): array
+    {
+        $types = Organizations::getInstance()->getUserTypes()->getQuery()
+            ->select(['name'])
+            ->indexBy('id')
+            ->column();
+
+        $lastHeading = null;
+        $items = [];
+        foreach (Craft::$app->getElementIndexes()->getSources(User::class) as &$source) {
+            if (array_key_exists('heading', $source)) {
+                $lastHeading = $source['heading'];
+                continue;
+            }
+
+            $label = $source['label'] ?? null;
+
+            if ($label !== null && in_array($label, $types, true)) {
+                $items[$lastHeading][array_search($label, $types)] = $label;
+            }
+        }
+
+        return $items;
     }
 }

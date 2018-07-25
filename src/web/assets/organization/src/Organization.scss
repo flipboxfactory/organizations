@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import "../../../../../../../vendor/craftcms/cms/lib/craftcms-sass/mixins";
+@import "../../../../../vendor/craftcms/cms/lib/craftcms-sass/mixins";
 
 /* ----------------------------------------
 /* Organization
@@ -16,6 +16,22 @@
       }
 
     }
+
+  }
+
+}
+
+.user-types-hud {
+
+  .group-heading {
+    margin-bottom: 0;
+    text-transform: uppercase;
+    font-size: 12px;
+
+  }
+
+  .field {
+    padding-right: 36px;
 
   }
 
