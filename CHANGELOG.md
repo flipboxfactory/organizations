@@ -1,5 +1,10 @@
 Changelog
 =========
+
+## 1.0.0-rc.24 - 2018-07-26
+### Fixed
+- Rare instance when multiple of the same relations could be added to a User Query
+
 ## 1.0.0-rc.23 - 2018-07-25
 ### Added
 - User type association HUD is grouped by source headings

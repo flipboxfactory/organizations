@@ -38,6 +38,20 @@ class UserQueryParamHandler extends BaseObject
     private $owner;
 
     /**
+     * Flag if the table is already joined (to prevent subsequent joins)
+     *
+     * @var bool
+     */
+    private $userTableJoined = false;
+
+    /**
+     * Flag if the table is already joined (to prevent subsequent joins)
+     *
+     * @var bool
+     */
+    private $userTypeTableJoined = false;
+
+    /**
      * @inheritdoc
      * @param OrganizationAttributesToUserQueryBehavior $owner
      */
@@ -107,10 +121,14 @@ class UserQueryParamHandler extends BaseObject
     {
         $alias = OrganizationUsersRecord::tableAlias();
 
-        $query->leftJoin(
-            OrganizationUsersRecord::tableName() . ' ' . $alias,
-            '[[' . $alias . '.userId]] = [[elements.id]]'
-        );
+        if ($this->userTableJoined === false) {
+            $query->leftJoin(
+                OrganizationUsersRecord::tableName() . ' ' . $alias,
+                '[[' . $alias . '.userId]] = [[elements.id]]'
+            );
+
+            $this->userTableJoined = true;
+        }
 
         return $alias;
     }
@@ -121,11 +139,16 @@ class UserQueryParamHandler extends BaseObject
     protected function joinOrganizationUserTypeTable(Query $query): string
     {
         $alias = UserCollectionUsersRecord::tableAlias();
-        $orgAlias = OrganizationUsersRecord::tableAlias();
-        $query->leftJoin(
-            UserCollectionUsersRecord::tableName() . ' ' . $alias,
-            '[[' . $alias . '.userId]] = [[' . $orgAlias . '.id]]'
-        );
+        if ($this->userTypeTableJoined === false) {
+            $orgAlias = OrganizationUsersRecord::tableAlias();
+
+            $query->leftJoin(
+                UserCollectionUsersRecord::tableName() . ' ' . $alias,
+                '[[' . $alias . '.userId]] = [[' . $orgAlias . '.id]]'
+            );
+
+            $this->userTypeTableJoined = true;
+        }
 
         return $alias;
     }
