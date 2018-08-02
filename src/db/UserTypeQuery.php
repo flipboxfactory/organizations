@@ -102,6 +102,10 @@ class UserTypeQuery extends CacheableActiveQuery
      */
     public function prepare($builder)
     {
+        // Reset
+        $this->typeAssociationTableJoined = false;
+        $this->userAssociationTableJoined = false;
+
         $this->applyAuditAttributeConditions();
         $this->applyOrderByParams($builder->db);
         $this->prepareRelationsParams();

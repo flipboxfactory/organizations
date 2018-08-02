@@ -94,12 +94,13 @@ class UserQueryParamHandler extends BaseObject
             return;
         }
 
-        $alias = $this->joinOrganizationUserTable($query->subQuery);
+        // Reset
+        $this->userTableJoined = false;
+        $this->userTypeTableJoined = false;
 
         $this->applyOrganizationParam(
             $query->subQuery,
-            $this->organization,
-            $alias
+            $this->organization
         );
 
         $this->applyUserTypeParam(
@@ -140,7 +141,7 @@ class UserQueryParamHandler extends BaseObject
     {
         $alias = UserCollectionUsersRecord::tableAlias();
         if ($this->userTypeTableJoined === false) {
-            $orgAlias = OrganizationUsersRecord::tableAlias();
+            $orgAlias = $this->joinOrganizationUserTable($query);
 
             $query->leftJoin(
                 UserCollectionUsersRecord::tableName() . ' ' . $alias,
@@ -161,14 +162,14 @@ class UserQueryParamHandler extends BaseObject
     /**
      * @param Query $query
      * @param $organization
-     * @param string $alias
      */
-    protected function applyOrganizationParam(Query $query, $organization, string $alias)
+    protected function applyOrganizationParam(Query $query, $organization)
     {
         if (empty($organization)) {
             return;
         }
 
+        $alias = $this->joinOrganizationUserTable($query);
         $query->andWhere(
             Db::parseParam($alias . '.organizationId', $this->parseOrganizationValue($organization))
         );
