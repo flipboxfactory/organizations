@@ -103,9 +103,6 @@ class OrganizationTypeQuery extends CacheableActiveQuery
      */
     public function prepare($builder)
     {
-        // Reset
-        $this->associationTableJoined = false;
-
         $this->applyAuditAttributeConditions();
         $this->applyOrderByParams($builder->db);
         $this->prepareRelationsParams();
