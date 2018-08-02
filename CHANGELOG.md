@@ -1,5 +1,8 @@
 Changelog
 =========
+## 1.0.0-rc.25 - 2018-08-01
+### Changed
+- Reset query relations table joins on new execution of query.
 
 ## 1.0.0-rc.24 - 2018-07-26
 ### Fixed
