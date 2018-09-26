@@ -4,15 +4,15 @@ namespace flipbox\organizations\tests\services;
 
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
-use flipbox\organizations\db\OrganizationUserAssociationQuery;
+use flipbox\organizations\db\UserOrganizationAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
 use flipbox\organizations\records\UserAssociation;
-use flipbox\organizations\services\OrganizationUserAssociations;
+use flipbox\organizations\services\UserOrganizationAssociations;
 
-class OrganizationUserAssociationsTest extends Unit
+class UserOrganizationAssociationsTest extends Unit
 {
     /**
-     * @var OrganizationUserAssociations
+     * @var UserOrganizationAssociations
      */
     private $service;
 
@@ -23,7 +23,7 @@ class OrganizationUserAssociationsTest extends Unit
     protected function _before()
     {
         $this->service = (new OrganizationsPlugin('organizations'))
-            ->getOrganizationUserAssociations();
+            ->getUserOrganizationAssociations();
     }
 
     /**
@@ -67,7 +67,7 @@ class OrganizationUserAssociationsTest extends Unit
         $query = $this->service->getQuery();
 
         $this->assertInstanceOf(
-            OrganizationUserAssociationQuery::class,
+            UserOrganizationAssociationQuery::class,
             $query
         );
     }
@@ -118,7 +118,7 @@ class OrganizationUserAssociationsTest extends Unit
     public function testAssociationQuery()
     {
         // Mock Query
-        $query = $this->make(OrganizationUserAssociationQuery::class);
+        $query = $this->make(UserOrganizationAssociationQuery::class);
 
         // Mock Record
         $record = $this->makeEmpty(UserAssociation::class, [
@@ -126,7 +126,7 @@ class OrganizationUserAssociationsTest extends Unit
         ]);
 
         // Mock Service
-        $service = $this->make(OrganizationUserAssociations::class, [
+        $service = $this->make(UserOrganizationAssociations::class, [
             'getQuery' => Expected::once($query)
         ]);
 
@@ -138,7 +138,7 @@ class OrganizationUserAssociationsTest extends Unit
         $result = $method->invoke($service, $record);
 
         $this->assertInstanceOf(
-            OrganizationUserAssociationQuery::class,
+            UserOrganizationAssociationQuery::class,
             $result
         );
     }
@@ -153,12 +153,12 @@ class OrganizationUserAssociationsTest extends Unit
         $record = $this->makeEmpty(UserAssociation::class);
 
         // Mock Query
-        $query = $this->make(OrganizationUserAssociationQuery::class, [
+        $query = $this->make(UserOrganizationAssociationQuery::class, [
             'all' => Expected::once([$record])
         ]);
 
         // Mock Service
-        $service = $this->make(OrganizationUserAssociations::class, [
+        $service = $this->make(UserOrganizationAssociations::class, [
             'resolveStringAttribute' => Expected::once('foo'),
             'getQuery' => Expected::once($query)
         ]);
@@ -175,7 +175,7 @@ class OrganizationUserAssociationsTest extends Unit
         $this->assertTrue(is_array($result));
 
         // Mock Service
-        $service = $this->make(OrganizationUserAssociations::class, [
+        $service = $this->make(UserOrganizationAssociations::class, [
             'resolveStringAttribute' => Expected::once()
         ]);
 
@@ -196,13 +196,13 @@ class OrganizationUserAssociationsTest extends Unit
         $result = $method->invoke($this->service, 1);
 
         $this->assertInstanceOf(
-            OrganizationUserAssociationQuery::class,
+            UserOrganizationAssociationQuery::class,
             $result
         );
 
         $this->assertEquals(
             $result->orderBy,
-            [OrganizationUserAssociations::SORT_ORDER_ATTRIBUTE => SORT_ASC]
+            [UserOrganizationAssociations::SORT_ORDER_ATTRIBUTE => SORT_ASC]
         );
     }
 
@@ -216,12 +216,12 @@ class OrganizationUserAssociationsTest extends Unit
         $record = $this->makeEmpty(UserAssociation::class);
 
         // Mock Query
-        $query = $this->make(OrganizationUserAssociationQuery::class, [
+        $query = $this->make(UserOrganizationAssociationQuery::class, [
             'all' => Expected::once([$record])
         ]);
 
         // Mock Service
-        $service = $this->make(OrganizationUserAssociations::class, [
+        $service = $this->make(UserOrganizationAssociations::class, [
             'getQuery' => Expected::once($query)
         ]);
 

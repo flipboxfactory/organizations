@@ -179,7 +179,7 @@ class Element extends Component
      * @param OrganizationElement $organization
      * @return \flipbox\organizations\records\OrganizationTypeSiteSettings|null
      */
-    private function getSiteSettings(OrganizationElement $organization)
+    protected function getSiteSettings(OrganizationElement $organization)
     {
         try {
             $settings = OrganizationPlugin::getInstance()->getSettings();
