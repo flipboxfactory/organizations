@@ -101,12 +101,12 @@ class Element extends Component
         }
 
         // Types
-        if (!$this->associateTypes($organization)) {
+        if (false === $this->associateTypes($organization)) {
             throw new Exception("Unable to save types.");
         }
 
         // Users
-        if (!$this->associateUsers($organization)) {
+        if (false === $this->associateUsers($organization)) {
             throw new Exception("Unable to save users.");
         }
     }
@@ -118,7 +118,7 @@ class Element extends Component
      * @throws \Exception
      * @throws \yii\db\Exception
      */
-    private function save(OrganizationElement $organization, bool $isNew): bool
+    protected function save(OrganizationElement $organization, bool $isNew): bool
     {
         $record = $this->elementToRecord($organization);
 
@@ -211,7 +211,7 @@ class Element extends Component
      * @return bool
      * @throws \Exception
      */
-    private function associateTypes(OrganizationElement $organization)
+    protected function associateTypes(OrganizationElement $organization)
     {
         if (!OrganizationPlugin::getInstance()->getOrganizationTypes()->saveAssociations(
             $organization->getTypes(),
@@ -240,7 +240,7 @@ class Element extends Component
      * @return bool
      * @throws \Exception
      */
-    private function associateUsers(OrganizationElement $organization)
+    protected function associateUsers(OrganizationElement $organization)
     {
         if (!OrganizationPlugin::getInstance()->getOrganizations()->saveAssociations(
             $organization->getUsers(),

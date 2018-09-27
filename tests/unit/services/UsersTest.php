@@ -6,10 +6,7 @@ use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
 use craft\elements\User;
 use flipbox\organizations\db\OrganizationQuery;
-use flipbox\organizations\db\UserOrganizationAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
-use flipbox\organizations\records\UserAssociation;
-use flipbox\organizations\services\UserOrganizationAssociations;
 use flipbox\organizations\services\Users;
 
 class UsersTest extends Unit

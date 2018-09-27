@@ -135,7 +135,7 @@ class OrganizationTypeAssociations extends SortableAssociations
      * @return array
      */
     private function associations(
-        int $sourceId
+        $sourceId
     ): array {
         return $this->query($sourceId)
             ->indexBy(static::TARGET_ATTRIBUTE)
