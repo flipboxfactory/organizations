@@ -14,7 +14,7 @@ use craft\queue\jobs\ResaveElements;
 use flipbox\ember\services\traits\records\Accessor;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\OrganizationType as TypeModel;
+use flipbox\organizations\records\OrganizationType as TypeRecord;
 use flipbox\organizations\records\OrganizationTypeSiteSettings as TypeSettingsRecord;
 use yii\base\Component;
 
@@ -63,14 +63,14 @@ class OrganizationTypeSettings extends Component
      *******************************************/
 
     /**
-     * @param TypeModel $type
+     * @param TypeRecord $type
      * @return bool
      * @throws \Exception
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
     public function saveByType(
-        TypeModel $type
+        TypeRecord $type
     ): bool {
         $successful = true;
 
@@ -129,7 +129,7 @@ class OrganizationTypeSettings extends Component
     /**
      * @param TypeSettingsRecord $type
      */
-    private function reSaveOrganizations(TypeSettingsRecord $type)
+    protected function reSaveOrganizations(TypeSettingsRecord $type)
     {
         Craft::$app->getQueue()->push(new ResaveElements([
             'description' => Craft::t('organizations', 'Re-saving organizations (Site: {site})', [

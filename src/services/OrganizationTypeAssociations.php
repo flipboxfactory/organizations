@@ -16,7 +16,6 @@ use flipbox\organizations\db\OrganizationTypeAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationTypeAssociation;
 use flipbox\organizations\records\OrganizationTypeAssociation as TypeAssociationRecord;
-use yii\db\ActiveQuery;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -129,15 +128,15 @@ class OrganizationTypeAssociations extends SortableAssociations
             ])
             ->orderBy(['sortOrder' => SORT_ASC]);
     }
-    
+
     /**
      * @param int|string $source
      * @return array
      */
     private function associations(
-        $sourceId
+        $source
     ): array {
-        return $this->query($sourceId)
+        return $this->query($source)
             ->indexBy(static::TARGET_ATTRIBUTE)
             ->all();
     }
