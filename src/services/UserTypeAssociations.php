@@ -113,27 +113,27 @@ class UserTypeAssociations extends SortableAssociations
     }
 
     /**
-     * @param int $userAssociationId
+     * @param int|string $source
      * @return UserTypeAssociationQuery
      */
     private function query(
-        int $userAssociationId
+        $source
     ): UserTypeAssociationQuery {
         return $this->getQuery()
             ->andWhere([
-                static::SOURCE_ATTRIBUTE => $userAssociationId
+                static::SOURCE_ATTRIBUTE => $source ?: false
             ])
             ->orderBy(['sortOrder' => SORT_ASC]);
     }
 
     /**
-     * @param int $userAssociationId
+     * @param int|string $source
      * @return UserTypeAssociation[]
      */
     private function associations(
-        int $userAssociationId
+        $source
     ): array {
-        return $this->query($userAssociationId)
+        return $this->query($source)
             ->indexBy(static::TARGET_ATTRIBUTE)
             ->all();
     }

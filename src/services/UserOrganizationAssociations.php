@@ -133,7 +133,7 @@ class UserOrganizationAssociations extends SortableAssociations
     }
 
     /**
-     * @param $source
+     * @param int|string $source
      * @return SortableAssociationQueryInterface|UserOrganizationAssociationQuery
      */
     private function query(
@@ -141,13 +141,13 @@ class UserOrganizationAssociations extends SortableAssociations
     ): SortableAssociationQueryInterface {
         return $this->getQuery()
             ->andWhere([
-                static::SOURCE_ATTRIBUTE => $source
+                static::SOURCE_ATTRIBUTE => $source ?: false
             ])
             ->orderBy([static::SORT_ORDER_ATTRIBUTE => SORT_ASC]);
     }
 
     /**
-     * @param $source
+     * @param int|string $source
      * @return array
      */
     private function associations(

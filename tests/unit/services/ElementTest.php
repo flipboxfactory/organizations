@@ -32,7 +32,7 @@ class ElementTest extends Unit
      */
     protected function _before()
     {
-        $this->service = (new OrganizationsPlugin('element'))
+        $this->service = (new OrganizationsPlugin('organizations'))
             ->getElement();
     }
 

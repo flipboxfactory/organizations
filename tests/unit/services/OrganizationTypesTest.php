@@ -6,10 +6,15 @@ use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
 use craft\models\FieldLayout;
 use craft\services\Fields;
+use flipbox\organizations\db\OrganizationTypeAssociationQuery;
+use flipbox\organizations\db\OrganizationTypeQuery;
+use flipbox\organizations\elements\Organization;
 use flipbox\organizations\models\Settings;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
 use flipbox\organizations\records\OrganizationType;
+use flipbox\organizations\records\OrganizationTypeAssociation;
+use flipbox\organizations\services\OrganizationTypeAssociations;
 use flipbox\organizations\services\OrganizationTypes;
 use flipbox\organizations\services\OrganizationTypeSettings;
 use yii\base\InvalidConfigException;
@@ -363,5 +368,351 @@ class OrganizationTypesTest extends Unit
         \Yii::$app->loadedModules[Organizations::class] = $plugin;
 
         $this->service->afterSave($type);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSaveAssociationsWithNoCachedResult()
+    {
+        $query = $this->make(
+            OrganizationTypeQuery::class,
+            [
+                'getCachedResult' => Expected::once()
+            ]
+        );
+
+        $org = $this->make(
+            Organization::class
+        );
+
+        $this->assertTrue(
+            $this->service->saveAssociations($query, $org)
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSaveAssociationsWithCachedResult()
+    {
+        $id = 1;
+
+        $org = $this->make(
+            Organization::class,
+            [
+                'id' => $id,
+                'getId' => Expected::exactly(2, $id)
+            ]
+        );
+
+        $query = $this->make(
+            OrganizationTypeQuery::class,
+            [
+                'organizationId' => $id,
+                'getCachedResult' => Expected::once([$org])
+            ]
+        );
+
+        $service = $this->make(
+            $this->service,
+            [
+                'toAssociations' => Expected::once([
+                    $this->make(OrganizationTypeAssociation::class)
+                ])
+            ]
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizationTypeAssociations' => Expected::once(
+                    $this->make(
+                        OrganizationTypeAssociations::class,
+                        [
+                            'getQuery' => Expected::once(
+                                $this->make(
+                                    OrganizationTypeAssociationQuery::class
+                                )
+                            ),
+                            'save' => Expected::once(true)
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        $this->assertTrue(
+            $service->saveAssociations($query, $org)
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testDissociate()
+    {
+        $org = $this->make(
+            Organization::class
+        );
+
+        $query = $this->make(
+            OrganizationTypeQuery::class
+        );
+
+        $service = $this->make($this->service, [
+            'associations' => Expected::once(
+                true
+            )
+        ]);
+
+        $this->assertTrue(
+            $service->dissociate($query, $org)
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociate()
+    {
+        $org = $this->make(
+            Organization::class
+        );
+
+        $query = $this->make(
+            OrganizationTypeQuery::class
+        );
+
+        $service = $this->make($this->service, [
+            'associations' => Expected::once(
+                true
+            )
+        ]);
+
+        $this->assertTrue(
+            $service->associate($query, $org)
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociationsWithEmptyCache()
+    {
+
+        $org = $this->make(
+            Organization::class
+        );
+
+        $query = $this->make(
+            OrganizationTypeQuery::class
+        );
+
+        $assService = $this->make(
+            OrganizationTypeAssociations::class
+        );
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $this->service,
+            'associations'
+        );
+        $method->setAccessible(true);
+
+        $this->assertTrue(
+            $method->invoke(
+                $this->service,
+                $query,
+                $org,
+                [
+                    $assService,
+                    'associate'
+                ]
+            )
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociationsWithCache()
+    {
+        $org = $this->make(
+            Organization::class,
+            [
+                'getId' => Expected::once(1)
+            ]
+        );
+
+        $query = $this->make(
+            OrganizationTypeQuery::class,
+            [
+                'getCachedResult' => Expected::once([$org]),
+                'organizationTypeId' => Expected::once()
+            ]
+        );
+
+        $assService = $this->make(
+            OrganizationTypeAssociations::class,
+            [
+                'associate' => Expected::once(true)
+            ]
+        );
+
+        $record = $this->getMockBuilder(OrganizationTypeAssociation::class)
+            ->setMethods(['attributes'])
+            ->getMock();
+
+        $record->method('attributes')->willReturn([
+            'typeId'
+        ]);
+
+        $service = $this->make(
+            $this->service,
+            [
+                'toAssociations' => Expected::once([$record])
+            ]
+        );
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'associations'
+        );
+        $method->setAccessible(true);
+
+        $this->assertTrue(
+            $method->invoke(
+                $service,
+                $query,
+                $org,
+                [
+                    $assService,
+                    'associate'
+                ]
+            )
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociationsWithCacheNoAssociations()
+    {
+        $org = $this->make(
+            Organization::class,
+            [
+                'getId' => Expected::once(1)
+            ]
+        );
+
+        $query = $this->make(
+            OrganizationTypeQuery::class,
+            [
+                'getCachedResult' => Expected::once([$org]),
+                'setCachedResult' => Expected::once(),
+                'organizationTypeId' => Expected::once()
+            ]
+        );
+
+        $assService = $this->make(
+            OrganizationTypeAssociations::class,
+            [
+                'associate' => Expected::once(false)
+            ]
+        );
+
+        $record = $this->getMockBuilder(OrganizationTypeAssociation::class)
+            ->setMethods(['attributes'])
+            ->getMock();
+
+        $record->method('attributes')->willReturn([
+            'typeId'
+        ]);
+
+        $service = $this->make(
+            $this->service,
+            [
+                'toAssociations' => Expected::once([$record])
+            ]
+        );
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'associations'
+        );
+        $method->setAccessible(true);
+
+        $this->assertFalse(
+            $method->invoke(
+                $service,
+                $query,
+                $org,
+                [
+                    $assService,
+                    'associate'
+                ]
+            )
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testToAssociations()
+    {
+        $id = 1;
+
+        $record = $this->getMockBuilder(OrganizationType::class)
+            ->setMethods(['attributes'])
+            ->getMock();
+
+        $record->method('attributes')->willReturn([
+            'id'
+        ]);
+
+        $types = [
+            $record
+        ];
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $this->service,
+            'toAssociations'
+        );
+        $method->setAccessible(true);
+
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizationTypeAssociations' => Expected::once(
+                    $this->make(
+                        OrganizationTypeAssociations::class,
+                        [
+                            'create' => Expected::once(
+                                $this->make(
+                                    OrganizationTypeAssociation::class
+                                )
+                            )
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        $method->invoke(
+            $this->service,
+            $types,
+            $id
+        );
     }
 }

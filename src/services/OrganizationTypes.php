@@ -240,8 +240,11 @@ class OrganizationTypes extends Component
      * @param callable $callable
      * @return bool
      */
-    protected function associations(OrganizationTypeQuery $query, OrganizationElement $organization, callable $callable)
-    {
+    protected function associations(
+        OrganizationTypeQuery $query,
+        OrganizationElement $organization,
+        callable $callable
+    ): bool {
         if (null === ($models = $query->getCachedResult())) {
             return true;
         }
@@ -276,14 +279,14 @@ class OrganizationTypes extends Component
      * @param int $organizationId
      * @return OrganizationTypeAssociation[]
      */
-    private function toAssociations(
+    protected function toAssociations(
         array $types,
         int $organizationId
     ) {
         $associations = [];
         $sortOrder = 1;
         foreach ($types as $type) {
-            $associations[] = new OrganizationTypeAssociation([
+            $associations[] = OrganizationPlugin::getInstance()->getOrganizationTypeAssociations()->create([
                 'organizationId' => $organizationId,
                 'typeId' => $type->id,
                 'sortOrder' => $sortOrder++

@@ -101,20 +101,6 @@ class OrganizationTypeAssociations extends SortableAssociations
     }
 
     /**
-     * @param $source
-     * @return SortableAssociationQueryInterface|OrganizationTypeAssociationQuery
-     */
-    private function query(
-        $source
-    ): SortableAssociationQueryInterface {
-        return $this->getQuery()
-            ->andWhere([
-                static::SOURCE_ATTRIBUTE => $source
-            ])
-            ->orderBy(['sortOrder' => SORT_ASC]);
-    }
-
-    /**
      * @param SortableAssociationQueryInterface|OrganizationTypeAssociationQuery $query
      * @return array
      */
@@ -131,7 +117,21 @@ class OrganizationTypeAssociations extends SortableAssociations
     }
 
     /**
-     * @param int $sourceId
+     * @param int|string $source
+     * @return SortableAssociationQueryInterface|OrganizationTypeAssociationQuery
+     */
+    private function query(
+        $source
+    ): SortableAssociationQueryInterface {
+        return $this->getQuery()
+            ->andWhere([
+                static::SOURCE_ATTRIBUTE => $source ?: false
+            ])
+            ->orderBy(['sortOrder' => SORT_ASC]);
+    }
+    
+    /**
+     * @param int|string $source
      * @return array
      */
     private function associations(

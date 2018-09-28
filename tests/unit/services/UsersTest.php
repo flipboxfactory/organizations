@@ -22,7 +22,7 @@ class UsersTest extends Unit
      */
     protected function _before()
     {
-        $this->service = (new OrganizationsPlugin('users'))
+        $this->service = (new OrganizationsPlugin('organizations'))
             ->getUsers();
     }
 
@@ -101,7 +101,7 @@ class UsersTest extends Unit
             $this->service->saveAssociations($query, $user)
         );
     }
-//
+
 //    /**
 //     * @throws \Exception
 //     */
