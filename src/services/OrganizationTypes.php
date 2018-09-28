@@ -83,23 +83,15 @@ class OrganizationTypes extends Component
      */
     public function resolve($type): TypeRecord
     {
-        if ($type = $this->find($type)) {
+        if (null !== ($type = $this->find($type))) {
             return $type;
         }
 
-        $type = ArrayHelper::toArray($type, [], false);
-
-        try {
-            $object = $this->create($type);
-        } catch (\Exception $e) {
-            $object = new TypeRecord();
-            ObjectHelper::populate(
-                $object,
-                $type
-            );
+        if (!is_array($type)) {
+            $type = ArrayHelper::toArray($type, [], false);
         }
 
-        return $object;
+        return $this->create($type);
     }
     
     /**
@@ -127,7 +119,7 @@ class OrganizationTypes extends Component
 
         $this->handleOldFieldLayout($type, $fieldLayout);
 
-        if ($fieldLayout === null || $fieldLayout->id == $this->getDefaultFieldLayoutId()) {
+        if ($fieldLayout->id == $this->getDefaultFieldLayoutId()) {
             return true;
         }
 
@@ -140,14 +132,13 @@ class OrganizationTypes extends Component
 
     /**
      * @param TypeRecord $type
-     * @param FieldLayout|null $fieldLayout
+     * @param FieldLayout $fieldLayout
      */
-    private function handleOldFieldLayout(TypeRecord $type, FieldLayout $fieldLayout = null)
+    private function handleOldFieldLayout(TypeRecord $type, FieldLayout $fieldLayout)
     {
         $oldFieldLayoutId = (int)$type->getOldAttribute('fieldLayoutId');
 
-        if ($oldFieldLayoutId !== null &&
-            $oldFieldLayoutId != $fieldLayout->id &&
+        if ($oldFieldLayoutId != $fieldLayout->id &&
             $oldFieldLayoutId != $this->getDefaultFieldLayoutId()
         ) {
             Craft::$app->getFields()->deleteLayoutById($oldFieldLayoutId);
@@ -157,7 +148,7 @@ class OrganizationTypes extends Component
     /**
      * @return int
      */
-    private function getDefaultFieldLayoutId(): int
+    protected function getDefaultFieldLayoutId(): int
     {
         return (int)OrganizationPlugin::getInstance()->getSettings()->getFieldLayout()->id;
     }

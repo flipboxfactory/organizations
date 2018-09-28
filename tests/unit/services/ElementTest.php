@@ -41,24 +41,36 @@ class ElementTest extends Unit
      */
     public function testBeforeSave()
     {
+        $dateTime = DateTimeHelper::currentUTCDateTime();
+
         /** @var Organization $org */
         $org = $this->make(
-            Organization::class
+            Organization::class,
+            [
+                'setDateJoined' => Expected::never(),
+                'getDateJoined' => Expected::once($dateTime)
+            ]
         );
 
         $this->service->beforeSave($org);
 
-        $this->assertNotNull(
-            $org->getDateJoined()
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testBeforeSaveNullJoin()
+    {
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class,
+            [
+                'setDateJoined' => Expected::once(),
+                'getDateJoined' => Expected::once()
+            ]
         );
 
-        $dateTime = DateTimeHelper::currentUTCDateTime();
-        $org->setDateJoined($dateTime);
-
-        $this->assertEquals(
-            $dateTime,
-            $org->getDateJoined()
-        );
+        $this->service->beforeSave($org);
     }
 
     /**
