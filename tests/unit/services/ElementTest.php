@@ -4,12 +4,18 @@ namespace flipbox\organizations\tests\services;
 
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
+use craft\elements\db\UserQuery;
 use craft\helpers\DateTimeHelper;
+use craft\i18n\PhpMessageSource;
+use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\elements\Organization;
+use flipbox\organizations\models\Settings;
 use flipbox\organizations\models\SiteSettings;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
+use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\services\Element;
+use flipbox\organizations\services\OrganizationTypes;
 use flipbox\organizations\services\Records;
 use yii\base\Exception;
 
@@ -262,6 +268,8 @@ class ElementTest extends Unit
     }
 
     /**
+     * @throws Exception
+     * @throws \Throwable
      * @expectedException Exception
      */
     public function testAfterSaveFailSave()
@@ -285,6 +293,8 @@ class ElementTest extends Unit
     }
 
     /**
+     * @throws Exception
+     * @throws \Throwable
      * @expectedException Exception
      */
     public function testAfterSaveFailAssociateTypes()
@@ -309,6 +319,7 @@ class ElementTest extends Unit
     }
 
     /**
+     * @throws Exception
      * @expectedException Exception
      */
     public function testAfterSaveFailAssociateUsers()
@@ -443,5 +454,489 @@ class ElementTest extends Unit
         $result = $method->invoke($service, $org, false);
 
         $this->assertFalse($result);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSaveSuccessNew()
+    {
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class
+        );
+
+        $record = $this->getMockBuilder(\flipbox\organizations\records\Organization::class)
+            ->setMethods(['save', 'attributes'])
+            ->getMock();
+
+        $record->method('attributes')->willReturn([
+            'id',
+            'dateCreated',
+            'dateUpdated'
+        ]);
+
+        /** @var Element $service */
+        $service = $this->make(
+            Element::class,
+            [
+                'elementToRecord' => Expected::once($record)
+            ]
+        );
+
+        $recordService = $this->make(
+            Records::class,
+            [
+                'save' => true
+            ]
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getRecords' => Expected::once($recordService)
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'save'
+        );
+        $method->setAccessible(true);
+
+        $result = $method->invoke($service, $org, true);
+
+        $this->assertTrue($result);
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testElementToRecord()
+    {
+        $id = 1;
+        $dateJoined = DateTimeHelper::currentUTCDateTime();
+
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class,
+            [
+                'getId' => Expected::once($id),
+                'dateJoined' => $dateJoined
+            ]
+        );
+
+        $record = $this->getMockBuilder(\flipbox\organizations\records\Organization::class)
+            ->setMethods(['attributes'])
+            ->getMock();
+
+        $record->method('attributes')->willReturn([
+            'id',
+            'dateJoined'
+        ]);
+
+        /** @var Element $service */
+        $service = $this->make(
+            Element::class
+        );
+
+        $recordService = $this->make(
+            Records::class,
+            [
+                'findByCondition' => Expected::once(),
+                'create' => Expected::once($record)
+            ]
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getRecords' => Expected::once($recordService)
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'elementToRecord'
+        );
+        $method->setAccessible(true);
+
+        $result = $method->invoke($service, $org);
+
+        $this->assertInstanceOf(
+            \flipbox\organizations\records\Organization::class,
+            $result
+        );
+
+        $this->assertEquals(
+            $id,
+            $record->id
+        );
+
+        $this->assertEquals(
+            $dateJoined,
+            $record->dateJoined
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testGetSiteSettingsNull()
+    {
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class,
+            [
+                'getPrimaryType' => Expected::once(
+                    $this->make(
+                        OrganizationType::class
+                    )
+                )
+            ]
+        );
+
+        /** @var Element $service */
+        $service = $this->make(
+            Element::class
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getSettings' => Expected::once(
+                    $this->make(
+                        Settings::class,
+                        [
+                            'getSiteSettings' => Expected::once([])
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'getSiteSettings'
+        );
+        $method->setAccessible(true);
+
+        $result = $method->invoke($service, $org);
+
+        $this->assertNull(
+            $result
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testGetSiteSettings()
+    {
+        $siteId = 1;
+
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class,
+            [
+                'siteId' => $siteId,
+                'getPrimaryType' => Expected::once()
+            ]
+        );
+
+        /** @var Element $service */
+        $service = $this->make(
+            Element::class
+        );
+
+        $settings = $this->make(
+            Settings::class,
+            [
+                'getSiteSettings' => Expected::once([
+                    $siteId => $this->make(
+                        SiteSettings::class
+                    )
+                ])
+            ]
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getSettings' => Expected::once($settings)
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'getSiteSettings'
+        );
+        $method->setAccessible(true);
+
+        $result = $method->invoke($service, $org);
+
+        $this->assertInstanceOf(
+            SiteSettings::class,
+            $result
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociateTypesSuccess()
+    {
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class,
+            [
+                'getTypes' => Expected::once(
+                    $this->make(
+                        OrganizationTypeQuery::class
+                    )
+                )
+            ]
+        );
+
+        /** @var Element $service */
+        $service = $this->make(
+            Element::class
+        );
+
+        $typeService = $this->make(
+            OrganizationTypes::class,
+            [
+                'saveAssociations' => Expected::once(true)
+            ]
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizationTypes' => Expected::once($typeService)
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'associateTypes'
+        );
+        $method->setAccessible(true);
+
+        $result = $method->invoke($service, $org);
+
+        $this->assertTrue(
+            $result
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociateTypesFail()
+    {
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class,
+            [
+                'getTypes' => Expected::once(
+                    $this->make(
+                        OrganizationTypeQuery::class
+                    )
+                ),
+                'addError' => Expected::once()
+            ]
+        );
+
+        /** @var Element $service */
+        $service = $this->make(
+            Element::class
+        );
+
+        $typeService = $this->make(
+            OrganizationTypes::class,
+            [
+                'saveAssociations' => Expected::once(false)
+            ]
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizationTypes' => Expected::once($typeService)
+            ]
+        );
+
+        // Translation category
+        $t9nCategory = 'organizations';
+        $i18n = \Craft::$app->getI18n();
+        /** @noinspection UnSafeIsSetOverArrayInspection */
+        if (!isset($i18n->translations[$t9nCategory]) && !isset($i18n->translations[$t9nCategory . '*'])) {
+            $i18n->translations[$t9nCategory] = [
+                'class' => PhpMessageSource::class,
+                'forceTranslation' => true,
+                'allowOverrides' => true,
+            ];
+        }
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        \Craft::$app->plugins->init();
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'associateTypes'
+        );
+        $method->setAccessible(true);
+
+        $result = $method->invoke($service, $org);
+
+        $this->assertFalse(
+            $result
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociateUsersSuccess()
+    {
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class,
+            [
+                'getUsers' => Expected::once(
+                    $this->make(
+                        UserQuery::class
+                    )
+                )
+            ]
+        );
+
+        /** @var Element $service */
+        $service = $this->make(
+            Element::class
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizations' => Expected::once(
+                    $this->make(
+                        \flipbox\organizations\services\Organizations::class,
+                        [
+                            'saveAssociations' => Expected::once(true)
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'associateUsers'
+        );
+        $method->setAccessible(true);
+
+        $result = $method->invoke($service, $org);
+
+        $this->assertTrue(
+            $result
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociateUsersFail()
+    {
+        /** @var Organization $org */
+        $org = $this->make(
+            Organization::class,
+            [
+                'getUsers' => Expected::once(
+                    $this->make(
+                        UserQuery::class
+                    )
+                ),
+                'addError' => Expected::once()
+            ]
+        );
+
+        /** @var Element $service */
+        $service = $this->make(
+            Element::class
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizations' => Expected::once(
+                    $this->make(
+                        \flipbox\organizations\services\Organizations::class,
+                        [
+                            'saveAssociations' => Expected::once(false)
+                        ]
+                    )
+                )
+            ]
+        );
+
+
+        // Translation category
+        $t9nCategory = 'organizations';
+        $i18n = \Craft::$app->getI18n();
+        /** @noinspection UnSafeIsSetOverArrayInspection */
+        if (!isset($i18n->translations[$t9nCategory]) && !isset($i18n->translations[$t9nCategory . '*'])) {
+            $i18n->translations[$t9nCategory] = [
+                'class' => PhpMessageSource::class,
+                'forceTranslation' => true,
+                'allowOverrides' => true,
+            ];
+        }
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        \Craft::$app->plugins->init();
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $service,
+            'associateUsers'
+        );
+        $method->setAccessible(true);
+
+        $result = $method->invoke($service, $org);
+
+        $this->assertFalse(
+            $result
+        );
     }
 }
