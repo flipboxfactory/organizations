@@ -4,23 +4,12 @@ namespace flipbox\organizations\tests\services;
 
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
-use craft\elements\db\UserQuery;
-use craft\helpers\DateTimeHelper;
-use craft\i18n\PhpMessageSource;
-use flipbox\organizations\db\OrganizationTypeAssociationQuery;
-use flipbox\organizations\db\OrganizationTypeQuery;
-use flipbox\organizations\elements\Organization;
-use flipbox\organizations\models\Settings;
-use flipbox\organizations\models\SiteSettings;
+use craft\queue\Queue;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
 use flipbox\organizations\records\OrganizationType;
-use flipbox\organizations\services\Element;
-use flipbox\organizations\services\OrganizationTypes;
-use flipbox\organizations\services\OrganizationTypeSettings;
 use flipbox\organizations\records\OrganizationTypeSiteSettings;
-use flipbox\organizations\services\Records;
-use yii\base\Exception;
+use flipbox\organizations\services\OrganizationTypeSettings;
 use yii\db\ActiveQuery;
 
 class OrganizationTypeSettingsTest extends Unit
@@ -62,7 +51,8 @@ class OrganizationTypeSettingsTest extends Unit
             ->getMock();
 
         $settings->method('attributes')->willReturn([
-            'siteId', 'typeId'
+            'siteId',
+            'typeId'
         ]);
 
         $settings->siteId = 1;
@@ -130,7 +120,8 @@ class OrganizationTypeSettingsTest extends Unit
             ->getMock();
 
         $settings->method('attributes')->willReturn([
-            'siteId', 'typeId'
+            'siteId',
+            'typeId'
         ]);
 
         $settings->siteId = 1;
@@ -194,88 +185,105 @@ class OrganizationTypeSettingsTest extends Unit
         );
     }
 
-//    /**
-//     * @param TypeModel $type
-//     * @return bool
-//     * @throws \Exception
-//     * @throws \Throwable
-//     * @throws \yii\db\StaleObjectException
-//     */
-//    public function saveByType(
-//        TypeModel $type
-//    ): bool {
-//        $successful = true;
-//
-//        /** @var TypeSettingsRecord[] $allSettings */
-//        $allSettings = $type->hasMany(TypeSettingsRecord::class, ['typeId' => 'id'])
-//            ->indexBy('siteId')
-//            ->all();
-//
-//        foreach ($type->getSiteSettings() as $model) {
-//            ArrayHelper::remove($allSettings, $model->siteId);
-//            $model->typeId = $type->getId();
-//
-//            if (!$model->save()) {
-//                $successful = false;
-//                // Log the errors
-//                $error = Craft::t(
-//                    'organizations',
-//                    "Couldn't save site settings due to validation errors:"
-//                );
-//                foreach ($model->getFirstErrors() as $attributeError) {
-//                    $error .= "\n- " . Craft::t('organizations', $attributeError);
-//                }
-//
-//                $type->addError('sites', $error);
-//            }
-//        }
-//
-//        // Delete old settings records
-//        foreach ($allSettings as $settings) {
-//            $settings->delete();
-//            $this->reSaveOrganizations($settings);
-//        }
-//
-//        return $successful;
-//    }
-//
-//    /**
-//     * @param TypeSettingsRecord $type
-//     * @param bool $insert
-//     * @param array $changedAttributes
-//     */
-//    public function afterSave(TypeSettingsRecord $type, bool $insert, array $changedAttributes)
-//    {
-//        if ($insert === true) {
-//            return;
-//        }
-//
-//        if (array_key_exists('uriFormat', $changedAttributes) ||
-//            (array_key_exists('hasUrls', $changedAttributes) &&
-//                $type->getOldAttribute('hasUrls') != $type->getAttribute('hasUrls'))
-//        ) {
-//            $this->reSaveOrganizations($type);
-//        }
-//    }
-//
-//    /**
-//     * @param TypeSettingsRecord $type
-//     */
-//    private function reSaveOrganizations(TypeSettingsRecord $type)
-//    {
-//        Craft::$app->getQueue()->push(new ResaveElements([
-//            'description' => Craft::t('organizations', 'Re-saving organizations (Site: {site})', [
-//                'site' => $type->getSiteId(),
-//            ]),
-//            'elementType' => OrganizationElement::class,
-//            'criteria' => [
-//                'siteId' => $type->getSiteId(),
-//                'typeId' => $type->getTypeId(),
-//                'status' => null,
-//                'enabledForSite' => false,
-//            ]
-//        ]));
-//    }
+    /**
+     * @throws \Exception
+     */
+    public function testAfterSaveInsert()
+    {
 
+        $insert = true;
 
+        $attributes = [
+            'uriFormat' => true,
+            'hasUrls' => true
+        ];
+
+        $type = $this->make(
+            OrganizationTypeSiteSettings::class,
+            [
+                'getAttribute' => Expected::never(),
+                'getOldAttribute' => Expected::never()
+            ]
+        );
+
+        $this->service->afterSave(
+            $type,
+            $insert,
+            $attributes
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAfterSaveNoUri()
+    {
+
+        $insert = false;
+
+        $attributes = [
+            'hasUrls' => true
+        ];
+
+        $type = $this->getMockBuilder(OrganizationTypeSiteSettings::class)
+            ->setMethods(['getAttribute', 'getOldAttribute'])
+            ->getMock();
+
+        $type->expects($this->once())
+            ->method('getAttribute')
+            ->with('hasUrls')
+            ->willReturn(true);
+
+        $type->expects($this->once())
+            ->method('getOldAttribute')
+            ->with('hasUrls')
+            ->willReturn(false);
+
+        $service = $this->make(
+            $this->service,
+            [
+                'reSaveOrganizations' => Expected::once()
+            ]
+        );
+
+        $service->afterSave(
+            $type,
+            $insert,
+            $attributes
+        );
+    }
+
+    /**
+     * @throws \ReflectionException
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function testReSaveOrganizations()
+    {
+        \Craft::$app->set(
+            'queue',
+            $this->make(
+                Queue::class,
+                [
+                    'push' => Expected::once(1)
+                ]
+            )
+        );
+
+        $type = $this->make(
+            OrganizationTypeSiteSettings::class,
+            [
+                'getSiteId' => Expected::exactly(2, 1),
+                'getTypeId' => Expected::once(1)
+            ]
+        );
+
+        // Protected
+        $method = new \ReflectionMethod(
+            $this->service,
+            'reSaveOrganizations'
+        );
+        $method->setAccessible(true);
+
+        $method->invoke($this->service, $type);
+    }
 }
