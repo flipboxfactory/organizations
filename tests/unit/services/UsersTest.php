@@ -6,7 +6,9 @@ use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
 use craft\elements\User;
 use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\Organizations;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
+use flipbox\organizations\services\UserOrganizations;
 use flipbox\organizations\services\Users;
 
 class UsersTest extends Unit
@@ -84,56 +86,214 @@ class UsersTest extends Unit
     /**
      * @throws \Exception
      */
-    public function testSaveAssociationsWithNoCachedResult()
+    public function testResolveFound()
     {
-        $query = $this->make(
-            OrganizationQuery::class,
+        $service = $this->make(
+            $this->service,
             [
-                'getCachedResult' => Expected::once()
+                'find' => Expected::once(
+                    $this->make(
+                        User::class
+                    )
+                ),
             ]
         );
 
+        $this->assertInstanceOf(
+            User::class,
+            $service->resolve('foo')
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testResolveArray()
+    {
+        $service = $this->make(
+            $this->service,
+            [
+                'find' => Expected::once(
+                    $this->make(
+                        User::class
+                    )
+                ),
+            ]
+        );
+
+        $this->assertInstanceOf(
+            User::class,
+            $service->resolve(['id' => 1])
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testFind()
+    {
+        $service = $this->make(
+            $this->service,
+            [
+                'parentFind' => Expected::once(
+                    $this->make(
+                        User::class
+                    )
+                ),
+            ]
+        );
+
+        $this->assertInstanceOf(
+            User::class,
+            $service->find(1)
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testFindCurrentUser()
+    {
+        \Craft::$app->set('user', $this->make(
+            \craft\web\User::class,
+            [
+                'getIdentity' => Expected::once($this->make(
+                    User::class
+                ))
+            ]
+        ));
+
+        $this->assertInstanceOf(
+            User::class,
+            $this->service->find()
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testResolveCreate()
+    {
+        $service = $this->make(
+            $this->service,
+            [
+                'find' => Expected::once(),
+                'create' => Expected::once(
+                    $this->make(
+                        User::class
+                    )
+                )
+            ]
+        );
+
+        $this->assertInstanceOf(
+            User::class,
+            $service->resolve('foo')
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testSaveAssociations()
+    {
         $user = $this->make(
             User::class
         );
+
+        $query = $this->make(
+            OrganizationQuery::class
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getUserOrganizations' => Expected::once(
+                    $this->make(
+                        UserOrganizations::class,
+                        [
+                            'saveAssociations' => Expected::once(true)
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
 
         $this->assertTrue(
             $this->service->saveAssociations($query, $user)
         );
     }
 
-//    /**
-//     * @throws \Exception
-//     */
-//    public function testSaveAssociationsWithCachedResult()
-//    {
-//        $user = $this->make(
-//            User::class,
-//            [
-//                'id' => 1
-//            ]
-//        );
-//
-//        $query = $this->make(
-//            OrganizationQuery::class,
-//            [
-//                'getCachedResult' => Expected::once([$user]),
-//                'all' => Expected::once([$user]),
-//                'setCachedResult' => Expected::once()
-//            ]
-//        );
-//
-//        $service = $this->make(
-//            $this->service,
-//            [
-//                'toAssociations' => Expected::once([
-//                    new UserAssociation()
-//                ])
-//            ]
-//        );
-//
-//        $this->assertTrue(
-//            $service->saveAssociations($query, $user)
-//        );
-//    }
+    /**
+     * @throws \Exception
+     */
+    public function testDissociate()
+    {
+        $users = $this->make(
+            User::class
+        );
+
+        $query = $this->make(
+            OrganizationQuery::class
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getUserOrganizations' => Expected::once(
+                    $this->make(
+                        UserOrganizations::class,
+                        [
+                            'dissociate' => Expected::once(true)
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        $this->assertTrue(
+            $this->service->dissociate($query, $users)
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testAssociate()
+    {
+        $users = $this->make(
+            User::class
+        );
+
+        $query = $this->make(
+            OrganizationQuery::class
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getUserOrganizations' => Expected::once(
+                    $this->make(
+                        UserOrganizations::class,
+                        [
+                            'associate' => Expected::once(true)
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        $this->assertTrue(
+            $this->service->associate($query, $users)
+        );
+    }
 }

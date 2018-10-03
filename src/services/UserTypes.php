@@ -11,7 +11,6 @@ namespace flipbox\organizations\services;
 use craft\db\Query;
 use craft\elements\User as UserElement;
 use flipbox\ember\helpers\ArrayHelper;
-use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
 use flipbox\organizations\db\UserTypeQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
@@ -19,7 +18,6 @@ use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
-use flipbox\organizations\records\UserTypeAssociation;
 use yii\base\Component;
 
 /**
@@ -78,25 +76,61 @@ class UserTypes extends Component
      * @param mixed $type
      * @return UserType
      */
-    public function resolve($type)
+    public function resolve($type): UserType
     {
-        if ($type = $this->find($type)) {
+        if (null !== ($type = $this->find($type))) {
             return $type;
         }
 
-        $type = ArrayHelper::toArray($type, [], false);
-
-        try {
-            $object = $this->create($type);
-        } catch (\Exception $e) {
-            $object = new UserType();
-            ObjectHelper::populate(
-                $object,
-                $type
-            );
+        if (!is_array($type)) {
+            $type = ArrayHelper::toArray($type, [], false);
         }
 
-        return $object;
+        return $this->create($type);
+    }
+
+    /**
+     * @param UserType $type
+     * @param UserElement $user
+     * @param OrganizationElement $organization
+     * @return bool
+     * @throws \Exception
+     */
+    public function associate(
+        UserType $type,
+        UserElement $user,
+        OrganizationElement $organization
+    ): bool {
+        $associationService = OrganizationsPlugin::getInstance()->getUserTypeAssociations();
+
+        return $associationService->associate(
+            $associationService->create([
+                'typeId' => $type->getId(),
+                'userId' => $this->associationId($user->getId(), $organization->getId())
+            ])
+        );
+    }
+
+    /**
+     * @param UserType $type
+     * @param UserElement $user
+     * @param OrganizationElement $organization
+     * @return bool
+     * @throws \Exception
+     */
+    public function dissociate(
+        UserType $type,
+        UserElement $user,
+        OrganizationElement $organization
+    ): bool {
+        $associationService = OrganizationsPlugin::getInstance()->getUserTypeAssociations();
+
+        return $associationService->dissociate(
+            $associationService->create([
+                'typeId' => $type->getId(),
+                'userId' => $this->associationId($user->getId(), $organization->getId())
+            ])
+        );
     }
 
     /**
@@ -140,14 +174,14 @@ class UserTypes extends Component
      * @param int $userAssociationId
      * @return array
      */
-    private function toAssociations(
+    protected function toAssociations(
         array $types,
         int $userAssociationId
     ) {
         $associations = [];
         foreach ($types as $type) {
-            $associations[] = new UserTypeAssociation([
-                'typeId' => $type->id,
+            $associations[] = OrganizationsPlugin::getInstance()->getUserTypeAssociations()->create([
+                'typeId' => $type->getId(),
                 'userId' => $userAssociationId
             ]);
         }
@@ -160,7 +194,7 @@ class UserTypes extends Component
      * @param int $organizationId
      * @return Query
      */
-    private function associationIdQuery(int $userId, int $organizationId): Query
+    protected function associationIdQuery(int $userId, int $organizationId): Query
     {
         return (new Query())
             ->select(['id'])
@@ -176,9 +210,9 @@ class UserTypes extends Component
      * @param int $organizationId
      * @return string|null
      */
-    private function associationId(int $userId, int $organizationId)
+    protected function associationId(int $userId, int $organizationId)
     {
         $id = $this->associationIdQuery($userId, $organizationId)->scalar();
-        return is_string($id) ? $id : null;
+        return is_string($id) || is_numeric($id) ? $id : null;
     }
 }

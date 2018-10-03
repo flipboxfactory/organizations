@@ -11,7 +11,6 @@ namespace flipbox\organizations\services;
 use Craft;
 use craft\helpers\ArrayHelper;
 use craft\models\FieldLayout;
-use flipbox\ember\helpers\ObjectHelper;
 use flipbox\ember\services\traits\records\AccessorByString;
 use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\elements\Organization as OrganizationElement;
@@ -93,7 +92,7 @@ class OrganizationTypes extends Component
 
         return $this->create($type);
     }
-    
+
     /**
      * @param array $config
      * @return array

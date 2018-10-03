@@ -5,23 +5,11 @@ namespace flipbox\organizations\tests\services;
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
 use craft\elements\db\UserQuery;
-use craft\helpers\DateTimeHelper;
-use craft\i18n\PhpMessageSource;
 use craft\models\Site;
-use flipbox\organizations\db\OrganizationQuery;
-use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\models\Settings;
-use flipbox\organizations\models\SiteSettings;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
-use flipbox\organizations\records\UserAssociation as OrganizationUserAssociation;
-use flipbox\organizations\records\OrganizationType;
-use flipbox\organizations\services\Element;
-use flipbox\organizations\services\OrganizationTypes;
-use flipbox\organizations\services\OrganizationUserAssociations;
-use flipbox\organizations\services\Records;
-use yii\base\Exception;
+use flipbox\organizations\services\OrganizationUsers;
 
 class OrganizationsTest extends Unit
 {
@@ -183,7 +171,7 @@ class OrganizationsTest extends Unit
         $service = $this->make(
             $this->service,
             [
-                'get' => Expected::once(
+                'find' => Expected::once(
                     $this->make(
                         Organization::class
                     )
@@ -223,6 +211,41 @@ class OrganizationsTest extends Unit
     /**
      * @throws \Exception
      */
+    public function testSaveAssociations()
+    {
+        $org = $this->make(
+            Organization::class
+        );
+
+        $query = $this->make(
+            UserQuery::class
+        );
+
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizationUsers' => Expected::once(
+                    $this->make(
+                        OrganizationUsers::class,
+                        [
+                            'saveAssociations' => Expected::once(true)
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
+
+        $this->assertTrue(
+            $this->service->saveAssociations($query, $org)
+        );
+    }
+
+    /**
+     * @throws \Exception
+     */
     public function testDissociate()
     {
         $org = $this->make(
@@ -233,38 +256,25 @@ class OrganizationsTest extends Unit
             UserQuery::class
         );
 
-        $service = $this->make($this->service, [
-            'dissociateUsers' => Expected::once(
-                true
-            )
-        ]);
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizationUsers' => Expected::once(
+                    $this->make(
+                        OrganizationUsers::class,
+                        [
+                            'dissociate' => Expected::once(true)
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
 
         $this->assertTrue(
-            $service->dissociate($query, $org)
-        );
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function testDissociateUsers()
-    {
-        $org = $this->make(
-            Organization::class
-        );
-
-        $query = $this->make(
-            UserQuery::class
-        );
-
-        $service = $this->make($this->service, [
-            'userAssociations' => Expected::once(
-                true
-            )
-        ]);
-
-        $this->assertTrue(
-            $service->dissociateUsers($query, $org)
+            $this->service->dissociate($query, $org)
         );
     }
 
@@ -281,204 +291,40 @@ class OrganizationsTest extends Unit
             UserQuery::class
         );
 
-        $service = $this->make($this->service, [
-            'associateUsers' => Expected::once(
-                true
-            )
-        ]);
+        $plugin = $this->make(
+            Organizations::class,
+            [
+                'getOrganizationUsers' => Expected::once(
+                    $this->make(
+                        OrganizationUsers::class,
+                        [
+                            'associate' => Expected::once(true)
+                        ]
+                    )
+                )
+            ]
+        );
+
+        \Craft::$app->loadedModules[Organizations::class] = $plugin;
+        \Yii::$app->loadedModules[Organizations::class] = $plugin;
 
         $this->assertTrue(
-            $service->associate($query, $org)
+            $this->service->associate($query, $org)
         );
     }
 
     /**
-     * @throws \Exception
+     * @expectedException \Exception
      */
-    public function testAssociateUsers()
-    {
-        $org = $this->make(
-            Organization::class
-        );
-
-        $query = $this->make(
-            UserQuery::class
-        );
-
-        $service = $this->make($this->service, [
-            'userAssociations' => Expected::once(
-                true
-            )
-        ]);
-
-        $this->assertTrue(
-            $service->associateUsers($query, $org)
-        );
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function testAssociationsWithEmptyCache()
+    public function testRecordNotFoundException()
     {
 
-        $org = $this->make(
-            Organization::class
-        );
-
-        $query = $this->make(
-            UserQuery::class
-        );
-
-        $assService = $this->make(
-            OrganizationUserAssociations::class
-        );
-
-        // Protected
         $method = new \ReflectionMethod(
             $this->service,
-            'userAssociations'
+            'recordNotFoundException'
         );
         $method->setAccessible(true);
 
-        $this->assertTrue(
-            $method->invoke(
-                $this->service,
-                $query,
-                $org,
-                [
-                    $assService,
-                    'associate'
-                ]
-            )
-        );
+        $method->invoke($this->service);
     }
-
-    /**
-     * @throws \Exception
-     */
-    public function testAssociationsWithCache()
-    {
-        $org = $this->make(
-            Organization::class,
-            [
-                'getId' => Expected::once(1)
-            ]
-        );
-
-        $query = $this->make(
-            UserQuery::class,
-            [
-                'getCachedResult' => Expected::once([$org]),
-                'id' => Expected::once()
-            ]
-        );
-
-        $assService = $this->make(
-            OrganizationUserAssociations::class,
-            [
-                'associate' => Expected::once(true)
-            ]
-        );
-
-        $record = $this->getMockBuilder(OrganizationUserAssociation::class)
-            ->setMethods(['attributes'])
-            ->getMock();
-
-        $record->method('attributes')->willReturn([
-            'userId',
-            'organizationId'
-        ]);
-
-        $service = $this->make(
-            $this->service,
-            [
-                'toAssociations' => Expected::once([$record])
-            ]
-        );
-
-        // Protected
-        $method = new \ReflectionMethod(
-            $service,
-            'userAssociations'
-        );
-        $method->setAccessible(true);
-
-        $this->assertTrue(
-            $method->invoke(
-                $service,
-                $query,
-                $org,
-                [
-                    $assService,
-                    'associate'
-                ]
-            )
-        );
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function testAssociationsWithCacheNoAssociations()
-    {
-        $org = $this->make(
-            Organization::class,
-            [
-                'getId' => Expected::once(1)
-            ]
-        );
-
-        $query = $this->make(
-            UserQuery::class,
-            [
-                'getCachedResult' => Expected::once([$org]),
-                'setCachedResult' => Expected::once(),
-                'id' => Expected::once()
-            ]
-        );
-
-        $assService = $this->make(
-            OrganizationUserAssociations::class,
-            [
-                'associate' => Expected::once(false)
-            ]
-        );
-
-        $record = $this->getMockBuilder(OrganizationUserAssociation::class)
-            ->setMethods(['attributes'])
-            ->getMock();
-
-        $record->method('attributes')->willReturn([
-            'id'
-        ]);
-
-        $service = $this->make(
-            $this->service,
-            [
-                'toAssociations' => Expected::once([$record])
-            ]
-        );
-
-        // Protected
-        $method = new \ReflectionMethod(
-            $service,
-            'userAssociations'
-        );
-        $method->setAccessible(true);
-
-        $this->assertFalse(
-            $method->invoke(
-                $service,
-                $query,
-                $org,
-                [
-                    $assService,
-                    'associate'
-                ]
-            )
-        );
-    }
-
-
 }

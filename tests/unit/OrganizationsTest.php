@@ -10,8 +10,10 @@ use flipbox\organizations\services\OrganizationTypeAssociations;
 use flipbox\organizations\services\OrganizationTypes;
 use flipbox\organizations\services\OrganizationTypeSettings;
 use flipbox\organizations\services\OrganizationUserAssociations;
+use flipbox\organizations\services\OrganizationUsers;
 use flipbox\organizations\services\Records;
 use flipbox\organizations\services\UserOrganizationAssociations;
+use flipbox\organizations\services\UserOrganizations;
 use flipbox\organizations\services\Users;
 use flipbox\organizations\services\UserTypeAssociations;
 use flipbox\organizations\services\UserTypes;
@@ -131,6 +133,22 @@ class OrganizationsTest extends Unit
     /**
      * Test the component is set correctly
      */
+    public function testOrganizationUsersComponent()
+    {
+        $this->assertInstanceOf(
+            OrganizationUsers::class,
+            $this->module->getOrganizationUsers()
+        );
+
+        $this->assertInstanceOf(
+            OrganizationUsers::class,
+            $this->module->organizationUsers
+        );
+    }
+
+    /**
+     * Test the component is set correctly
+     */
     public function testRecordsComponent()
     {
         $this->assertInstanceOf(
@@ -141,6 +159,22 @@ class OrganizationsTest extends Unit
         $this->assertInstanceOf(
             Records::class,
             $this->module->records
+        );
+    }
+
+    /**
+     * Test the component is set correctly
+     */
+    public function testUserOrganizationsComponent()
+    {
+        $this->assertInstanceOf(
+            UserOrganizations::class,
+            $this->module->getUserOrganizations()
+        );
+
+        $this->assertInstanceOf(
+            UserOrganizations::class,
+            $this->module->userOrganizations
         );
     }
 
