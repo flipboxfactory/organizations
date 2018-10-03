@@ -132,12 +132,30 @@ class Organizations extends Component
      * @param OrganizationElement $organization
      * @return bool
      * @throws \Exception
+     *
+     * @deprecated
      */
     public function dissociate(
         UserQuery $query,
         OrganizationElement $organization
     ): bool {
-        return $this->associations(
+        return $this->dissociateUsers(
+            $query,
+            $organization
+        );
+    }
+
+    /**
+     * @param UserQuery $query
+     * @param OrganizationElement $organization
+     * @return bool
+     * @throws \Exception
+     */
+    public function dissociateUsers(
+        UserQuery $query,
+        OrganizationElement $organization
+    ): bool {
+        return $this->userAssociations(
             $query,
             $organization,
             [
@@ -152,12 +170,30 @@ class Organizations extends Component
      * @param OrganizationElement $organization
      * @return bool
      * @throws \Exception
+     *
+     * @deprecated
      */
     public function associate(
         UserQuery $query,
         OrganizationElement $organization
     ): bool {
-        return $this->associations(
+        return $this->associateUsers(
+            $query,
+            $organization
+        );
+    }
+
+    /**
+     * @param UserQuery $query
+     * @param OrganizationElement $organization
+     * @return bool
+     * @throws \Exception
+     */
+    public function associateUsers(
+        UserQuery $query,
+        OrganizationElement $organization
+    ): bool {
+        return $this->userAssociations(
             $query,
             $organization,
             [
@@ -173,7 +209,7 @@ class Organizations extends Component
      * @param callable $callable
      * @return bool
      */
-    protected function associations(UserQuery $query, OrganizationElement $organization, callable $callable)
+    protected function userAssociations(UserQuery $query, OrganizationElement $organization, callable $callable)
     {
         /** @var UserElement[] $models */
         if (null === ($models = $query->getCachedResult())) {
@@ -210,7 +246,7 @@ class Organizations extends Component
      * @param int $organizationId
      * @return UserAssociation[]
      */
-    private function toAssociations(
+    protected function toAssociations(
         array $users,
         int $organizationId
     ) {
