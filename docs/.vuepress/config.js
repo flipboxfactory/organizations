@@ -17,7 +17,7 @@ module.exports = {
             // any other languages you want to include in code toggles...
         },
         nav: [
-            {text: 'Documentation', link: 'https://organizations.flipboxfactory.com'},
+            {text: 'Details', link: 'https://flipboxfactory.com/craft-cms-plugins/organizations'},
             {text: 'Changelog', link: 'https://github.com/flipboxfactory/organizations/blob/master/CHANGELOG.md'},
             {text: 'Repo', link: 'https://github.com/flipboxfactory/organizations'}
         ],
