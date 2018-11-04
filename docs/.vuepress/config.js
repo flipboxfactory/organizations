@@ -66,9 +66,9 @@ module.exports = {
                         ['/objects/organization', 'Organization'],
                         ['/objects/organization-type', 'Organization Type'],
                         ['/objects/organization-type-site-settings', 'Organization Type Site Settings'],
-                        ['/objects/settings', 'Settings'],
+                        ['/objects/user', 'User'],
                         ['/objects/user-type', 'User Type'],
-                        ['/objects/user', 'User']
+                        ['/objects/settings', 'Settings'],
                     ]
                 },
                 {

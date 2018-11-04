@@ -2,8 +2,6 @@
 
 You may access the following public properties and methods on an [Organization Type Site Settings].
 
-[Organization Type Site Settings]: organization-type-site-settings "Organization Type Site Settings"
-
 ## Public Properties
 The following properties are available:
 
@@ -135,3 +133,4 @@ foreach ($siteSettings as $settings) {
 
 [Site]: https://docs.craftcms.com/api/v3/craft-models-site.html
 [Organization Type]: organization-type.md
+[Organization Type Site Settings]: organization-type-site-settings.md
