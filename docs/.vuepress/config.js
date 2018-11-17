@@ -1,8 +1,8 @@
 module.exports = {
     title: 'Organizations',
-    description: 'Simple parent + child management',
+    description: 'Parent + child organization management for Craft CMS',
     base: '/',
-    //theme: 'flipbox',
+    theme: 'flipbox',
     themeConfig: {
         logo: '/icon.svg',
         docsRepo: 'flipboxfactory/organizations',
@@ -85,11 +85,10 @@ module.exports = {
         }
     },
     markdown: {
-        anchor: { level: [2, 3] },
+        anchor: { level: [2, 3, 4] },
         toc: { includeLevel: [3] },
         config(md) {
-            let markup = require('./markup') // TODO Change after using theme
-            md.use(markup)
+            md.use(require('vuepress-theme-flipbox/markup'))
         }
     }
 }

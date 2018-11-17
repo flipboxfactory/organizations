@@ -6,6 +6,6 @@ All **Bugs**, **Enhancements**, **Feature Requests** and other issues are manage
 
 ***
 
-Collaborate and get questions answered quickly via Gitter.
+Collaborate and get questions answered quickly via chat.
 
 <button-link url="https://gitter.im/flipboxfactory/organizations">View Discussions</button-link>
