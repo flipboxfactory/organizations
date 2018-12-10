@@ -23,6 +23,6 @@ trait Lookup
      */
     protected function find($identifier)
     {
-        return Organizations::getInstance()->getUserTypes()->find($identifier);
+        return UserType::findOne($identifier);
     }
 }

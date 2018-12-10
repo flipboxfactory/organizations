@@ -9,11 +9,10 @@
 namespace flipbox\organizations\records;
 
 use Craft;
-use flipbox\ember\helpers\ObjectHelper;
-use flipbox\ember\records\ActiveRecordWithId;
-use flipbox\ember\records\traits\FieldLayoutAttribute;
-use flipbox\ember\traits\HandleRules;
-use flipbox\ember\validators\ModelValidator;
+use craft\models\FieldLayout;
+use flipbox\craft\ember\models\HandleRulesTrait;
+use flipbox\craft\ember\records\ActiveRecordWithId;
+use flipbox\craft\ember\records\FieldLayoutAttributeTrait;
 use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
@@ -23,16 +22,13 @@ use yii\validators\UniqueValidator;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method FieldLayoutModel parentResolveFieldLayout()
  * @property string $name
  * @property OrganizationTypeSiteSettings[] $siteSettingRecords
  */
 class OrganizationType extends ActiveRecordWithId
 {
-    use FieldLayoutAttribute,
-        HandleRules {
-        resolveFieldLayout as parentResolveFieldLayout;
-    }
+    use FieldLayoutAttributeTrait,
+        HandleRulesTrait;
 
     /**
      * The table name
@@ -82,11 +78,45 @@ class OrganizationType extends ActiveRecordWithId
      */
     public function beforeSave($insert)
     {
-        if (false === OrganizationPlugin::getInstance()->getOrganizationTypes()->beforeSave($this)) {
+        if (false === parent::beforeSave($insert)) {
             return false;
         }
 
-        return parent::beforeSave($insert);
+        $fieldLayout = $this->getFieldLayout();
+
+        $this->handleOldFieldLayout($fieldLayout);
+
+        if ($fieldLayout->id == $this->getDefaultFieldLayoutId()) {
+            return true;
+        }
+
+        if (!Craft::$app->getFields()->saveLayout($fieldLayout)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param FieldLayout $fieldLayout
+     */
+    protected function handleOldFieldLayout(FieldLayout $fieldLayout)
+    {
+        $oldFieldLayoutId = (int)$this->getOldAttribute('fieldLayoutId');
+
+        if ($oldFieldLayoutId != $fieldLayout->id &&
+            $oldFieldLayoutId != $this->getDefaultFieldLayoutId()
+        ) {
+            Craft::$app->getFields()->deleteLayoutById($oldFieldLayoutId);
+        }
+    }
+
+    /**
+     * @return int
+     */
+    protected function getDefaultFieldLayoutId(): int
+    {
+        return (int)OrganizationPlugin::getInstance()->getSettings()->getFieldLayout()->id;
     }
 
     /**
@@ -94,7 +124,10 @@ class OrganizationType extends ActiveRecordWithId
      */
     public function afterSave($insert, $changedAttributes)
     {
-        OrganizationPlugin::getInstance()->getOrganizationTypes()->afterSave($this);
+        if (!OrganizationPlugin::getInstance()->getOrganizationTypeSettings()->saveByType($this)) {
+            throw new Exception("Unable to save site settings");
+        };
+
         parent::afterSave($insert, $changedAttributes);
     }
 

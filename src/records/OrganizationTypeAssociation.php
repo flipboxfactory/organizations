@@ -9,6 +9,8 @@
 namespace flipbox\organizations\records;
 
 use Craft;
+use flipbox\craft\ember\records\ActiveRecord;
+use flipbox\craft\ember\records\SortableTrait;
 use flipbox\craft\sortable\associations\records\SortableAssociation;
 use flipbox\craft\sortable\associations\services\SortableAssociations;
 use flipbox\organizations\db\OrganizationTypeAssociationQuery;
@@ -24,9 +26,10 @@ use flipbox\organizations\Organizations as OrganizationPlugin;
  * @property OrganizationType $type
  * @property Organization $organization
  */
-class OrganizationTypeAssociation extends SortableAssociation
+class OrganizationTypeAssociation extends ActiveRecord
 {
-    use traits\OrganizationTypeAttribute,
+    use SortableTrait,
+        traits\OrganizationTypeAttribute,
         traits\OrganizationAttribute;
 
     /**
@@ -51,14 +54,7 @@ class OrganizationTypeAssociation extends SortableAssociation
 
     /**
      * @inheritdoc
-     */
-    protected function associationService(): SortableAssociations
-    {
-        return OrganizationPlugin::getInstance()->getOrganizationTypeAssociations();
-    }
-
-    /**
-     * @inheritdoc
+     * @return OrganizationTypeAssociationQuery
      */
     public static function find()
     {

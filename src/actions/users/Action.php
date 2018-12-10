@@ -12,6 +12,7 @@ use craft\elements\User;
 use flipbox\ember\actions\model\traits\Lookup;
 use flipbox\ember\actions\model\traits\Manage;
 use flipbox\ember\exceptions\RecordNotFoundException;
+use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\records\UserAssociation;
 use yii\base\Model;
@@ -69,7 +70,11 @@ abstract class Action extends \yii\base\Action
             return $this->handleNotFoundResponse();
         }
 
-        if (null === ($organization = Organizations::getInstance()->getOrganizations()->find($organization))) {
+        $organization = Organization::findOne([
+            is_numeric($organization) ? 'id' : 'slug' => $organization
+        ]);
+
+        if (null === $organization) {
             return $this->handleNotFoundResponse();
         }
 

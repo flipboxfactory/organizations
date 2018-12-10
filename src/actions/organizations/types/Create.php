@@ -8,17 +8,15 @@
 
 namespace flipbox\organizations\actions\organizations\types;
 
-use flipbox\ember\actions\model\ModelCreate;
-use flipbox\organizations\Organizations;
+use flipbox\craft\ember\actions\records\CreateRecord;
 use flipbox\organizations\records\OrganizationType;
-use yii\base\BaseObject;
-use yii\base\Model;
+use yii\db\ActiveRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class Create extends ModelCreate
+class Create extends CreateRecord
 {
     use traits\Populate;
 
@@ -27,31 +25,20 @@ class Create extends ModelCreate
      * @param OrganizationType $object
      * @return OrganizationType
      */
-    protected function populate(BaseObject $object): BaseObject
+    protected function populate(ActiveRecord $record): ActiveRecord
     {
-        if (true === $this->ensureType($object)) {
-            parent::populate($object);
-            $this->populateSiteLayout($object);
-            $this->populateSiteSettings($object);
-        }
-        return $object;
+        $this->populateSiteLayout($record);
+        $this->populateSiteSettings($record);
+
+        return parent::populate($record);
     }
 
     /**
      * @inheritdoc
-     * @return OrganizationType|Model
+     * @return OrganizationType
      */
-    protected function newModel(array $config = []): Model
+    protected function newRecord(array $config = []): ActiveRecord
     {
-        return Organizations::getInstance()->getOrganizationTypes()->create($config);
-    }
-
-    /**
-     * @inheritdoc
-     * @param OrganizationType|Model $model
-     */
-    protected function performAction(Model $model): bool
-    {
-        return $model->insert();
+        return new OrganizationType($config);
     }
 }

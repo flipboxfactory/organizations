@@ -10,6 +10,7 @@ namespace flipbox\organizations\actions\organizations;
 
 use flipbox\ember\actions\element\ElementDelete;
 use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 
 /**
@@ -32,6 +33,9 @@ class Delete extends ElementDelete
      */
     public function find($identifier)
     {
-        return Organizations::getInstance()->getOrganizations()->find($identifier);
+        return Organization::findOne([
+            (is_numeric($identifier) ? 'id' : 'slug') => $identifier,
+            'status' => null
+        ]);
     }
 }

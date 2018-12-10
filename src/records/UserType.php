@@ -8,8 +8,8 @@
 
 namespace flipbox\organizations\records;
 
-use flipbox\ember\records\ActiveRecordWithId;
-use flipbox\ember\traits\HandleRules;
+use flipbox\craft\ember\models\HandleRulesTrait;
+use flipbox\craft\ember\records\ActiveRecordWithId;
 use flipbox\organizations\db\UserTypeQuery;
 use yii\validators\UniqueValidator;
 
@@ -21,7 +21,7 @@ use yii\validators\UniqueValidator;
  */
 class UserType extends ActiveRecordWithId
 {
-    use HandleRules;
+    use HandleRulesTrait;
 
     /**
      * The table name
@@ -75,5 +75,17 @@ class UserType extends ActiveRecordWithId
     public function __toString()
     {
         return (string)$this->getAttribute('name');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static function findByCondition($condition)
+    {
+        if (!is_numeric($condition) && is_string($condition)) {
+            $condition = ['handle' => $condition];
+        }
+
+        return parent::findByCondition($condition);
     }
 }

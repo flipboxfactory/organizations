@@ -71,7 +71,7 @@ trait OrganizationAttribute
             return null;
         }
 
-        return OrganizationPlugin::getInstance()->getOrganizations()->find($record->id);
+        return OrganizationElement::findOne($record->id);
     }
 
     /**

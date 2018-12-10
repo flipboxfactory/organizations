@@ -12,7 +12,7 @@ use craft\base\ElementInterface;
 use craft\helpers\Db;
 use craft\records\Element as ElementRecord;
 use craft\records\User as UserRecord;
-use flipbox\ember\records\ActiveRecordWithId;
+use flipbox\craft\ember\records\ActiveRecordWithId;
 use flipbox\organizations\records\OrganizationTypeAssociation as OrganizationTypeRecord;
 use flipbox\organizations\records\UserAssociation as OrganizationUserRecord;
 use yii\db\ActiveQueryInterface;

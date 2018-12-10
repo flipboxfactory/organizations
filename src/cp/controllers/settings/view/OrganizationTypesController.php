@@ -30,14 +30,6 @@ class OrganizationTypesController extends AbstractController
     const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . '/upsert';
 
     /**
-     * @return \flipbox\organizations\services\OrganizationTypes
-     */
-    protected function typeService()
-    {
-        return $this->module->module->getOrganizationTypes();
-    }
-
-    /**
      * @return Response
      */
     public function actionIndex()
@@ -45,7 +37,7 @@ class OrganizationTypesController extends AbstractController
         $variables = [];
         $this->baseVariables($variables);
 
-        $variables['types'] = $this->typeService()->findAll();
+        $variables['types'] = OrganizationType::findAll();
 
         return $this->renderTemplate(static::TEMPLATE_INDEX, $variables);
     }
@@ -61,9 +53,9 @@ class OrganizationTypesController extends AbstractController
     {
         if (null === $type) {
             if (null === $identifier) {
-                $type = $this->typeService()->create();
+                $type = new OrganizationType();
             } else {
-                $type = $this->typeService()->get($identifier);
+                $type = OrganizationType::getOne($identifier);
             }
         }
 

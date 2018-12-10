@@ -116,7 +116,7 @@ trait OrganizationMutator
             return null;
         }
 
-        return OrganizationPlugin::getInstance()->getOrganizations()->get($this->organizationId);
+        return Organization::findOne($this->organizationId);
     }
 
     /**
@@ -130,7 +130,7 @@ trait OrganizationMutator
         }
 
         if (is_numeric($organization) || is_string($organization)) {
-            return OrganizationPlugin::getInstance()->getOrganizations()->find($organization);
+            return Organization::findOne($organization);
         }
 
         try {

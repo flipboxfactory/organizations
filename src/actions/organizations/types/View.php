@@ -8,15 +8,14 @@
 
 namespace flipbox\organizations\actions\organizations\types;
 
-use flipbox\ember\actions\model\ModelView;
-use flipbox\organizations\Organizations;
+use flipbox\craft\ember\actions\records\ViewRecord;
 use flipbox\organizations\records\OrganizationType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class View extends ModelView
+class View extends ViewRecord
 {
     /**
      * @inheritdoc
@@ -32,6 +31,6 @@ class View extends ModelView
      */
     protected function find($identifier)
     {
-        return Organizations::getInstance()->getOrganizationTypes()->get($identifier);
+        return OrganizationType::findOne($identifier);
     }
 }

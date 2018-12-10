@@ -23,7 +23,7 @@ use craft\services\Elements;
 use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
-use flipbox\ember\modules\LoggerTrait;
+use flipbox\craft\ember\modules\LoggerTrait;
 use flipbox\organizations\db\behaviors\OrganizationAttributesToUserQueryBehavior;
 use flipbox\organizations\elements\behaviors\UserOrganizationsBehavior;
 use flipbox\organizations\elements\behaviors\UserTypesBehavior;
@@ -32,6 +32,7 @@ use flipbox\organizations\fields\Organization as OrganizationField;
 use flipbox\organizations\fields\OrganizationType as OrganizationTypeField;
 use flipbox\organizations\models\Settings as OrganizationSettings;
 use flipbox\organizations\records\OrganizationType as OrganizationType;
+use flipbox\organizations\records\UserType;
 use flipbox\organizations\web\twig\variables\Organization as OrganizationVariable;
 use yii\base\Event;
 
@@ -41,18 +42,10 @@ use yii\base\Event;
  *
  * @method OrganizationSettings getSettings()
  *
- * @property services\Element $element
- * @property services\Organizations $organizations
- * @property services\OrganizationTypes $organizationTypes
  * @property services\OrganizationTypeSettings $organizationTypeSettings
- * @property services\OrganizationTypeAssociations $organizationTypeAssociations
- * @property services\OrganizationUsers $organizationUsers
  * @property services\OrganizationUserAssociations $organizationUserAssociations
- * @property services\Records $records
  * @property services\Users $users
- * @property services\UserOrganizations $userOrganizations
  * @property services\UserOrganizationAssociations $userOrganizationAssociations
- * @property services\UserTypes $userTypes
  * @property services\UserTypeAssociations $userTypeAssociations
  */
 class Organizations extends BasePlugin
@@ -66,18 +59,10 @@ class Organizations extends BasePlugin
     {
         // Services
         $this->setComponents([
-            'element' => services\Element::class,
-            'organizations' => services\Organizations::class,
-            'organizationTypes' => services\OrganizationTypes::class,
             'organizationTypeSettings' => services\OrganizationTypeSettings::class,
-            'organizationTypeAssociations' => services\OrganizationTypeAssociations::class,
-            'organizationUsers' => services\OrganizationUsers::class,
             'organizationUserAssociations' => services\OrganizationUserAssociations::class,
-            'records' => services\Records::class,
             'users' => services\Users::class,
-            'userOrganizations' => services\UserOrganizations::class,
             'userOrganizationAssociations' => services\UserOrganizationAssociations::class,
-            'userTypes' => services\UserTypes::class,
             'userTypeAssociations' => services\UserTypeAssociations::class,
         ]);
 
@@ -169,7 +154,7 @@ class Organizations extends BasePlugin
                         'heading' => "Organization Groups"
                     ];
 
-                    $types = static::getInstance()->getUserTypes()->findAll();
+                    $types = UserType::findAll([]);
                     foreach ($types as $type) {
                         $event->sources[] = [
                             'key' => 'type:' . $type->id,
@@ -382,40 +367,9 @@ class Organizations extends BasePlugin
 
     /**
      * @noinspection PhpDocMissingThrowsInspection
-     * @return services\Element
-     */
-    public function getElement(): services\Element
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('element');
-    }
-
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
-     * @return services\Organizations
-     */
-    public function getOrganizations(): services\Organizations
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('organizations');
-    }
-
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
-     * @return services\OrganizationTypes
-     */
-    public function getOrganizationTypes(): services\OrganizationTypes
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('organizationTypes');
-    }
-
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
      * @return services\OrganizationTypeSettings
+     *
+     * @deprecated
      */
     public function getOrganizationTypeSettings(): services\OrganizationTypeSettings
     {
@@ -424,20 +378,24 @@ class Organizations extends BasePlugin
         return $this->get('organizationTypeSettings');
     }
 
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
-     * @return services\OrganizationTypeAssociations
-     */
-    public function getOrganizationTypeAssociations(): services\OrganizationTypeAssociations
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('organizationTypeAssociations');
-    }
+//    /**
+//     * @noinspection PhpDocMissingThrowsInspection
+//     * @return services\OrganizationTypeAssociations
+//     *
+//     * @deprecated
+//     */
+//    public function getOrganizationTypeAssociations(): services\OrganizationTypeAssociations
+//    {
+//        /** @noinspection PhpUnhandledExceptionInspection */
+//        /** @noinspection PhpIncompatibleReturnTypeInspection */
+//        return $this->get('organizationTypeAssociations');
+//    }
 
     /**
      * @noinspection PhpDocMissingThrowsInspection
      * @return services\OrganizationUserAssociations
+     *
+     * @deprecated
      */
     public function getOrganizationUserAssociations(): services\OrganizationUserAssociations
     {
@@ -445,28 +403,19 @@ class Organizations extends BasePlugin
         /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->get('organizationUserAssociations');
     }
-
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
-     * @return services\OrganizationUsers
-     */
-    public function getOrganizationUsers(): services\OrganizationUsers
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('organizationUsers');
-    }
-
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
-     * @return services\Records
-     */
-    public function getRecords(): services\Records
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('records');
-    }
+//
+//    /**
+//     * @noinspection PhpDocMissingThrowsInspection
+//     * @return services\OrganizationUsers
+//     *
+//     * @deprecated
+//     */
+//    public function getOrganizationUsers(): services\OrganizationUsers
+//    {
+//        /** @noinspection PhpUnhandledExceptionInspection */
+//        /** @noinspection PhpIncompatibleReturnTypeInspection */
+//        return $this->get('organizationUsers');
+//    }
 
     /**
      * @noinspection PhpDocMissingThrowsInspection
@@ -479,20 +428,13 @@ class Organizations extends BasePlugin
         return $this->get('users');
     }
 
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
-     * @return services\UserOrganizations
-     */
-    public function getUserOrganizations(): services\UserOrganizations
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('userOrganizations');
-    }
+
 
     /**
      * @noinspection PhpDocMissingThrowsInspection
      * @return services\UserOrganizationAssociations
+     *
+     * @deprecated
      */
     public function getUserOrganizationAssociations(): services\UserOrganizationAssociations
     {
@@ -503,18 +445,9 @@ class Organizations extends BasePlugin
 
     /**
      * @noinspection PhpDocMissingThrowsInspection
-     * @return services\UserTypes
-     */
-    public function getUserTypes(): services\UserTypes
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('userTypes');
-    }
-
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
      * @return services\UserTypeAssociations
+     *
+     * @deprecated
      */
     public function getUserTypeAssociations(): services\UserTypeAssociations
     {

@@ -12,13 +12,23 @@ use Craft;
 use craft\base\Element;
 use craft\elements\actions\Edit as EditAction;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\db\UserQuery;
 use craft\elements\User;
+use craft\errors\ElementNotFoundException;
+use craft\helpers\ArrayHelper;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper as UrlHelper;
-use flipbox\ember\helpers\ModelHelper;
+use flipbox\craft\ember\helpers\ModelHelper;
 use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\records\Organization as OrganizationRecord;
+use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationType as TypeModel;
+use flipbox\organizations\records\OrganizationTypeAssociation;
+use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\traits\DateJoinedAttribute;
 use yii\base\ErrorException as Exception;
 
@@ -88,6 +98,121 @@ class Organization extends Element
     public static function find(): ElementQueryInterface
     {
         return new OrganizationQuery(static::class);
+    }
+
+    /*******************************************
+     * GET
+     *******************************************/
+
+    /**
+     * Returns a single element instance by a primary key or a set of element criteria parameters.
+     *
+     * The method accepts:
+     *
+     *  - an int: query by a single ID value and return the corresponding element (or null if not found).
+     *  - an array of name-value pairs: query by a set of parameter values and return the first element
+     *    matching all of them (or null if not found).
+     *
+     * Note that this method will automatically call the `one()` method and return an
+     * [[ElementInterface|\craft\base\Element]] instance. For example,
+     *
+     * ```php
+     * // find a single entry whose ID is 10
+     * $entry = Entry::findOne(10);
+     * // the above code is equivalent to:
+     * $entry = Entry::find->id(10)->one();
+     * // find the first user whose email ends in "example.com"
+     * $user = User::findOne(['email' => '*example.com']);
+     * // the above code is equivalent to:
+     * $user = User::find()->email('*example.com')->one();
+     * ```
+     *
+     * @param mixed $criteria The element ID or a set of element criteria parameters
+     * @return static Element instance matching the condition, or null if nothing matches.
+     * @throws ElementNotFoundException
+     */
+    public static function getOne($criteria)
+    {
+        if (null === ($element = static::findOne($criteria))) {
+            throw new ElementNotFoundException(
+                sprintf(
+                    "Organization not found with the following criteria: %s",
+                    Json::encode($criteria)
+                )
+            );
+        }
+
+        return $element;
+    }
+
+    /**
+     * Returns a list of elements that match the specified ID(s) or a set of element criteria parameters.
+     *
+     * The method accepts:
+     *
+     *  - an int: query by a single ID value and return an array containing the corresponding element
+     *    (or an empty array if not found).
+     *  - an array of integers: query by a list of ID values and return the corresponding elements (or an
+     *    empty array if none was found).
+     *    Note that an empty array will result in an empty result as it will be interpreted as a search for
+     *    primary keys and not an empty set of element criteria parameters.
+     *  - an array of name-value pairs: query by a set of parameter values and return an array of elements
+     *    matching all of them (or an empty array if none was found).
+     *
+     * Note that this method will automatically call the `all()` method and return an array of
+     * [[ElementInterface|\craft\base\Element]] instances. For example,
+     *
+     * ```php
+     * // find the entries whose ID is 10
+     * $entries = Entry::findAll(10);
+     * // the above code is equivalent to:
+     * $entries = Entry::find()->id(10)->all();
+     * // find the entries whose ID is 10, 11 or 12.
+     * $entries = Entry::findAll([10, 11, 12]);
+     * // the above code is equivalent to:
+     * $entries = Entry::find()->id([10, 11, 12]])->all();
+     * // find users whose email ends in "example.com"
+     * $users = User::findAll(['email' => '*example.com']);
+     * // the above code is equivalent to:
+     * $users = User::find()->email('*example.com')->all();
+     * ```
+     *
+     * @param mixed $criteria The element ID, an array of IDs, or a set of element criteria parameters
+     * @return static[] an array of Element instances, or an empty array if nothing matches.
+     * @throws ElementNotFoundException
+     */
+    public static function getAll($criteria)
+    {
+        $elements = static::findAll($criteria);
+
+        if (empty($elements)) {
+            throw new ElementNotFoundException(
+                sprintf(
+                    "Organization not found with the following criteria: %s",
+                    Json::encode($criteria)
+                )
+            );
+        }
+
+        return $elements;
+    }
+
+    /**
+     * @param mixed $criteria
+     * @param bool $one
+     * @return Element|Element[]|null
+     */
+    protected static function findByCondition($criteria, bool $one)
+    {
+        if (is_numeric($criteria)) {
+            $criteria = ['id' => $criteria];
+        }
+
+        if (is_string($criteria)) {
+            $criteria = ['slug' => $criteria];
+        }
+
+        return parent::findByCondition($criteria, $one);
     }
 
     /**
@@ -237,7 +362,7 @@ class Organization extends Element
         $sources = self::defineDefaultSources();
 
         // Array of all organization types
-        $organizationTypes = OrganizationPlugin::getInstance()->getOrganizationTypes()->findAll();
+        $organizationTypes = OrganizationType::findAll();
 
         $sources[] = ['heading' => Craft::t('organizations', 'Types')];
 
@@ -401,7 +526,15 @@ class Organization extends Element
      */
     public function getUriFormat()
     {
-        return OrganizationPlugin::getInstance()->getElement()->getUriFormat($this);
+        if (null === ($siteSettings = $this->getSiteSettings())) {
+            return null;
+        }
+
+        if (!$siteSettings->hasUrls()) {
+            return null;
+        }
+
+        return $siteSettings->getUriFormat();
     }
 
     /**
@@ -409,7 +542,57 @@ class Organization extends Element
      */
     public function route()
     {
-        return OrganizationPlugin::getInstance()->getElement()->getRoute($this);
+        if (in_array(
+            $this->getStatus(),
+            [static::STATUS_DISABLED, static::STATUS_ARCHIVED],
+            true
+        )) {
+            return null;
+        }
+
+        if (null === ($siteSettings = $this->getSiteSettings())) {
+            return null;
+        }
+
+        if (!$siteSettings->hasUrls()) {
+            return null;
+        }
+
+        return [
+            'templates/render',
+            [
+                'template' => $siteSettings->getTemplate(),
+                'variables' => [
+                    'organization' => $this,
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return \flipbox\organizations\records\OrganizationTypeSiteSettings|null
+     */
+    protected function getSiteSettings()
+    {
+        try {
+            $settings = OrganizationPlugin::getInstance()->getSettings();
+            $siteSettings = $settings->getSiteSettings()[$this->siteId] ?? null;
+
+            if (null !== ($type = $this->getPrimaryType())) {
+                $siteSettings = $type->getSiteSettings()[$this->siteId] ?? $siteSettings;
+            }
+
+            return $siteSettings;
+        } catch (\Exception $e) {
+            OrganizationPlugin::error(
+                sprintf(
+                    "An exception was caught while to resolve site settings: %s",
+                    $e->getMessage()
+                )
+            );
+        }
+
+        return null;
     }
 
     /************************************************************
@@ -422,17 +605,312 @@ class Organization extends Element
      */
     public function beforeSave(bool $isNew): bool
     {
-        OrganizationPlugin::getInstance()->getElement()->beforeSave($this);
+        if (empty($this->getDateJoined())) {
+            $this->setDateJoined(DateTimeHelper::currentUTCDateTime());
+        }
+
         return parent::beforeSave($isNew);
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws /Exception
      */
     public function afterSave(bool $isNew)
     {
-        OrganizationPlugin::getInstance()->getElement()->afterSave($this, $isNew);
+        if (false === $this->saveRecord($isNew)) {
+            throw new Exception('Unable to save organization record');
+        }
+
+        // Types
+        if (false === $this->associateTypes($this->getTypes())) {
+            throw new Exception("Unable to save types.");
+        }
+
+        // Users
+        if (false === $this->associateUsers($this->getUsers())) {
+            throw new Exception("Unable to save users.");
+        }
+
         parent::afterSave($isNew);
+    }
+
+    /*******************************************
+     * RECORD
+     *******************************************/
+
+    /**
+     * @param bool $isNew
+     * @return bool
+     */
+    protected function saveRecord(bool $isNew): bool
+    {
+        $record = $this->elementToRecord();
+
+        if (!$record->save()) {
+            $this->addErrors($record->getErrors());
+
+            OrganizationPlugin::error(
+                Json::encode($this->getErrors()),
+                __METHOD__
+            );
+
+            return false;
+        }
+
+        if (false !== ($dateUpdated = DateTimeHelper::toDateTime($record->dateUpdated))) {
+            $this->dateUpdated = $dateUpdated;
+        }
+
+
+        if ($isNew) {
+            $this->id = $record->id;
+
+            if (false !== ($dateCreated = DateTimeHelper::toDateTime($record->dateCreated))) {
+                $this->dateCreated = $dateCreated;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @return OrganizationRecord
+     */
+    protected function elementToRecord(): OrganizationRecord
+    {
+        if (!$record = OrganizationRecord::findOne([
+            'id' => $this->getId()
+        ])) {
+            $record = new OrganizationRecord();
+        }
+
+        // Populate the record attributes
+        $record->id = $this->getId();
+        $record->dateJoined = $this->getDateJoined();
+
+        return $record;
+    }
+
+
+    /*******************************************
+     * TYPES - ASSOCIATE and/or DISASSOCIATE
+     *******************************************/
+
+    /**
+     * @param OrganizationTypeQuery $query
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function associateTypes(OrganizationTypeQuery $query): bool
+    {
+        $currentAssociations = OrganizationTypeAssociation::find()
+            ->organizationId($this->getId() ?: false)
+            ->indexBy('typeId')
+            ->all();
+
+        $success = true;
+
+        // Delete
+        if (null === ($types = $query->getCachedResult())) {
+            foreach ($currentAssociations as $currentAssociation) {
+                if (!$currentAssociation->delete()) {
+                    $success = false;
+                }
+            }
+
+            if (!$success) {
+                $this->addError('types', 'Unable to dissociate types.');
+            }
+
+            return $success;
+        }
+
+        $associations = [];
+        $order = 1;
+        foreach ($types as $type) {
+            if (null === ($association = ArrayHelper::remove($currentAssociations, $type->getId()))) {
+                $association = (new OrganizationTypeAssociation())
+                    ->setType($type)
+                    ->setOrganization($this);
+            }
+
+            $association->sortOrder = $order++;
+
+            $associations[] = $association;
+        }
+
+        // Delete those removed
+        foreach ($currentAssociations as $currentAssociation) {
+            if (!$currentAssociation->delete()) {
+                $success = false;
+            }
+        }
+
+        foreach ($associations as $association) {
+            if (!$association->save()) {
+                $success = false;
+            }
+        }
+
+        if (!$success) {
+            $this->addError('types', 'Unable to associate types.');
+        }
+
+        $this->setTypes($query);
+
+        return $success;
+    }
+
+    /*******************************************
+     * USERS - ASSOCIATE and/or DISASSOCIATE
+     *******************************************/
+
+    /**
+     * @param UserQuery $query
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function saveUsers(UserQuery $query)
+    {
+        $currentAssociations = UserAssociation::find()
+            ->organizationId($this->getId() ?: false)
+            ->indexBy('userId')
+            ->all();
+
+        $success = true;
+
+        // Delete
+        if (null === ($users = $query->getCachedResult())) {
+            foreach ($currentAssociations as $currentAssociation) {
+                if (!$currentAssociation->delete()) {
+                    $success = false;
+                }
+            }
+
+            if (!$success) {
+                $this->addError('types', 'Unable to dissociate users.');
+            }
+
+            return $success;
+        }
+
+        $associations = [];
+        $order = 1;
+        foreach ($users as $user) {
+            if (null === ($association = ArrayHelper::remove($currentAssociations, $user->getId()))) {
+                $association = (new UserAssociation())
+                    ->setUser($user)
+                    ->setOrganization($this);
+            }
+
+            $association->userOrder = $order++;
+
+            $associations[] = $association;
+        }
+
+        // Delete those removed
+        foreach ($currentAssociations as $currentAssociation) {
+            if (!$currentAssociation->delete()) {
+                $success = false;
+            }
+        }
+
+        foreach ($associations as $association) {
+            if (!$association->save()) {
+                $success = false;
+            }
+        }
+
+        if (!$success) {
+            $this->addError('users', 'Unable to associate users.');
+        }
+
+        $this->setUsers($query);
+
+        return $success;
+    }
+
+    /**
+     * @param UserQuery $query
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function associateUsers(UserQuery $query)
+    {
+        if (null === ($users = $query->getCachedResult())) {
+            return true;
+        }
+
+        $success = true;
+        $currentAssociations = UserAssociation::find()
+            ->organizationId($this->getId() ?: false)
+            ->indexBy('userId')
+            ->all();
+
+        $order = 1;
+        foreach ($users as $user) {
+            if (null === ($association = ArrayHelper::remove($currentAssociations, $user->getId()))) {
+                $association = (new UserAssociation())
+                    ->setUser($user)
+                    ->setOrganization($this);
+
+                $association->userOrder = $order++;
+            }
+
+            if (!$association->save()) {
+                $success = false;
+            }
+        }
+
+        if (!$success) {
+            $this->addError('users', 'Unable to associate users.');
+        }
+
+        $this->resetUsers();
+
+        return $success;
+    }
+
+    /**
+     * @param UserQuery $query
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function dissociateUsers(UserQuery $query)
+    {
+        if (null === ($users = $query->getCachedResult())) {
+            return true;
+        }
+
+        $currentAssociations = UserAssociation::find()
+            ->organizationId($this->getId() ?: false)
+            ->indexBy('userId')
+            ->all();
+
+        $success = true;
+
+        foreach ($users as $user) {
+            if (null === ($association = ArrayHelper::remove($currentAssociations, $user->getId()))) {
+                continue;
+            }
+
+            if (!$association->delete()) {
+                $success = false;
+            }
+        }
+
+        if (!$success) {
+            $this->addError('users', 'Unable to associate users.');
+        }
+
+        $this->setUsers($query);
+
+        return $success;
     }
 }

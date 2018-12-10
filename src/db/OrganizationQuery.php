@@ -12,8 +12,8 @@ use craft\db\Query;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use craft\records\UserGroup_User as UserGroupUsersRecord;
-use flipbox\ember\db\traits\UserAttribute;
-use flipbox\ember\db\traits\UserGroupAttribute;
+use flipbox\craft\ember\queries\UserAttributeTrait;
+use flipbox\craft\ember\queries\UserGroupAttributeTrait;
 use flipbox\organizations\db\traits\OrganizationTypeAttribute;
 use flipbox\organizations\db\traits\UserTypeAttribute;
 use flipbox\organizations\elements\Organization as OrganizationElement;
@@ -35,8 +35,8 @@ use flipbox\organizations\records\UserTypeAssociation as UserTypeAssociationReco
  */
 class OrganizationQuery extends ElementQuery
 {
-    use UserAttribute,
-        UserGroupAttribute,
+    use UserAttributeTrait,
+        UserGroupAttributeTrait,
         UserTypeAttribute,
         OrganizationTypeAttribute;
 

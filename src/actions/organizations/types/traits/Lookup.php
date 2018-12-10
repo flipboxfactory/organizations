@@ -19,10 +19,10 @@ trait Lookup
 {
     /**
      * @inheritdoc
-     * @return OrganizationType
+     * @return OrganizationType|null
      */
     protected function find($identifier)
     {
-        return Organizations::getInstance()->getOrganizationTypes()->find($identifier);
+        return OrganizationType::findOne($identifier);
     }
 }

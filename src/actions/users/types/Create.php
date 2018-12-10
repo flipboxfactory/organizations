@@ -8,16 +8,17 @@
 
 namespace flipbox\organizations\actions\users\types;
 
-use flipbox\ember\actions\model\ModelCreate;
+use flipbox\craft\ember\actions\records\CreateRecord;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\records\UserType;
 use yii\base\Model;
+use yii\db\ActiveRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class Create extends ModelCreate
+class Create extends CreateRecord
 {
     use traits\Populate;
 
@@ -25,17 +26,12 @@ class Create extends ModelCreate
      * @inheritdoc
      * @return UserType
      */
-    protected function newModel(array $config = []): Model
+    protected function newRecord(array $config = []): ActiveRecord
     {
-        return Organizations::getInstance()->getUserTypes()->create($config);
-    }
+        $record = new UserType();
 
-    /**
-     * @inheritdoc
-     * @param UserType $model
-     */
-    protected function performAction(Model $model): bool
-    {
-        return $model->insert();
+        $record->setAttributes($config);
+
+        return $record;
     }
 }

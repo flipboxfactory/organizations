@@ -8,9 +8,15 @@
 
 namespace flipbox\organizations\web\twig\variables;
 
+use flipbox\craft\ember\helpers\QueryHelper;
+use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\db\OrganizationTypeQuery;
+use flipbox\organizations\db\UserTypeQuery;
 use flipbox\organizations\models\Settings;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\services\Organizations;
+use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\records\OrganizationType;
+use flipbox\organizations\records\UserType;
 use yii\di\ServiceLocator;
 
 /**
@@ -28,23 +34,58 @@ class Organization extends ServiceLocator
             $config,
             [
                 'components' => [
-                    'elements' => OrganizationPlugin::getInstance()->getOrganizations(),
-                    'organizationTypes' => OrganizationPlugin::getInstance()->getOrganizationTypes(),
-                    'users' => OrganizationPlugin::getInstance()->getUsers(),
-                    'userTypes' => OrganizationPlugin::getInstance()->getUserTypes()
+                    'users' => OrganizationPlugin::getInstance()->getUsers()
                 ]
             ]
         ));
     }
 
     /**
-     * @return Organizations
-     *
-     * @deprecated
+     * @param array $config
+     * @return OrganizationQuery
      */
-    public function getOrganizations(): Organizations
+    public function getOrganizations(array $config = []): OrganizationQuery
     {
-        return OrganizationPlugin::getInstance()->getOrganizations();
+        $query = OrganizationElement::find();
+
+        QueryHelper::configure(
+            $query,
+            $config
+        );
+
+        return $query;
+    }
+
+    /**
+     * @param array $config
+     * @return UserTypeQuery
+     */
+    public function getUserTypes(array $config = []): UserTypeQuery
+    {
+        $query = UserType::find();
+
+        QueryHelper::configure(
+            $query,
+            $config
+        );
+
+        return $query;
+    }
+
+    /**
+     * @param array $config
+     * @return OrganizationTypeQuery
+     */
+    public function getOrganizationTypes(array $config = []): OrganizationTypeQuery
+    {
+        $query = OrganizationType::find();
+
+        QueryHelper::configure(
+            $query,
+            $config
+        );
+
+        return $query;
     }
 
     /**

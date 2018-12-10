@@ -112,9 +112,9 @@ trait OrganizationTypeAttribute
      */
     protected function resolveTypeStringValue(string $value)
     {
-        if (!$model = OrganizationPlugin::getInstance()->getOrganizationTypes()->find($value)) {
+        if (!$record = OrganizationType::findOne($value)) {
             return null;
         }
-        return $model->id;
+        return $record->id;
     }
 }

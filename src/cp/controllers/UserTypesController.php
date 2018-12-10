@@ -11,7 +11,12 @@ namespace flipbox\organizations\cp\controllers;
 use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
+use flipbox\organizations\db\UserTypeQuery;
+use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
+use flipbox\organizations\records\UserAssociation;
+use flipbox\organizations\records\UserType;
+use yii\db\Query;
 use yii\web\Response;
 
 /**
@@ -73,26 +78,84 @@ class UserTypesController extends AbstractController
             (int)$request->getRequiredBodyParam('user')
         );
 
-        $organization = Organizations::getInstance()->getOrganizations()->get(
-            $request->getRequiredBodyParam('organization')
-        );
+        $identifier = $request->getRequiredBodyParam('organization');
+
+        $organization = Organization::getOne([
+            is_numeric($identifier) ? 'id' : 'slug' => $identifier
+        ]);
 
         $types = array_keys(array_filter((array)$request->getRequiredBodyParam('types')));
-        $query = Organizations::getInstance()->getUserTypes()->getQuery([
-            'id' => empty($types) ? ':empty:' : $types
-        ]);
+        $query = UserType::find()->id(empty($types) ? ':empty:' : $types);
 
         $query->setCachedResult(
             $query->all()
         );
 
-        Organizations::getInstance()->getUserTypes()->saveAssociations(
+        $this->saveAssociations(
             $query,
             $user,
             $organization
         );
 
         return $this->asJson(['success' => true]);
+    }
+
+    /**
+     * @param UserTypeQuery $query
+     * @param User $user
+     * @param Organization $organization
+     * @return bool
+     * @throws \Exception
+     */
+    public function saveAssociations(
+        UserTypeQuery $query,
+        User $user,
+        Organization $organization
+    ): bool {
+        if (null === ($models = $query->getCachedResult())) {
+            return true;
+        }
+
+        $associationService = Organizations::getInstance()->getUserTypeAssociations();
+
+        $userAssociationId = $this->associationId($user->getId(), $organization->getId());
+
+        $query = $associationService->getQuery([
+            $associationService::SOURCE_ATTRIBUTE => $userAssociationId
+        ]);
+
+        $query->setCachedResult(
+            $this->toAssociations($models, $userAssociationId)
+        );
+
+        return $associationService->save($query);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $organizationId
+     * @return Query
+     */
+    protected function associationIdQuery(int $userId, int $organizationId): Query
+    {
+        return (new Query())
+            ->select(['id'])
+            ->from([UserAssociation::tableName()])
+            ->where([
+                'organizationId' => $organizationId,
+                'userId' => $userId,
+            ]);
+    }
+
+    /**
+     * @param int $userId
+     * @param int $organizationId
+     * @return string|null
+     */
+    protected function associationId(int $userId, int $organizationId)
+    {
+        $id = $this->associationIdQuery($userId, $organizationId)->scalar();
+        return is_string($id) || is_numeric($id) ? $id : null;
     }
 
     /**
@@ -109,9 +172,11 @@ class UserTypesController extends AbstractController
             $request->getRequiredBodyParam('user')
         );
 
-        $organization = Organizations::getInstance()->getOrganizations()->get(
-            $request->getRequiredBodyParam('organization')
-        );
+        $identifier = $request->getRequiredBodyParam('organization');
+
+        $organization = Organization::getOne([
+            is_numeric($identifier) ? 'id' : 'slug' => $identifier
+        ]);
 
         $response = [];
 
@@ -135,7 +200,7 @@ class UserTypesController extends AbstractController
      */
     private function getUserTypes(): array
     {
-        $types = Organizations::getInstance()->getUserTypes()->getQuery()
+        $types = UserType::find()
             ->select(['name'])
             ->indexBy('id')
             ->column();

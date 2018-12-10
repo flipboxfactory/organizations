@@ -8,8 +8,8 @@
 
 namespace flipbox\organizations\db\traits;
 
-use flipbox\ember\helpers\ArrayHelper;
-use flipbox\ember\helpers\QueryHelper;
+use flipbox\craft\ember\helpers\ArrayHelper;
+use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 
@@ -93,7 +93,7 @@ trait OrganizationAttribute
     {
         if (false === QueryHelper::findParamValue($value, $operator)) {
             if (is_string($value)) {
-                if ($element = OrganizationPlugin::getInstance()->getOrganizations()->find($value)) {
+                if ($element = Organization::findOne(['slug' => $value, 'status' => null])) {
                     $value = $element->id;
                 }
             }

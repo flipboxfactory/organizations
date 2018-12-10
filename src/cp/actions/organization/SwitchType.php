@@ -16,6 +16,7 @@ use flipbox\ember\actions\traits\Populate;
 use flipbox\organizations\actions\organizations\traits\Populate as PopulateOrganization;
 use flipbox\organizations\cp\controllers\traits\Sites;
 use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use yii\base\Action;
 use yii\base\BaseObject;
@@ -51,10 +52,10 @@ class SwitchType extends Action
     protected function find($identifier)
     {
         $site = $this->resolveSiteFromRequest();
-        return Organizations::getInstance()->getOrganizations()->find(
-            $identifier,
+        return Organization::findOne([
+            is_numeric($identifier) ? 'id' : 'slug' => $identifier,
             $site ? $site->id : null
-        );
+        ]);
     }
 
     /**
@@ -64,7 +65,7 @@ class SwitchType extends Action
     protected function create()
     {
         $site = $this->resolveSiteFromRequest();
-        return Organizations::getInstance()->getOrganizations()->create([
+        return new Organization([
             'siteId' => $site ? $site->id : null
         ]);
     }

@@ -15,6 +15,7 @@ use craft\models\Site;
 use flipbox\ember\helpers\SiteHelper;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\Organizations;
+use flipbox\organizations\records\OrganizationType;
 use yii\base\BaseObject;
 
 /**
@@ -95,7 +96,7 @@ trait Populate
         $type = Craft::$app->getRequest()->getParam('type');
         if (!empty($type)) {
             $organization->setActiveType(
-                Organizations::getInstance()->getOrganizationTypes()->get($type)
+                OrganizationType::getOne($type)
             );
         }
 

@@ -67,17 +67,20 @@ class RemoveUsers extends ElementAction
             throw new Exception("Organization does not exist with the identifier '{$this->organization}'");
         }
 
-        $organization = OrganizationPlugin::getInstance()->getOrganizations()->get($this->organization);
+        if($this->organization instanceof Organization) {
+            $organization = $this->organization;
+        } else {
+            $organization = Organization::getOne([
+                $this->organization
+            ]);
+        }
 
         // Prep for dissociation
         $query->setCachedResult(
             $query->all()
         );
 
-        if (false === OrganizationPlugin::getInstance()->getOrganizations()->dissociate(
-            $query,
-            $organization
-        )) {
+        if (false === $organization->dissociateUsers($query)) {
             $this->setMessage(
                 Craft::t(
                     'organizations',

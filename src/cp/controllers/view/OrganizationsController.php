@@ -16,6 +16,7 @@ use flipbox\ember\helpers\SiteHelper;
 use flipbox\organizations\actions\organizations\traits\Populate;
 use flipbox\organizations\cp\controllers\traits\Sites;
 use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\elements\Organization;
 use flipbox\organizations\events\RegisterOrganizationActionsEvent;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationType;
@@ -53,14 +54,6 @@ class OrganizationsController extends AbstractController
     const TEMPLATE_UPSERT = self::TEMPLATE_BASE . '/upsert';
 
     /**
-     * @return \flipbox\organizations\services\Organizations
-     */
-    protected function elementService()
-    {
-        return $this->module->module->getOrganizations();
-    }
-
-    /**
      * @return Response
      * @throws \craft\errors\SiteNotFoundException
      */
@@ -94,9 +87,12 @@ class OrganizationsController extends AbstractController
         // Organization
         if (null === $organization) {
             if (null === $identifier) {
-                $organization = $this->elementService()->create();
+                $organization = new Organization();
             } else {
-                $organization = $this->elementService()->get($identifier, $site->id);
+                $organization = Organization::getOne([
+                    is_numeric($identifier) ? 'id' : 'slug' => $identifier,
+                    'siteId' => $site->id
+                ]);
             }
         }
 
@@ -146,13 +142,12 @@ class OrganizationsController extends AbstractController
     /**
      * @param OrganizationType|null $default
      * @return OrganizationType|mixed
-     * @throws \flipbox\ember\exceptions\NotFoundException
      */
     private function findActiveType(OrganizationType $default = null)
     {
         $type = Craft::$app->getRequest()->getParam('type');
         if (!empty($type)) {
-            $type = OrganizationPlugin::getInstance()->getOrganizationTypes()->get($type);
+            $type = OrganizationType::getOne($type);
         }
 
         if ($type instanceof OrganizationType) {
@@ -323,7 +318,7 @@ class OrganizationsController extends AbstractController
         parent::baseVariables($variables);
 
         // Types
-        $variables['types'] = OrganizationPlugin::getInstance()->getOrganizationTypes()->findAll();
+        $variables['types'] = OrganizationType::findAll();
         $variables['typeOptions'] = [];
         /** @var OrganizationType $type */
         foreach ($variables['types'] as $type) {

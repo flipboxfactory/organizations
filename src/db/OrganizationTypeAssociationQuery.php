@@ -9,6 +9,7 @@
 namespace flipbox\organizations\db;
 
 use craft\helpers\Db;
+use flipbox\craft\ember\queries\ActiveQuery;
 use flipbox\craft\sortable\associations\db\SortableAssociationQuery;
 use flipbox\organizations\records\OrganizationTypeAssociation;
 
@@ -20,7 +21,7 @@ use flipbox\organizations\records\OrganizationTypeAssociation;
  * @method OrganizationTypeAssociation[] all($db = null)
  * @method OrganizationTypeAssociation[] getCachedResult($db = null)
  */
-class OrganizationTypeAssociationQuery extends SortableAssociationQuery
+class OrganizationTypeAssociationQuery extends ActiveQuery
 {
     /**
      * @var int|int[]|false|null The source Id(s). Prefix Ids with "not " to exclude them.

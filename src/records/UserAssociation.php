@@ -9,11 +9,11 @@
 namespace flipbox\organizations\records;
 
 use Craft;
-use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
-use flipbox\ember\helpers\ModelHelper;
-use flipbox\ember\records\ActiveRecord;
-use flipbox\ember\records\traits\IdAttribute;
-use flipbox\ember\records\traits\UserAttribute;
+use flipbox\craft\ember\helpers\ModelHelper;
+use flipbox\craft\ember\records\ActiveRecord;
+use flipbox\craft\ember\records\IdAttributeTrait;
+use flipbox\craft\ember\records\SortableTrait;
+use flipbox\craft\ember\records\UserAttributeTrait;
 use flipbox\organizations\db\UserAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\db\ActiveQueryInterface;
@@ -28,10 +28,11 @@ use yii\db\ActiveQueryInterface;
  * @property Organization $organization
  * @property UserType[] $types
  */
-class UserAssociation extends ActiveRecord implements SortableAssociationInterface
+class UserAssociation extends ActiveRecord
 {
-    use UserAttribute,
-        IdAttribute,
+    use SortableTrait,
+        UserAttributeTrait,
+        IdAttributeTrait,
         traits\OrganizationAttribute;
 
     /**
@@ -51,6 +52,7 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
 
     /**
      * @inheritdoc
+     * @return UserAssociationQuery
      */
     public static function find()
     {
@@ -59,24 +61,22 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
 
     /**
      * @inheritdoc
+     *
+     * @deprecated
      */
-    public function associate(bool $autoReorder = true): bool
+    public function associate(): bool
     {
-        return OrganizationPlugin::getInstance()->getUserOrganizationAssociations()->associate(
-            $this,
-            $autoReorder
-        );
+        return $this->save();
     }
 
     /**
      * @inheritdoc
+     *
+     * @deprecated
      */
-    public function dissociate(bool $autoReorder = true): bool
+    public function dissociate(): bool
     {
-        return OrganizationPlugin::getInstance()->getUserOrganizationAssociations()->dissociate(
-            $this,
-            $autoReorder
-        );
+        return $this->delete();
     }
 
     /**
@@ -89,7 +89,6 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
             $this->idRules(),
             $this->userRules(),
             $this->organizationRules(),
-            $this->auditRules(),
             [
                 [
                     [

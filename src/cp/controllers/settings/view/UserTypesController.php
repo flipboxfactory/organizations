@@ -30,14 +30,6 @@ class UserTypesController extends AbstractController
     const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . '/upsert';
 
     /**
-     * @return \flipbox\organizations\services\UserTypes
-     */
-    protected function userTypeService()
-    {
-        return $this->module->module->getUserTypes();
-    }
-
-    /**
      * @return Response
      */
     public function actionIndex()
@@ -45,7 +37,7 @@ class UserTypesController extends AbstractController
         $variables = [];
         $this->baseVariables($variables);
 
-        $variables['types'] = $this->userTypeService()->findAll();
+        $variables['types'] = UserType::findAll();
 
         return $this->renderTemplate(static::TEMPLATE_INDEX, $variables);
     }
@@ -61,9 +53,9 @@ class UserTypesController extends AbstractController
     {
         if (null === $userType) {
             if (null === $identifier) {
-                $userType = $this->userTypeService()->create();
+                $userType = new UserType();
             } else {
-                $userType = $this->userTypeService()->get($identifier);
+                $userType = UserType::getOne($identifier);
             }
         }
 

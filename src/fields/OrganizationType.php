@@ -82,7 +82,7 @@ class OrganizationType extends Field
         }
 
         if (is_numeric($value)) {
-            return Organizations::getInstance()->getOrganizationTypes()->find($value);
+            return OrganizationTypeRecord::findOne($value);
         }
 
         return null;

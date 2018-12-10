@@ -10,7 +10,7 @@ namespace flipbox\organizations\elements\traits;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\ember\helpers\QueryHelper;
+use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationType;
@@ -98,9 +98,8 @@ trait TypesAttribute
     public function getTypes($criteria = [])
     {
         if (null === $this->types) {
-            $this->types = OrganizationPlugin::getInstance()->getOrganizationTypes()->getQuery([
-                'organization' => $this
-            ]);
+            $this->types = OrganizationType::find()
+                ->organization($this);
         }
 
         if (!empty($criteria)) {
@@ -127,9 +126,8 @@ trait TypesAttribute
         }
 
         // Reset the query
-        $this->types = OrganizationPlugin::getInstance()->getOrganizationTypes()->getQuery([
-            'organization' => $this
-        ]);
+        $this->types = OrganizationType::find()
+            ->organization($this);
 
         // Remove all types
         $this->types->setCachedResult([]);
@@ -161,7 +159,7 @@ trait TypesAttribute
         foreach ($types as $key => $type) {
             // Ensure we have a model
             if (!$type instanceof OrganizationType) {
-                $type = OrganizationPlugin::getInstance()->getOrganizationTypes()->resolve($type);
+                $type = $this->resolveType($type);
             }
 
             $this->addType($type);
@@ -208,13 +206,30 @@ trait TypesAttribute
 
         foreach ($types as $key => $type) {
             if (!$type instanceof OrganizationType) {
-                $type = OrganizationPlugin::getInstance()->getOrganizationTypes()->resolve($type);
+                $type = $this->resolveType($type);
             }
 
             $this->removeType($type);
         }
 
         return $this;
+    }
+
+    /**
+     * @param mixed $type
+     * @return OrganizationType
+     */
+    protected function resolveType($type): OrganizationType
+    {
+        if (null !== ($type = OrganizationType::findOne($type))) {
+            return $type;
+        }
+
+        if (!is_array($type)) {
+            $type = ArrayHelper::toArray($type, [], false);
+        }
+
+        return new OrganizationType($type);
     }
 
     /**

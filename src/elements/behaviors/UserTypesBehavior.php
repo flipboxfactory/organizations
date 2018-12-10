@@ -26,7 +26,7 @@ class UserTypesBehavior extends Behavior
      */
     private function createQuery(): UserTypeQuery
     {
-        return OrganizationPlugin::getInstance()->getUserTypes()->getQuery([
+        return UserType::findOne([
             'user' => $this->owner
         ]);
     }
@@ -87,7 +87,7 @@ class UserTypesBehavior extends Behavior
         }
 
         foreach ($types as $key => $type) {
-            if (!$type = OrganizationPlugin::getInstance()->getUserTypes()->resolve($type)) {
+            if (!$type = $this->resolveUserType($type)) {
                 OrganizationPlugin::warning(sprintf(
                     "Unable to resolve user type: %s",
                     (string)Json::encode($type)
@@ -100,6 +100,24 @@ class UserTypesBehavior extends Behavior
 
         return $this;
     }
+
+    /**
+     * @param mixed $type
+     * @return UserType
+     */
+    public function resolveUserType($type): UserType
+    {
+        if (null !== ($type = UserType::findOne($type))) {
+            return $type;
+        }
+
+        if (!is_array($type)) {
+            $type = ArrayHelper::toArray($type, [], false);
+        }
+
+        return new UserType($type);
+    }
+
 
     /**
      * Associate a user to an type

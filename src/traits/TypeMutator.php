@@ -60,7 +60,11 @@ trait TypeMutator
     {
         $this->type = null;
 
-        if (null === ($type = Organizations::getInstance()->getOrganizationTypes()->resolve($type))) {
+        if (!$type instanceof OrganizationType && $type !== null) {
+            $type = OrganizationType::getOne($type);
+        }
+
+        if (null === $type) {
             $this->type = $this->typeId = null;
         } else {
             $this->typeId = $type->id;
@@ -113,6 +117,6 @@ trait TypeMutator
             return null;
         }
 
-        return Organizations::getInstance()->getOrganizationTypes()->find($this->typeId);
+        return OrganizationType::findOne($this->typeId);
     }
 }

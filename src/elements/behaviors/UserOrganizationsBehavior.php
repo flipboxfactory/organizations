@@ -171,9 +171,8 @@ class UserOrganizationsBehavior extends Behavior
      */
     private function createQuery(): OrganizationQuery
     {
-        return OrganizationPlugin::getInstance()->getOrganizations()->getQuery([
-            'user' => $this->owner
-        ]);
+        return Organization::find()
+            ->user($this->owner);
     }
 
     /**
@@ -232,7 +231,7 @@ class UserOrganizationsBehavior extends Behavior
         }
 
         foreach ($organizations as $key => $organization) {
-            if (!$organization = OrganizationPlugin::getInstance()->getOrganizations()->resolve($organization)) {
+            if (!$organization = $this->resolveOrganization($organization)) {
                 OrganizationPlugin::info(sprintf(
                     "Unable to resolve organization: %s",
                     (string)Json::encode($organization)
@@ -244,6 +243,29 @@ class UserOrganizationsBehavior extends Behavior
         }
 
         return $this;
+    }
+
+    /**
+     * @param $organization
+     * @return Organization
+     */
+    public function resolveOrganization($organization)
+    {
+        if ($organization instanceof Organization) {
+            return $organization;
+        }
+
+        if (is_array($organization) &&
+            null !== ($id = ArrayHelper::getValue($organization, 'id'))
+        ) {
+            return Organization::findOne($id);
+        }
+
+        if (null !== ($object = Organization::findOne($organization))) {
+            return $object;
+        }
+
+        return new Organization($organization);
     }
 
     /**

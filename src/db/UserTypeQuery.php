@@ -10,10 +10,10 @@ namespace flipbox\organizations\db;
 
 use craft\db\QueryAbortedException;
 use craft\helpers\Db;
-use flipbox\ember\db\CacheableActiveQuery;
-use flipbox\ember\db\traits\AuditAttributes;
-use flipbox\ember\db\traits\FixedOrderBy;
-use flipbox\ember\db\traits\UserAttribute;
+use flipbox\craft\ember\queries\AuditAttributesTrait;
+use flipbox\craft\ember\queries\CacheableActiveQuery;
+use flipbox\craft\ember\queries\FixedOrderByTrait;
+use flipbox\craft\ember\queries\UserAttributeTrait;
 use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
 use flipbox\organizations\records\UserType as UserTypeRecord;
 use flipbox\organizations\records\UserTypeAssociation as UserTypeAssociationsRecord;
@@ -30,10 +30,10 @@ use yii\base\ArrayableTrait;
 class UserTypeQuery extends CacheableActiveQuery
 {
     use traits\OrganizationAttribute,
-        UserAttribute,
+        UserAttributeTrait,
         ArrayableTrait,
-        FixedOrderBy,
-        AuditAttributes;
+        FixedOrderByTrait,
+        AuditAttributesTrait;
 
     /**
      * Constructor.
@@ -63,6 +63,65 @@ class UserTypeQuery extends CacheableActiveQuery
      * @var string|string[]|null
      */
     public $name;
+
+
+    /**
+     * @param $id
+     * @return static
+     */
+    public function id($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+
+    /**
+     * @param $id
+     * @return static
+     */
+    public function setId($id)
+    {
+        return $this->id($id);
+    }
+
+
+    /**
+     * @param $handle
+     * @return static
+     */
+    public function handle($handle)
+    {
+        $this->handle = $handle;
+        return $this;
+    }
+
+    /**
+     * @param $handle
+     * @return static
+     */
+    public function setHandle($handle)
+    {
+        return $this->handle($handle);
+    }
+
+    /**
+     * @param $name
+     * @return static
+     */
+    public function name($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @param $name
+     * @return static
+     */
+    public function setName($name)
+    {
+        return $this->name($name);
+    }
 
     /**
      * Flag if the table is already joined (to prevent subsequent joins)

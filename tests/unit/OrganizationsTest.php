@@ -4,19 +4,11 @@ namespace flipbox\organizations\tests;
 
 use Codeception\Test\Unit;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
-use flipbox\organizations\services\Element;
-use flipbox\organizations\services\Organizations;
-use flipbox\organizations\services\OrganizationTypeAssociations;
-use flipbox\organizations\services\OrganizationTypes;
 use flipbox\organizations\services\OrganizationTypeSettings;
 use flipbox\organizations\services\OrganizationUserAssociations;
-use flipbox\organizations\services\OrganizationUsers;
-use flipbox\organizations\services\Records;
 use flipbox\organizations\services\UserOrganizationAssociations;
-use flipbox\organizations\services\UserOrganizations;
 use flipbox\organizations\services\Users;
 use flipbox\organizations\services\UserTypeAssociations;
-use flipbox\organizations\services\UserTypes;
 
 class OrganizationsTest extends Unit
 {
@@ -32,70 +24,6 @@ class OrganizationsTest extends Unit
     protected function _before()
     {
         $this->module = new OrganizationsPlugin('organizations');
-    }
-
-    /**
-     * Test the component is set correctly
-     */
-    public function testElementComponent()
-    {
-        $this->assertInstanceOf(
-            Element::class,
-            $this->module->getElement()
-        );
-
-        $this->assertInstanceOf(
-            Element::class,
-            $this->module->element
-        );
-    }
-
-    /**
-     * Test the component is set correctly
-     */
-    public function testOrganizationsComponent()
-    {
-        $this->assertInstanceOf(
-            Organizations::class,
-            $this->module->getOrganizations()
-        );
-
-        $this->assertInstanceOf(
-            Organizations::class,
-            $this->module->organizations
-        );
-    }
-
-    /**
-     * Test the component is set correctly
-     */
-    public function testOrganizationTypeAssociationsComponent()
-    {
-        $this->assertInstanceOf(
-            OrganizationTypeAssociations::class,
-            $this->module->getOrganizationTypeAssociations()
-        );
-
-        $this->assertInstanceOf(
-            OrganizationTypeAssociations::class,
-            $this->module->organizationTypeAssociations
-        );
-    }
-
-    /**
-     * Test the component is set correctly
-     */
-    public function testOrganizationTypesComponent()
-    {
-        $this->assertInstanceOf(
-            OrganizationTypes::class,
-            $this->module->getOrganizationTypes()
-        );
-
-        $this->assertInstanceOf(
-            OrganizationTypes::class,
-            $this->module->organizationTypes
-        );
     }
 
     /**
@@ -130,53 +58,21 @@ class OrganizationsTest extends Unit
         );
     }
 
-    /**
-     * Test the component is set correctly
-     */
-    public function testOrganizationUsersComponent()
-    {
-        $this->assertInstanceOf(
-            OrganizationUsers::class,
-            $this->module->getOrganizationUsers()
-        );
-
-        $this->assertInstanceOf(
-            OrganizationUsers::class,
-            $this->module->organizationUsers
-        );
-    }
-
-    /**
-     * Test the component is set correctly
-     */
-    public function testRecordsComponent()
-    {
-        $this->assertInstanceOf(
-            Records::class,
-            $this->module->getRecords()
-        );
-
-        $this->assertInstanceOf(
-            Records::class,
-            $this->module->records
-        );
-    }
-
-    /**
-     * Test the component is set correctly
-     */
-    public function testUserOrganizationsComponent()
-    {
-        $this->assertInstanceOf(
-            UserOrganizations::class,
-            $this->module->getUserOrganizations()
-        );
-
-        $this->assertInstanceOf(
-            UserOrganizations::class,
-            $this->module->userOrganizations
-        );
-    }
+//    /**
+//     * Test the component is set correctly
+//     */
+//    public function testUserOrganizationsComponent()
+//    {
+//        $this->assertInstanceOf(
+//            UserOrganizations::class,
+//            $this->module->getUserOrganizations()
+//        );
+//
+//        $this->assertInstanceOf(
+//            UserOrganizations::class,
+//            $this->module->userOrganizations
+//        );
+//    }
 
     /**
      * Test the component is set correctly
@@ -226,19 +122,4 @@ class OrganizationsTest extends Unit
         );
     }
 
-    /**
-     * Test the component is set correctly
-     */
-    public function testUserTypesComponent()
-    {
-        $this->assertInstanceOf(
-            UserTypes::class,
-            $this->module->getUserTypes()
-        );
-
-        $this->assertInstanceOf(
-            UserTypes::class,
-            $this->module->userTypes
-        );
-    }
 }

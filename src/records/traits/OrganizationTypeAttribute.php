@@ -8,7 +8,7 @@
 
 namespace flipbox\organizations\records\traits;
 
-use flipbox\ember\records\traits\ActiveRecord;
+use flipbox\craft\ember\records\ActiveRecordTrait;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationType as TypeRecord;
 use flipbox\organizations\traits\TypeMutator;
@@ -23,7 +23,7 @@ use yii\db\ActiveQueryInterface;
  */
 trait OrganizationTypeAttribute
 {
-    use ActiveRecord,
+    use ActiveRecordTrait,
         TypeRules,
         TypeMutator {
         resolveType as parentResolveType;
@@ -66,7 +66,11 @@ trait OrganizationTypeAttribute
             return null;
         }
 
-        return OrganizationPlugin::getInstance()->getOrganizationTypes()->resolve($this->getRelation('typeRecord'));
+        if (null === ($record = $this->getRelation('typeRecord'))) {
+            return null;
+        }
+
+        return $record instanceof TypeRecord ? $record : null;
     }
 
     /**

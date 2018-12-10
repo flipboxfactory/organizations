@@ -9,6 +9,8 @@
 namespace flipbox\organizations\db;
 
 use craft\helpers\Db;
+use flipbox\craft\ember\queries\CacheableActiveQuery;
+use flipbox\craft\ember\queries\UserAttributeTrait;
 use flipbox\craft\sortable\associations\db\SortableAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 
@@ -20,17 +22,9 @@ use flipbox\organizations\records\UserAssociation;
  * @method UserAssociation[] all($db = null)
  * @method UserAssociation[] getCachedResult($db = null)
  */
-class UserAssociationQuery extends SortableAssociationQuery
+class UserAssociationQuery extends CacheableActiveQuery
 {
-    /**
-     * The sort order attribute
-     */
-    const SORT_ORDER_ATTRIBUTE = null;
-
-    /**
-     * @var int|int[]|false|null The source Id(s). Prefix Ids with "not " to exclude them.
-     */
-    public $userId;
+    use UserAttributeTrait;
 
     /**
      * @var int|int[]|false|null The target Id(s). Prefix Ids with "not " to exclude them.
@@ -42,21 +36,11 @@ class UserAssociationQuery extends SortableAssociationQuery
      */
     public function init()
     {
+        $this->from([
+            UserAssociation::tableName() . ' ' . UserAssociation::tableAlias()
+        ]);
+
         parent::init();
-
-        if ($this->from === null) {
-            $this->from([
-                UserAssociation::tableName() . ' ' . UserAssociation::tableAlias()
-            ]);
-        }
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function fixedOrderColumn(): string
-    {
-        return 'id';
     }
 
     /**
@@ -80,30 +64,11 @@ class UserAssociationQuery extends SortableAssociationQuery
 
     /**
      * @inheritdoc
-     * return static
-     */
-    public function user($value)
-    {
-        return $this->userId($value);
-    }
-
-    /**
-     * @inheritdoc
-     * return static
-     */
-    public function userId($value)
-    {
-        $this->userId = $value;
-        return $this;
-    }
-
-    /**
-     * @inheritdoc
      */
     public function prepare($builder)
     {
-        if ($this->userId !== null) {
-            $this->andWhere(Db::parseParam('userId', $this->userId));
+        if ($this->user !== null) {
+            $this->andWhere(Db::parseParam('userId', $this->parseUserValue($this->user)));
         }
 
         if ($this->organizationId !== null) {

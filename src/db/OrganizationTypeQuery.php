@@ -10,9 +10,9 @@ namespace flipbox\organizations\db;
 
 use craft\db\QueryAbortedException;
 use craft\helpers\Db;
-use flipbox\ember\db\CacheableActiveQuery;
-use flipbox\ember\db\traits\AuditAttributes;
-use flipbox\ember\db\traits\FixedOrderBy;
+use flipbox\craft\ember\queries\AuditAttributesTrait;
+use flipbox\craft\ember\queries\CacheableActiveQuery;
+use flipbox\craft\ember\queries\FixedOrderByTrait;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationType as TypeRecord;
 use flipbox\organizations\records\OrganizationTypeAssociation as TypeAssociationRecord;
@@ -31,8 +31,8 @@ class OrganizationTypeQuery extends CacheableActiveQuery
     use traits\OrganizationTypeAttribute,
         traits\OrganizationAttribute,
         ArrayableTrait,
-        FixedOrderBy,
-        AuditAttributes;
+        FixedOrderByTrait,
+        AuditAttributesTrait;
 
     /**
      * @inheritdoc

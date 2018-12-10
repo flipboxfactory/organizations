@@ -10,10 +10,10 @@ namespace flipbox\organizations\models;
 
 use Craft;
 use craft\base\Model;
-use flipbox\ember\helpers\ModelHelper;
-use flipbox\ember\helpers\SiteHelper;
-use flipbox\ember\traits\FieldLayoutAttribute;
-use flipbox\ember\validators\ModelValidator;
+use flipbox\craft\ember\models\FieldLayoutAttributeTrait;
+use flipbox\craft\ember\helpers\ModelHelper;
+use flipbox\craft\ember\helpers\SiteHelper;
+use flipbox\craft\ember\validators\ModelValidator;
 use flipbox\organizations\elements\Organization;
 use yii\caching\Dependency;
 
@@ -23,43 +23,13 @@ use yii\caching\Dependency;
  */
 class Settings extends Model
 {
-    use FieldLayoutAttribute,
+    use FieldLayoutAttributeTrait,
         traits\SiteSettingAttribute;
 
     /**
      * @var int|null|false
      */
     public $userSidebarTemplate = 'organizations/_components/hooks/users/details';
-    
-    /**
-     * @var int|null|false
-     */
-    public $recordsCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $recordsCacheDependency = null;
-
-    /**
-     * @var int|null|false
-     */
-    public $organizationsCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $organizationsCacheDependency = null;
-
-    /**
-     * @var int|null|false
-     */
-    public $organizationTypesCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $organizationTypesCacheDependency = null;
 
     /**
      * @var int|null|false
@@ -100,16 +70,6 @@ class Settings extends Model
      * @var null|Dependency
      */
     public $usersCacheDependency = null;
-
-    /**
-     * @var int|null|false
-     */
-    public $userTypesCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $userTypesCacheDependency = null;
 
     /**
      * @var int|null|false
