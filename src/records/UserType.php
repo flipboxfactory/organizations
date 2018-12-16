@@ -8,9 +8,10 @@
 
 namespace flipbox\organizations\records;
 
+use Craft;
 use flipbox\craft\ember\models\HandleRulesTrait;
 use flipbox\craft\ember\records\ActiveRecordWithId;
-use flipbox\organizations\db\UserTypeQuery;
+use flipbox\organizations\queries\UserTypeQuery;
 use yii\validators\UniqueValidator;
 
 /**
@@ -29,12 +30,16 @@ class UserType extends ActiveRecordWithId
     const TABLE_ALIAS = Organization::TABLE_ALIAS . '_user_types';
 
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
      * @return UserTypeQuery
      */
     public static function find()
     {
-        return new UserTypeQuery;
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return Craft::createObject(UserTypeQuery::class, [get_called_class()]);
     }
 
     /**
@@ -86,6 +91,7 @@ class UserType extends ActiveRecordWithId
             $condition = ['handle' => $condition];
         }
 
+        /** @noinspection PhpInternalEntityUsedInspection */
         return parent::findByCondition($condition);
     }
 }

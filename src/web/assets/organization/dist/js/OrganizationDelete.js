@@ -1,7 +1,7 @@
 // /** global: Craft */
 // /** global: Garnish */
 // /**
-//  * Delete Organization Modal
+//  * DeleteOrganization Organization Modal
 //  */
 // Craft.DeleteOrganizationModal = Garnish.Modal.extend(
 //     {
@@ -38,7 +38,7 @@
 //                     '</div>' +
 //                     '</div>' +
 //                     '<div>' +
-//                     '<label><input type="radio" name="contentAction" value="delete"/> ' + Craft.t('app', 'Delete it') + '</label>' +
+//                     '<label><input type="radio" name="contentAction" value="delete"/> ' + Craft.t('app', 'DeleteOrganization it') + '</label>' +
 //                     '</div>' +
 //                     '</div>'
 //                 ).appendTo($form),
@@ -46,7 +46,7 @@
 //                 $cancelBtn = $('<div class="btn">' + Craft.t('app', 'Cancel') + '</div>').appendTo($buttons);
 //
 //             this.$deleteActionRadios = $body.find('input[type=radio]');
-//             this.$deleteSubmitBtn = $('<input type="submit" class="btn submit disabled" value="' + Craft.t('organizations', 'Delete') + '" />').appendTo($buttons);
+//             this.$deleteSubmitBtn = $('<input type="submit" class="btn submit disabled" value="' + Craft.t('organizations', 'DeleteOrganization') + '" />').appendTo($buttons);
 //             this.$deleteSpinner = $('<div class="spinner hidden"/>').appendTo($buttons);
 //
 //             var idParam;

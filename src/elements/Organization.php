@@ -21,15 +21,15 @@ use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper as UrlHelper;
 use flipbox\craft\ember\helpers\ModelHelper;
-use flipbox\organizations\db\OrganizationQuery;
-use flipbox\organizations\db\OrganizationTypeQuery;
+use flipbox\organizations\queries\OrganizationQuery;
+use flipbox\organizations\queries\OrganizationTypeQuery;
+use flipbox\organizations\models\DateJoinedAttributeTrait;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\Organization as OrganizationRecord;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationType as TypeModel;
 use flipbox\organizations\records\OrganizationTypeAssociation;
 use flipbox\organizations\records\UserAssociation;
-use flipbox\organizations\traits\DateJoinedAttribute;
 use yii\base\ErrorException as Exception;
 
 /**
@@ -38,9 +38,9 @@ use yii\base\ErrorException as Exception;
  */
 class Organization extends Element
 {
-    use DateJoinedAttribute,
-        traits\TypesAttribute,
-        traits\UsersAttribute;
+    use DateJoinedAttributeTrait,
+        TypesAttributeTrait,
+        UsersAttributeTrait;
 
     /**
      * @inheritdoc
@@ -362,7 +362,7 @@ class Organization extends Element
         $sources = self::defineDefaultSources();
 
         // Array of all organization types
-        $organizationTypes = OrganizationType::findAll();
+        $organizationTypes = OrganizationType::findAll([]);
 
         $sources[] = ['heading' => Craft::t('organizations', 'Types')];
 
@@ -387,7 +387,7 @@ class Organization extends Element
         $sources = self::defineDefaultSources();
 
         // Array of all organization types
-        $organizationUsers = OrganizationPlugin::getInstance()->getUsers()->getQuery();
+        $organizationUsers = User::find();
 
         $sources[] = ['heading' => Craft::t('organizations', 'Users')];
 
@@ -421,7 +421,7 @@ class Organization extends Element
         ]);
 
 //        if (Craft::$app->getUser()->checkPermission('deleteOrganizations')) {
-//            // Delete
+//            // DeleteOrganization
 //            $actions[] = DeleteAction::class;
 //        }
 
@@ -623,12 +623,12 @@ class Organization extends Element
         }
 
         // Types
-        if (false === $this->associateTypes($this->getTypes())) {
+        if (false === $this->saveTypeAssociations()) {
             throw new Exception("Unable to save types.");
         }
 
         // Users
-        if (false === $this->associateUsers($this->getUsers())) {
+        if (false === $this->saveUserAssociations()) {
             throw new Exception("Unable to save users.");
         }
 
@@ -686,231 +686,10 @@ class Organization extends Element
             $record = new OrganizationRecord();
         }
 
-        // Populate the record attributes
+        // PopulateOrganizationTypeTrait the record attributes
         $record->id = $this->getId();
         $record->dateJoined = $this->getDateJoined();
 
         return $record;
-    }
-
-
-    /*******************************************
-     * TYPES - ASSOCIATE and/or DISASSOCIATE
-     *******************************************/
-
-    /**
-     * @param OrganizationTypeQuery $query
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function associateTypes(OrganizationTypeQuery $query): bool
-    {
-        $currentAssociations = OrganizationTypeAssociation::find()
-            ->organizationId($this->getId() ?: false)
-            ->indexBy('typeId')
-            ->all();
-
-        $success = true;
-
-        // Delete
-        if (null === ($types = $query->getCachedResult())) {
-            foreach ($currentAssociations as $currentAssociation) {
-                if (!$currentAssociation->delete()) {
-                    $success = false;
-                }
-            }
-
-            if (!$success) {
-                $this->addError('types', 'Unable to dissociate types.');
-            }
-
-            return $success;
-        }
-
-        $associations = [];
-        $order = 1;
-        foreach ($types as $type) {
-            if (null === ($association = ArrayHelper::remove($currentAssociations, $type->getId()))) {
-                $association = (new OrganizationTypeAssociation())
-                    ->setType($type)
-                    ->setOrganization($this);
-            }
-
-            $association->sortOrder = $order++;
-
-            $associations[] = $association;
-        }
-
-        // Delete those removed
-        foreach ($currentAssociations as $currentAssociation) {
-            if (!$currentAssociation->delete()) {
-                $success = false;
-            }
-        }
-
-        foreach ($associations as $association) {
-            if (!$association->save()) {
-                $success = false;
-            }
-        }
-
-        if (!$success) {
-            $this->addError('types', 'Unable to associate types.');
-        }
-
-        $this->setTypes($query);
-
-        return $success;
-    }
-
-    /*******************************************
-     * USERS - ASSOCIATE and/or DISASSOCIATE
-     *******************************************/
-
-    /**
-     * @param UserQuery $query
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function saveUsers(UserQuery $query)
-    {
-        $currentAssociations = UserAssociation::find()
-            ->organizationId($this->getId() ?: false)
-            ->indexBy('userId')
-            ->all();
-
-        $success = true;
-
-        // Delete
-        if (null === ($users = $query->getCachedResult())) {
-            foreach ($currentAssociations as $currentAssociation) {
-                if (!$currentAssociation->delete()) {
-                    $success = false;
-                }
-            }
-
-            if (!$success) {
-                $this->addError('types', 'Unable to dissociate users.');
-            }
-
-            return $success;
-        }
-
-        $associations = [];
-        $order = 1;
-        foreach ($users as $user) {
-            if (null === ($association = ArrayHelper::remove($currentAssociations, $user->getId()))) {
-                $association = (new UserAssociation())
-                    ->setUser($user)
-                    ->setOrganization($this);
-            }
-
-            $association->userOrder = $order++;
-
-            $associations[] = $association;
-        }
-
-        // Delete those removed
-        foreach ($currentAssociations as $currentAssociation) {
-            if (!$currentAssociation->delete()) {
-                $success = false;
-            }
-        }
-
-        foreach ($associations as $association) {
-            if (!$association->save()) {
-                $success = false;
-            }
-        }
-
-        if (!$success) {
-            $this->addError('users', 'Unable to associate users.');
-        }
-
-        $this->setUsers($query);
-
-        return $success;
-    }
-
-    /**
-     * @param UserQuery $query
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function associateUsers(UserQuery $query)
-    {
-        if (null === ($users = $query->getCachedResult())) {
-            return true;
-        }
-
-        $success = true;
-        $currentAssociations = UserAssociation::find()
-            ->organizationId($this->getId() ?: false)
-            ->indexBy('userId')
-            ->all();
-
-        $order = 1;
-        foreach ($users as $user) {
-            if (null === ($association = ArrayHelper::remove($currentAssociations, $user->getId()))) {
-                $association = (new UserAssociation())
-                    ->setUser($user)
-                    ->setOrganization($this);
-
-                $association->userOrder = $order++;
-            }
-
-            if (!$association->save()) {
-                $success = false;
-            }
-        }
-
-        if (!$success) {
-            $this->addError('users', 'Unable to associate users.');
-        }
-
-        $this->resetUsers();
-
-        return $success;
-    }
-
-    /**
-     * @param UserQuery $query
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function dissociateUsers(UserQuery $query)
-    {
-        if (null === ($users = $query->getCachedResult())) {
-            return true;
-        }
-
-        $currentAssociations = UserAssociation::find()
-            ->organizationId($this->getId() ?: false)
-            ->indexBy('userId')
-            ->all();
-
-        $success = true;
-
-        foreach ($users as $user) {
-            if (null === ($association = ArrayHelper::remove($currentAssociations, $user->getId()))) {
-                continue;
-            }
-
-            if (!$association->delete()) {
-                $success = false;
-            }
-        }
-
-        if (!$success) {
-            $this->addError('users', 'Unable to associate users.');
-        }
-
-        $this->setUsers($query);
-
-        return $success;
     }
 }

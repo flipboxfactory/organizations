@@ -8,10 +8,12 @@
 
 namespace flipbox\organizations\web\twig\variables;
 
+use craft\elements\db\UserQuery;
+use craft\elements\User;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\db\OrganizationQuery;
-use flipbox\organizations\db\OrganizationTypeQuery;
-use flipbox\organizations\db\UserTypeQuery;
+use flipbox\organizations\queries\OrganizationQuery;
+use flipbox\organizations\queries\OrganizationTypeQuery;
+use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\models\Settings;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\elements\Organization as OrganizationElement;
@@ -26,18 +28,19 @@ use yii\di\ServiceLocator;
 class Organization extends ServiceLocator
 {
     /**
-     * @inheritdoc
+     * @param array $config
+     * @return UserQuery
      */
-    public function __construct($config = [])
+    public function getUsers(array $config = []): UserQuery
     {
-        parent::__construct(array_merge(
-            $config,
-            [
-                'components' => [
-                    'users' => OrganizationPlugin::getInstance()->getUsers()
-                ]
-            ]
-        ));
+        $query = User::find();
+
+        QueryHelper::configure(
+            $query,
+            $config
+        );
+
+        return $query;
     }
 
     /**

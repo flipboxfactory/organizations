@@ -8,12 +8,14 @@
 
 namespace flipbox\organizations\records;
 
+use Craft;
+use craft\queue\jobs\ResaveElements;
 use craft\validators\UriFormatValidator;
-use flipbox\ember\helpers\ModelHelper;
-use flipbox\ember\records\ActiveRecord;
-use flipbox\ember\records\traits\SiteAttribute;
+use flipbox\craft\ember\helpers\ModelHelper;
+use flipbox\craft\ember\records\ActiveRecord;
+use flipbox\craft\ember\records\SiteAttributeTrait;
+use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\models\SiteSettingsInterface;
-use flipbox\organizations\Organizations as OrganizationPlugin;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -25,8 +27,8 @@ use flipbox\organizations\Organizations as OrganizationPlugin;
  */
 class OrganizationTypeSiteSettings extends ActiveRecord implements SiteSettingsInterface
 {
-    use traits\OrganizationTypeAttribute,
-        SiteAttribute;
+    use OrganizationTypeAttributeTrait,
+        SiteAttributeTrait;
 
     /**
      * The table name
@@ -117,7 +119,46 @@ class OrganizationTypeSiteSettings extends ActiveRecord implements SiteSettingsI
      */
     public function afterSave($insert, $changedAttributes)
     {
-        OrganizationPlugin::getInstance()->getOrganizationTypeSettings()->afterSave($this, $insert, $changedAttributes);
+        if ($insert === true) {
+            return;
+        }
+
+        if (array_key_exists('uriFormat', $changedAttributes) ||
+            (array_key_exists('hasUrls', $changedAttributes) &&
+                $this->getOldAttribute('hasUrls') != $this->getAttribute('hasUrls'))
+        ) {
+            $this->reSaveOrganizations();
+        }
+
         parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function afterDelete()
+    {
+        $this->reSaveOrganizations();
+        parent::afterDelete();
+    }
+
+
+    /**
+     * Save organizations
+     */
+    protected function reSaveOrganizations()
+    {
+        Craft::$app->getQueue()->push(new ResaveElements([
+            'description' => Craft::t('organizations', 'Re-saving organizations (Site: {site})', [
+                'site' => $this->getSiteId(),
+            ]),
+            'elementType' => OrganizationElement::class,
+            'criteria' => [
+                'siteId' => $this->getSiteId(),
+                'typeId' => $this->getTypeId(),
+                'status' => null,
+                'enabledForSite' => false,
+            ]
+        ]));
     }
 }

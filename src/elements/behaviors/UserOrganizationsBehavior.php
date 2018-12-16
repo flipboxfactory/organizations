@@ -6,10 +6,12 @@ use Craft;
 use craft\elements\User;
 use craft\events\ModelEvent;
 use craft\helpers\ArrayHelper;
-use flipbox\ember\helpers\QueryHelper;
-use flipbox\organizations\db\OrganizationQuery;
+use flipbox\craft\ember\helpers\QueryHelper;
+use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\UserAssociationQuery;
+use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\validators\OrganizationsValidator;
 use yii\base\Behavior;
 use yii\base\Event;
@@ -43,7 +45,7 @@ class UserOrganizationsBehavior extends Behavior
             function (Event $e) {
                 /** @var User $user */
                 $user = $e->sender;
-                $this->validate($user);
+                $this->onAfterValidate($user);
             }
         );
 
@@ -54,7 +56,7 @@ class UserOrganizationsBehavior extends Behavior
             function (ModelEvent $e) {
                 /** @var User $user */
                 $user = $e->sender;
-                $this->save($user);
+                $this->onAfterSave($user);
             }
         );
 
@@ -65,7 +67,7 @@ class UserOrganizationsBehavior extends Behavior
             function (Event $e) {
                 /** @var User $user */
                 $user = $e->sender;
-                $this->delete($user);
+                $this->onAfterDelete($user);
             }
         );
     }
@@ -76,27 +78,13 @@ class UserOrganizationsBehavior extends Behavior
      * @throws \Throwable
      * @throws \yii\base\Exception
      */
-    private function delete(User $user)
+    private function onAfterDelete(User $user)
     {
-        $this->dissociateOrganizations($user);
-    }
+        // Remove organizations
+        $user->setOrganization([]);
 
-    /**
-     * @param User|self $user
-     * @throws \Exception
-     * @throws \yii\db\Exception
-     */
-    private function dissociateOrganizations(User $user)
-    {
-        $associationService = OrganizationPlugin::getInstance()->getUserOrganizationAssociations();
-        foreach ($user->getOrganizations()->all() as $organization) {
-            $associationService->dissociate(
-                $associationService->create([
-                    'userId' => $user->getId(),
-                    'organizationId' => $organization->getId()
-                ])
-            );
-        }
+        // Save associations
+        $user->saveOrganizationAssociations();
     }
 
     /**
@@ -106,31 +94,7 @@ class UserOrganizationsBehavior extends Behavior
      * @throws \Throwable
      * @throws \craft\errors\ElementNotFoundException
      */
-    private function save(User $user)
-    {
-        $this->saveOrganizations($user);
-        $this->associateOrganizations($user);
-    }
-
-    /**
-     * @param User|self $user
-     * @throws \Exception
-     */
-    private function associateOrganizations(User $user)
-    {
-        OrganizationPlugin::getInstance()->getUsers()->saveAssociations(
-            $this->getOrganizations(),
-            $user
-        );
-    }
-
-    /**
-     * @param User|self $user
-     * @throws Exception
-     * @throws \Throwable
-     * @throws \craft\errors\ElementNotFoundException
-     */
-    private function saveOrganizations(User $user)
+    private function onAfterSave(User $user)
     {
         // Check cache for explicitly set (and possibly not saved) organizations
         if (null !== ($organizations = $user->getOrganizations()->getCachedResult())) {
@@ -149,14 +113,15 @@ class UserOrganizationsBehavior extends Behavior
                 }
             }
         }
-    }
 
+        $this->saveOrganizationAssociations();
+    }
 
     /**
      * @param User|self $user
      * @return void
      */
-    private function validate(User $user)
+    private function onAfterValidate(User $user)
     {
         $error = null;
 
@@ -165,14 +130,23 @@ class UserOrganizationsBehavior extends Behavior
         }
     }
 
-
     /**
+     * @param array $criteria
      * @return OrganizationQuery
      */
-    private function createQuery(): OrganizationQuery
+    public function organizationQuery($criteria = []): OrganizationQuery
     {
-        return Organization::find()
+        $query = Organization::find()
             ->user($this->owner);
+
+        if (!empty($criteria)) {
+            QueryHelper::configure(
+                $query,
+                $criteria
+            );
+        }
+
+        return $query;
     }
 
     /**
@@ -184,7 +158,7 @@ class UserOrganizationsBehavior extends Behavior
     public function getOrganizations($criteria = []): OrganizationQuery
     {
         if (null === $this->organizations) {
-            $this->organizations = $this->createQuery();
+            $this->organizations = $this->organizationQuery();
         }
 
         if (!empty($criteria)) {
@@ -198,7 +172,7 @@ class UserOrganizationsBehavior extends Behavior
     }
 
     /**
-     * Associate users to an organization
+     * AssociateUserToOrganization users to an organization
      *
      * @param $organizations
      * @return $this
@@ -211,14 +185,14 @@ class UserOrganizationsBehavior extends Behavior
         }
 
         // Reset the query
-        $this->organizations = $this->createQuery();
+        $this->organizations = $this->organizationQuery();
         $this->organizations->setCachedResult([]);
         $this->addOrganizations($organizations);
         return $this;
     }
 
     /**
-     * Associate an array of users to an organization
+     * AssociateUserToOrganization an array of users to an organization
      *
      * @param $organizations
      * @return $this
@@ -246,30 +220,7 @@ class UserOrganizationsBehavior extends Behavior
     }
 
     /**
-     * @param $organization
-     * @return Organization
-     */
-    public function resolveOrganization($organization)
-    {
-        if ($organization instanceof Organization) {
-            return $organization;
-        }
-
-        if (is_array($organization) &&
-            null !== ($id = ArrayHelper::getValue($organization, 'id'))
-        ) {
-            return Organization::findOne($id);
-        }
-
-        if (null !== ($object = Organization::findOne($organization))) {
-            return $object;
-        }
-
-        return new Organization($organization);
-    }
-
-    /**
-     * Associate a user to an organization
+     * AssociateUserToOrganization a user to an organization
      *
      * @param Organization $organization
      * @param bool $addToOrganization
@@ -293,4 +244,187 @@ class UserOrganizationsBehavior extends Behavior
 
         return $this;
     }
+
+    /**
+     * @param $organization
+     * @return Organization
+     */
+    protected function resolveOrganization($organization)
+    {
+        if ($organization instanceof Organization) {
+            return $organization;
+        }
+
+        if (is_array($organization) &&
+            null !== ($id = ArrayHelper::getValue($organization, 'id'))
+        ) {
+            return Organization::findOne($id);
+        }
+
+        if (null !== ($object = Organization::findOne($organization))) {
+            return $object;
+        }
+
+        return new Organization($organization);
+    }
+
+    /*******************************************
+     * ASSOCIATE and/or DISASSOCIATE
+     *******************************************/
+
+    /**
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function saveOrganizationAssociations(): bool
+    {
+        $currentAssociations = $this->currentAssociationQuery()->all();
+
+        $success = true;
+
+        if (null === ($records = $this->getOrganizations()->getCachedResult())) {
+            // Delete anything that's currently set
+            foreach ($currentAssociations as $currentAssociation) {
+                if (!$currentAssociation->delete()) {
+                    $success = false;
+                }
+            }
+
+            if (!$success) {
+                $this->owner->addError('types', 'Unable to dissociate organizations.');
+            }
+
+            return $success;
+        }
+
+        $associations = [];
+        $order = 1;
+        foreach ($records as $type) {
+            if (null === ($association = ArrayHelper::remove($currentAssociations, $type->getId()))) {
+                $association = (new UserAssociation())
+                    ->setUser($this->owner)
+                    ->setOrganization($type);
+            }
+
+            $association->organizationOrder = $order++;
+
+            $associations[] = $association;
+        }
+
+        // Delete anything that has been removed
+        foreach ($currentAssociations as $currentAssociation) {
+            if (!$currentAssociation->delete()) {
+                $success = false;
+            }
+        }
+
+        // Save'em
+        foreach ($associations as $association) {
+            if (!$association->save()) {
+                $success = false;
+            }
+        }
+
+        if (!$success) {
+            $this->owner->addError('organizations', 'Unable to save user organizations.');
+        }
+
+        return $success;
+    }
+
+    /**
+     * @param OrganizationQuery $query
+     * @return bool
+     * @throws \Throwable
+     */
+    public function associateOrganizations(OrganizationQuery $query): bool
+    {
+        $organizations = $query->all();
+
+        if (empty($organizations)) {
+            return true;
+        }
+
+        $currentAssociations = $this->currentAssociationQuery()->all();
+
+        $success = true;
+        foreach ($organizations as $organization) {
+            if (null === ($association = ArrayHelper::remove($currentAssociations, $organization->getId()))) {
+                $association = (new UserAssociation())
+                    ->setUser($organization)
+                    ->setOrganization($this);
+            }
+
+            if (!$association->save()) {
+                $success = false;
+            }
+        }
+
+        if (!$success) {
+            $this->owner->addError('organizations', 'Unable to associate organizations.');
+        }
+
+        $this->resetOrganizations();
+
+        return $success;
+    }
+
+    /**
+     * @param OrganizationQuery $query
+     * @return bool
+     * @throws \Throwable
+     */
+    public function dissociateOrganizations(OrganizationQuery $query): bool
+    {
+        $organizations = $query->all();
+
+        if (empty($organizations)) {
+            return true;
+        }
+
+        $currentAssociations = $this->currentAssociationQuery()->all();
+
+        $success = true;
+        foreach ($organizations as $organization) {
+            if (null === ($association = ArrayHelper::remove($currentAssociations, $organization->getId()))) {
+                continue;
+            }
+
+            if (!$association->delete()) {
+                $success = false;
+            }
+        }
+
+        if (!$success) {
+            $this->owner->addError('organizations', 'Unable to associate organizations.');
+        }
+
+        $this->resetOrganizations();
+
+        return $success;
+    }
+
+    /**
+     * @return UserAssociationQuery
+     */
+    protected function currentAssociationQuery(): UserAssociationQuery
+    {
+        return UserAssociation::find()
+            ->userId($this->owner->getId() ?: false)
+            ->indexBy('organizationId')
+            ->orderBy(['organizationOrder' => SORT_ASC]);
+    }
+
+    /**
+     * Reset organizations
+     *
+     * @return $this->owner
+     */
+    public function resetOrganizations()
+    {
+        $this->organizations = null;
+        return $this->owner;
+    }
+
 }

@@ -67,7 +67,7 @@ class RemoveUsers extends ElementAction
             throw new Exception("Organization does not exist with the identifier '{$this->organization}'");
         }
 
-        if($this->organization instanceof Organization) {
+        if ($this->organization instanceof Organization) {
             $organization = $this->organization;
         } else {
             $organization = Organization::getOne([

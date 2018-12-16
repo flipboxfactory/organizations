@@ -11,7 +11,7 @@ namespace flipbox\organizations\web\assets\userassociations;
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 use flipbox\craft\elements\nestedIndex\web\assets\index\NestedElementIndex;
-use flipbox\ember\web\assets\actions\Actions;
+use flipbox\craft\ember\web\assets\actions\Actions;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

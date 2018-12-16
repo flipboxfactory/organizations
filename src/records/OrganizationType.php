@@ -9,12 +9,16 @@
 namespace flipbox\organizations\records;
 
 use Craft;
+use craft\helpers\ArrayHelper;
 use craft\models\FieldLayout;
+use flipbox\craft\ember\helpers\ObjectHelper;
 use flipbox\craft\ember\models\HandleRulesTrait;
 use flipbox\craft\ember\records\ActiveRecordWithId;
 use flipbox\craft\ember\records\FieldLayoutAttributeTrait;
-use flipbox\organizations\db\OrganizationTypeQuery;
+use flipbox\craft\ember\validators\ModelValidator;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\OrganizationTypeQuery;
+use yii\base\Exception;
 use yii\db\ActiveQueryInterface;
 use yii\validators\UniqueValidator;
 
@@ -28,7 +32,9 @@ use yii\validators\UniqueValidator;
 class OrganizationType extends ActiveRecordWithId
 {
     use FieldLayoutAttributeTrait,
-        HandleRulesTrait;
+        HandleRulesTrait {
+        resolveFieldLayout as parentResolveFieldLayout;
+    }
 
     /**
      * The table name
@@ -60,13 +66,18 @@ class OrganizationType extends ActiveRecordWithId
         return $fieldLayout;
     }
 
+
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
      * @return OrganizationTypeQuery
      */
     public static function find()
     {
-        return new OrganizationTypeQuery;
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return Craft::createObject(OrganizationTypeQuery::class, [get_called_class()]);
     }
 
     /*******************************************
@@ -75,6 +86,7 @@ class OrganizationType extends ActiveRecordWithId
 
     /**
      * @inheritdoc
+     * @throws Exception
      */
     public function beforeSave($insert)
     {
@@ -121,15 +133,52 @@ class OrganizationType extends ActiveRecordWithId
 
     /**
      * @inheritdoc
+     * @throws Exception
+     * @throws \Throwable
+     * @throws \craft\errors\SiteNotFoundException
+     * @throws \yii\db\StaleObjectException
      */
     public function afterSave($insert, $changedAttributes)
     {
-        if (!OrganizationPlugin::getInstance()->getOrganizationTypeSettings()->saveByType($this)) {
+        $successful = true;
+
+        /** @var OrganizationTypeSiteSettings[] $allSettings */
+        $allSettings = $this->hasMany(OrganizationTypeSiteSettings::class, ['typeId' => 'id'])
+            ->indexBy('siteId')
+            ->all();
+
+        foreach ($this->getSiteSettings() as $model) {
+            ArrayHelper::remove($allSettings, $model->siteId);
+            $model->typeId = $this->getId();
+
+            if (!$model->save()) {
+                $successful = false;
+                // Log the errors
+                $error = Craft::t(
+                    'organizations',
+                    "Couldn't save site settings due to validation errors:"
+                );
+                foreach ($model->getFirstErrors() as $attributeError) {
+                    $error .= "\n- " . Craft::t('organizations', $attributeError);
+                }
+
+                $this->addError('sites', $error);
+            }
+        }
+
+        // DeleteOrganization old settings records
+        foreach ($allSettings as $settings) {
+            $settings->delete();
+        }
+
+        if (!$successful) {
             throw new Exception("Unable to save site settings");
         };
 
         parent::afterSave($insert, $changedAttributes);
     }
+
+
 
     /*******************************************
      * SITE SETTINGS
@@ -188,6 +237,7 @@ class OrganizationType extends ActiveRecordWithId
             $record = new OrganizationTypeSiteSettings();
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return ObjectHelper::populate(
             $record,
             $site
@@ -253,9 +303,8 @@ class OrganizationType extends ActiveRecordWithId
     }
 
     /**
-     * Returns the type’s site settings.
-     *
-     * @return ActiveQueryInterface The relational query object.
+     * @return ActiveQueryInterface
+     * @throws \craft\errors\SiteNotFoundException
      */
     protected function getSiteSettingRecords(): ActiveQueryInterface
     {

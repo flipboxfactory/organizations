@@ -23,7 +23,7 @@ class GeneralController extends AbstractController
     const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . '/general';
 
     /**
-     * Index
+     * OrganizationIndex
      *
      * @return \yii\web\Response
      */

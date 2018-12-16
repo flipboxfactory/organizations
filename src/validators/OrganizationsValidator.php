@@ -10,9 +10,9 @@ namespace flipbox\organizations\validators;
 
 use Craft;
 use craft\helpers\Json;
-use flipbox\ember\exceptions\InvalidQueryException;
-use flipbox\organizations\db\OrganizationQuery;
+use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use yii\base\Exception;
 use yii\validators\Validator;
 
 /**
@@ -42,7 +42,7 @@ class OrganizationsValidator extends Validator
     protected function validateValue($value)
     {
         if (!$value instanceof OrganizationQuery) {
-            throw new InvalidQueryException("Validation value must be an 'OrganizationQuery'.");
+            throw new Exception("Validation value must be an 'OrganizationQuery'.");
         }
 
         return $this->validateOrganizationQuery($value);

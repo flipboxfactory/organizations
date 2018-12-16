@@ -10,10 +10,10 @@ namespace flipbox\organizations\cp\controllers\view;
 
 use Craft;
 use craft\elements\User as UserElement;
+use craft\elements\User;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
-use flipbox\ember\helpers\SiteHelper;
-use flipbox\organizations\actions\organizations\traits\Populate;
+use flipbox\craft\ember\helpers\SiteHelper;
 use flipbox\organizations\cp\controllers\traits\Sites;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\elements\Organization;
@@ -31,7 +31,7 @@ use yii\web\Response;
  */
 class OrganizationsController extends AbstractController
 {
-    use Populate, Sites;
+    use Sites;
 
     /**
      * The template base path
@@ -228,10 +228,10 @@ class OrganizationsController extends AbstractController
             'limit' => null,
             'selectionLabel' => Craft::t('organizations', "Add a user"),
             'storageKey' => 'nested.index.input.organization.users',
-            'elements' => OrganizationPlugin::getInstance()->getUsers()->getQuery([
-                'organization' => $element->getId(),
-                'status' => null
-            ])->ids(),
+            'elements' => User::find()
+                ->organization($element->getId())
+                ->status(null)
+                ->ids(),
             'addAction' => 'organizations/cp/users/associate',
             'selectTargetAttribute' => 'user',
             'selectParams' => [
@@ -318,7 +318,7 @@ class OrganizationsController extends AbstractController
         parent::baseVariables($variables);
 
         // Types
-        $variables['types'] = OrganizationType::findAll();
+        $variables['types'] = OrganizationType::findAll([]);
         $variables['typeOptions'] = [];
         /** @var OrganizationType $type */
         foreach ($variables['types'] as $type) {
@@ -327,5 +327,10 @@ class OrganizationsController extends AbstractController
                 'value' => $type->id
             ];
         }
+    }
+
+    protected function resolveSiteFromRequest()
+    {
+        return Craft::$app->getSites()->currentSite;
     }
 }

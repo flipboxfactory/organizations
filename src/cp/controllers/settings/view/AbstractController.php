@@ -9,7 +9,7 @@
 namespace flipbox\organizations\cp\controllers\settings\view;
 
 use Craft;
-use flipbox\ember\helpers\UrlHelper;
+use flipbox\craft\ember\helpers\UrlHelper;
 use flipbox\organizations\cp\controllers\view\AbstractController as BaseAbstractController;
 use flipbox\organizations\cp\Cp as CpModule;
 

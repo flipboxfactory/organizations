@@ -10,10 +10,10 @@ namespace flipbox\organizations\cp\actions\organization;
 
 use Craft;
 use craft\errors\ElementNotFoundException;
-use flipbox\ember\actions\element\traits\Lookup;
-use flipbox\ember\actions\traits\CheckAccess;
-use flipbox\ember\actions\traits\Populate;
-use flipbox\organizations\actions\organizations\traits\Populate as PopulateOrganization;
+use flipbox\craft\ember\actions\CheckAccessTrait;
+use flipbox\craft\ember\actions\LookupTrait;
+use flipbox\craft\ember\actions\PopulateTrait;
+use flipbox\organizations\actions\organizations\PopulateOrganizationTrait;
 use flipbox\organizations\cp\controllers\traits\Sites;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\elements\Organization;
@@ -28,10 +28,10 @@ use yii\base\BaseObject;
 class SwitchType extends Action
 {
     use Sites,
-        Populate,
-        PopulateOrganization,
-        Lookup,
-        CheckAccess {
+        PopulateOrganizationTrait,
+        PopulateTrait,
+        LookupTrait,
+        CheckAccessTrait {
         populate as parentPopulate;
     }
 
@@ -137,16 +137,16 @@ class SwitchType extends Action
 
     /**
      * @inheritdoc
-     * @param OrganizationElement $object
+     * @param OrganizationElement $record
      * @return OrganizationElement
      */
-    public function populate(BaseObject $object): BaseObject
+    public function populate(BaseObject $record): BaseObject
     {
-        if (true === $this->ensureOrganization($object)) {
-            $this->parentPopulate($object);
-            $this->populateFromRequest($object);
+        if (true === $this->ensureOrganization($record)) {
+            $this->parentPopulate($record);
+            $this->populateFromRequest($record);
         }
 
-        return $object;
+        return $record;
     }
 }

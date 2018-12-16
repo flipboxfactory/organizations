@@ -37,13 +37,13 @@ class OrganizationTypesController extends AbstractController
         $variables = [];
         $this->baseVariables($variables);
 
-        $variables['types'] = OrganizationType::findAll();
+        $variables['types'] = OrganizationType::findAll([]);
 
         return $this->renderTemplate(static::TEMPLATE_INDEX, $variables);
     }
 
     /**
-     * Insert/Update
+     * Insert/UpdateOrganization
      *
      * @param string|int|null $identifier
      * @param OrganizationType $type

@@ -11,10 +11,7 @@ namespace flipbox\organizations\records;
 use Craft;
 use flipbox\craft\ember\records\ActiveRecord;
 use flipbox\craft\ember\records\SortableTrait;
-use flipbox\craft\sortable\associations\records\SortableAssociation;
-use flipbox\craft\sortable\associations\services\SortableAssociations;
-use flipbox\organizations\db\OrganizationTypeAssociationQuery;
-use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\OrganizationTypeAssociationQuery;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -29,8 +26,8 @@ use flipbox\organizations\Organizations as OrganizationPlugin;
 class OrganizationTypeAssociation extends ActiveRecord
 {
     use SortableTrait,
-        traits\OrganizationTypeAttribute,
-        traits\OrganizationAttribute;
+        OrganizationTypeAttributeTrait,
+        OrganizationAttributeTrait;
 
     /**
      * The table name
@@ -40,24 +37,18 @@ class OrganizationTypeAssociation extends ActiveRecord
     /**
      * @inheritdoc
      */
-    const TARGET_ATTRIBUTE = 'typeId';
-
-    /**
-     * @inheritdoc
-     */
-    const SOURCE_ATTRIBUTE = 'organizationId';
-
-    /**
-     * @inheritdoc
-     */
     protected $getterPriorityAttributes = ['typeId', 'organizationId'];
 
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
      * @return OrganizationTypeAssociationQuery
      */
     public static function find()
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Craft::createObject(OrganizationTypeAssociationQuery::class, [get_called_class()]);
     }
 
@@ -71,6 +62,13 @@ class OrganizationTypeAssociation extends ActiveRecord
             $this->typeRules(),
             $this->organizationRules(),
             [
+                [
+                    [
+                        'typeId',
+                        'organizationId'
+                    ],
+                    'required'
+                ],
                 [
                     [
                         'typeId'

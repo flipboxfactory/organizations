@@ -10,9 +10,9 @@ namespace flipbox\organizations\cp\controllers\settings;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\actions\users\types\Create;
-use flipbox\organizations\actions\users\types\Delete;
-use flipbox\organizations\actions\users\types\Update;
+use flipbox\organizations\actions\users\CreateUserType;
+use flipbox\organizations\actions\users\DeleteUserType;
+use flipbox\organizations\actions\users\UpdateUserType;
 use flipbox\organizations\cp\controllers\AbstractController;
 
 /**
@@ -78,9 +78,9 @@ class UserTypesController extends AbstractController
      */
     public function actionCreate()
     {
-        /** @var Create $action */
+        /** @var CreateUserType $action */
         $action = Craft::createObject([
-            'class' => Create::class
+            'class' => CreateUserType::class
         ], [
             'create',
             $this
@@ -102,9 +102,9 @@ class UserTypesController extends AbstractController
             $type = Craft::$app->getRequest()->getBodyParam('type');
         }
 
-        /** @var Update $action */
+        /** @var UpdateUserType $action */
         $action = Craft::createObject([
-            'class' => Update::class
+            'class' => UpdateUserType::class
         ], [
             'update',
             $this
@@ -126,9 +126,9 @@ class UserTypesController extends AbstractController
             $type = Craft::$app->getRequest()->getBodyParam('type');
         }
 
-        /** @var Delete $action */
+        /** @var DeleteUserType $action */
         $action = Craft::createObject([
-            'class' => Delete::class
+            'class' => DeleteUserType::class
         ], [
             'delete',
             $this

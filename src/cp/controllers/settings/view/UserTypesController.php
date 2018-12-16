@@ -37,13 +37,13 @@ class UserTypesController extends AbstractController
         $variables = [];
         $this->baseVariables($variables);
 
-        $variables['types'] = UserType::findAll();
+        $variables['types'] = UserType::findAll([]);
 
         return $this->renderTemplate(static::TEMPLATE_INDEX, $variables);
     }
 
     /**
-     * Insert/Update
+     * Insert/UpdateOrganizationType
      *
      * @param string|int|null $identifier
      * @param UserType $userType

@@ -6,8 +6,6 @@ use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
 use craft\models\FieldLayout;
 use craft\services\Fields;
-use flipbox\organizations\db\OrganizationTypeAssociationQuery;
-use flipbox\organizations\db\OrganizationTypeQuery;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\models\Settings;
 use flipbox\organizations\Organizations;

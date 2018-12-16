@@ -4,7 +4,6 @@ namespace flipbox\organizations\tests\services;
 
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
-use flipbox\organizations\db\OrganizationTypeAssociationQuery;
 use flipbox\organizations\Organizations as OrganizationsPlugin;
 use flipbox\organizations\records\OrganizationTypeAssociation;
 use flipbox\organizations\services\OrganizationTypeAssociations;

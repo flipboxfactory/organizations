@@ -14,8 +14,7 @@ use flipbox\craft\ember\records\ActiveRecord;
 use flipbox\craft\ember\records\IdAttributeTrait;
 use flipbox\craft\ember\records\SortableTrait;
 use flipbox\craft\ember\records\UserAttributeTrait;
-use flipbox\organizations\db\UserAssociationQuery;
-use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\UserAssociationQuery;
 use yii\db\ActiveQueryInterface;
 
 /**
@@ -33,7 +32,7 @@ class UserAssociation extends ActiveRecord
     use SortableTrait,
         UserAttributeTrait,
         IdAttributeTrait,
-        traits\OrganizationAttribute;
+        OrganizationAttributeTrait;
 
     /**
      * The table name
@@ -43,19 +42,18 @@ class UserAssociation extends ActiveRecord
     /**
      * @inheritdoc
      */
-    const TARGET_ATTRIBUTE = 'userId';
+    protected $getterPriorityAttributes = ['userId', 'organizationId'];
 
     /**
-     * @inheritdoc
-     */
-    const SOURCE_ATTRIBUTE = 'organizationId';
-
-    /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
      * @return UserAssociationQuery
      */
     public static function find()
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Craft::createObject(UserAssociationQuery::class, [get_called_class()]);
     }
 
@@ -70,7 +68,9 @@ class UserAssociation extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      *
      * @deprecated
      */
@@ -92,8 +92,8 @@ class UserAssociation extends ActiveRecord
             [
                 [
                     [
-                        static::SOURCE_ATTRIBUTE,
-                        static::TARGET_ATTRIBUTE,
+                        'userId',
+                        'organizationId'
                     ],
                     'required'
                 ],
@@ -107,8 +107,8 @@ class UserAssociation extends ActiveRecord
                 ],
                 [
                     [
-                        static::SOURCE_ATTRIBUTE,
-                        static::TARGET_ATTRIBUTE,
+                        'userId',
+                        'organizationId'
                     ],
                     'safe',
                     'on' => [
@@ -125,6 +125,7 @@ class UserAssociation extends ActiveRecord
     public function getTypes(): ActiveQueryInterface
     {
         // Todo - order this by the sortOrder
+        /** @noinspection PhpUndefinedMethodInspection */
         return $this->hasMany(UserType::class, ['id' => 'typeId'])
             ->viaTable(
                 UserTypeAssociation::tableName(),

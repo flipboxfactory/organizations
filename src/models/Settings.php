@@ -10,9 +10,9 @@ namespace flipbox\organizations\models;
 
 use Craft;
 use craft\base\Model;
-use flipbox\craft\ember\models\FieldLayoutAttributeTrait;
 use flipbox\craft\ember\helpers\ModelHelper;
 use flipbox\craft\ember\helpers\SiteHelper;
+use flipbox\craft\ember\models\FieldLayoutAttributeTrait;
 use flipbox\craft\ember\validators\ModelValidator;
 use flipbox\organizations\elements\Organization;
 use yii\caching\Dependency;
@@ -24,7 +24,7 @@ use yii\caching\Dependency;
 class Settings extends Model
 {
     use FieldLayoutAttributeTrait,
-        traits\SiteSettingAttribute;
+        SiteSettingAttributeTrait;
 
     /**
      * @var int|null|false

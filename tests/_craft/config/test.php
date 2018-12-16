@@ -12,7 +12,7 @@ $craftTestPath = dirname(__DIR__);
 // The environment variable
 $environment = 'TEST';
 
-// Create config service
+// CreateOrganizationType config service
 $configService = new Config(
     [
         'env' => $environment,

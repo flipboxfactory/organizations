@@ -24,7 +24,7 @@
 	},
 	"require": {
 		"flipboxfactory/craft-ember": "^2.0",
-		"flipboxfactory/craft-elements-nested-index": "^1.0.0"
+		"flipboxfactory/craft-elements-nested-index": "^2.0"
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.2",

@@ -12,7 +12,6 @@ use Craft;
 use craft\base\ElementInterface;
 use craft\base\Field;
 use craft\helpers\Db;
-use flipbox\organizations\Organizations;
 use flipbox\organizations\records\OrganizationType as OrganizationTypeRecord;
 
 /**
@@ -25,7 +24,7 @@ class OrganizationType extends Field
      * @var string
      */
     public $defaultSelectionLabel = '-- Select Organization Type --';
-    
+
     /**
      * @inheritdoc
      */
@@ -36,6 +35,8 @@ class OrganizationType extends Field
 
     /**
      * @inheritdoc
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
      */
     public function getInputHtml($value, ElementInterface $element = null): string
     {
@@ -51,6 +52,8 @@ class OrganizationType extends Field
 
     /**
      * @inheritdoc
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
      */
     public function getSettingsHtml()
     {
@@ -64,6 +67,7 @@ class OrganizationType extends Field
 
     /**
      * @inheritdoc
+     * @throws \yii\base\Exception
      */
     public function getContentColumnType(): string
     {

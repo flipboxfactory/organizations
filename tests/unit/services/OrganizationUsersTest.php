@@ -5,7 +5,6 @@ namespace flipbox\organizations\tests\services;
 use Codeception\Stub\Expected;
 use Codeception\Test\Unit;
 use craft\elements\db\UserQuery;
-use flipbox\organizations\db\UserAssociationQuery;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\Organizations as OrganizationsPlugin;

@@ -11,11 +11,12 @@ namespace flipbox\organizations\cp\controllers;
 use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\db\UserTypeQuery;
+use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
+use flipbox\organizations\records\UserTypeAssociation;
 use yii\db\Query;
 use yii\web\Response;
 
@@ -79,10 +80,7 @@ class UserTypesController extends AbstractController
         );
 
         $identifier = $request->getRequiredBodyParam('organization');
-
-        $organization = Organization::getOne([
-            is_numeric($identifier) ? 'id' : 'slug' => $identifier
-        ]);
+        $organization = Organization::getOne($identifier);
 
         $types = array_keys(array_filter((array)$request->getRequiredBodyParam('types')));
         $query = UserType::find()->id(empty($types) ? ':empty:' : $types);
@@ -111,51 +109,9 @@ class UserTypesController extends AbstractController
         UserTypeQuery $query,
         User $user,
         Organization $organization
-    ): bool {
-        if (null === ($models = $query->getCachedResult())) {
-            return true;
-        }
-
-        $associationService = Organizations::getInstance()->getUserTypeAssociations();
-
-        $userAssociationId = $this->associationId($user->getId(), $organization->getId());
-
-        $query = $associationService->getQuery([
-            $associationService::SOURCE_ATTRIBUTE => $userAssociationId
-        ]);
-
-        $query->setCachedResult(
-            $this->toAssociations($models, $userAssociationId)
-        );
-
-        return $associationService->save($query);
-    }
-
-    /**
-     * @param int $userId
-     * @param int $organizationId
-     * @return Query
-     */
-    protected function associationIdQuery(int $userId, int $organizationId): Query
+    ): bool
     {
-        return (new Query())
-            ->select(['id'])
-            ->from([UserAssociation::tableName()])
-            ->where([
-                'organizationId' => $organizationId,
-                'userId' => $userId,
-            ]);
-    }
-
-    /**
-     * @param int $userId
-     * @param int $organizationId
-     * @return string|null
-     */
-    protected function associationId(int $userId, int $organizationId)
-    {
-        $id = $this->associationIdQuery($userId, $organizationId)->scalar();
-        return is_string($id) || is_numeric($id) ? $id : null;
+        return $user->saveUserTypeAssociations($query, $organization);
     }
 
     /**
@@ -174,9 +130,7 @@ class UserTypesController extends AbstractController
 
         $identifier = $request->getRequiredBodyParam('organization');
 
-        $organization = Organization::getOne([
-            is_numeric($identifier) ? 'id' : 'slug' => $identifier
-        ]);
+        $organization = Organization::getOne($identifier);
 
         $response = [];
 

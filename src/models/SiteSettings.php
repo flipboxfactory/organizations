@@ -10,9 +10,9 @@ namespace flipbox\organizations\models;
 
 use Craft;
 use craft\validators\UriFormatValidator;
-use flipbox\ember\helpers\ModelHelper;
-use flipbox\ember\models\Model;
-use flipbox\ember\traits\SiteAttribute;
+use flipbox\craft\ember\helpers\ModelHelper;
+use flipbox\craft\ember\models\SiteAttributeTrait;
+use yii\base\Model;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -20,7 +20,7 @@ use flipbox\ember\traits\SiteAttribute;
  */
 class SiteSettings extends Model implements SiteSettingsInterface
 {
-    use SiteAttribute;
+    use SiteAttributeTrait;
 
     /**
      * @var boolean Has URLs
