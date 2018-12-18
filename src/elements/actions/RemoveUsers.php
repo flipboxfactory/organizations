@@ -57,8 +57,11 @@ class RemoveUsers extends ElementAction
     }
 
     /**
-     * @inheritdoc
-     * @param UserQuery $query
+     * @param ElementQueryInterface $query
+     * @return bool
+     * @throws Exception
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
      */
     public function performAction(ElementQueryInterface $query): bool
     {

@@ -15,8 +15,11 @@ use craft\elements\User;
 use craft\events\CancelableEvent;
 use craft\events\DefineBehaviorsEvent;
 use craft\events\RegisterComponentTypesEvent;
+use craft\events\RegisterElementDefaultTableAttributesEvent;
 use craft\events\RegisterElementSourcesEvent;
+use craft\events\RegisterElementTableAttributesEvent;
 use craft\events\RegisterUrlRulesEvent;
+use craft\events\SetElementTableAttributeHtmlEvent;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout as FieldLayoutModel;
 use craft\services\Elements;
@@ -62,53 +65,80 @@ class Organizations extends BasePlugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = OrganizationField::class;
-                $event->types[] = OrganizationTypeField::class;
-            }
+            [
+                events\handlers\RegisterFieldTypes::class,
+                'handle'
+            ]
         );
 
         // Elements
         Event::on(
             Elements::class,
             Elements::EVENT_REGISTER_ELEMENT_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = OrganizationElement::class;
-            }
+            [
+                events\handlers\RegisterElements::class,
+                'handle'
+            ]
         );
 
-        // User Query (attach behavior)
+        // User Query Behavior(s)
         Event::on(
             UserQuery::class,
             UserQuery::EVENT_DEFINE_BEHAVIORS,
-            function (DefineBehaviorsEvent $e) {
-                $e->behaviors['organization'] = OrganizationAttributesToUserQueryBehavior::class;
-            }
+            [
+                events\handlers\AttachUserQueryBehaviors::class,
+                'handle'
+            ]
         );
 
         // User Query (prepare)
         Event::on(
             UserQuery::class,
             UserQuery::EVENT_BEFORE_PREPARE,
-            function (CancelableEvent $e) {
-                /** @var UserQuery $query */
-                $query = $e->sender;
-
-                /** @var OrganizationAttributesToUserQueryBehavior $behavior */
-                if (null !== ($behavior = $query->getBehavior('organization'))) {
-                    $behavior->applyOrganizationParams($query);
-                }
-            }
+            [
+                events\handlers\PrepareUserQuery::class,
+                'handle'
+            ]
         );
 
-        // User (attach behavior)
+        // User Behavior(s)
         Event::on(
             User::class,
             User::EVENT_DEFINE_BEHAVIORS,
-            function (DefineBehaviorsEvent $e) {
-                $e->behaviors['organizations'] = UserOrganizationsBehavior::class;
-                $e->behaviors['types'] = UserTypesBehavior::class;
-            }
+            [
+                events\handlers\AttachUserBehaviors::class,
+                'handle'
+            ]
+        );
+
+        // User Type sources
+        Event::on(
+            User::class,
+            User::EVENT_REGISTER_SOURCES,
+            [
+                events\handlers\RegisterUserElementSources::class,
+                'handle'
+            ]
+        );
+
+        // Register attributes available on User index view
+        Event::on(
+            User::class,
+            User::EVENT_REGISTER_TABLE_ATTRIBUTES,
+            [
+                events\handlers\RegisterUserTableAttributes::class,
+                'handle'
+            ]
+        );
+
+        // Set attributes on User index
+        Event::on(
+            User::class,
+            User::EVENT_SET_TABLE_ATTRIBUTE_HTML,
+            [
+                events\handlers\SetUserTableAttributeHtml::class,
+                'handle'
+            ]
         );
 
         // CP routes
@@ -126,29 +156,6 @@ class Organizations extends BasePlugin
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('organizations', OrganizationVariable::class);
-            }
-        );
-
-        // User Type sources
-        Event::on(
-            User::class,
-            User::EVENT_REGISTER_SOURCES,
-            function (RegisterElementSourcesEvent $event) {
-                if ($event->context === 'index') {
-                    $event->sources[] = [
-                        'heading' => "Organization Groups"
-                    ];
-
-                    $types = UserType::findAll([]);
-                    foreach ($types as $type) {
-                        $event->sources[] = [
-                            'key' => 'type:' . $type->id,
-                            'label' => Craft::t('organizations', $type->name),
-                            'criteria' => ['organization' => ['userType' => $type->id]],
-                            'hasThumbs' => true
-                        ];
-                    }
-                }
             }
         );
 
