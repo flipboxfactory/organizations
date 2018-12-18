@@ -428,5 +428,4 @@ class UserOrganizationsBehavior extends Behavior
         $this->organizations = null;
         return $this->owner;
     }
-
 }

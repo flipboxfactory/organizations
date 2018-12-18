@@ -510,6 +510,5 @@ trait TypesAttributeTrait
         $this->resetTypes();
 
         return $success;
-
     }
 }

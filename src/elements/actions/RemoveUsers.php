@@ -67,11 +67,10 @@ class RemoveUsers extends ElementAction
 
         if (!$query instanceof UserQuery) {
             throw new InvalidArgumentException(sprintf(
-                    "Query must be an instance of %s, %s given.",
-                    UserQuery::class,
-                    get_class($query)
-                )
-            );
+                "Query must be an instance of %s, %s given.",
+                UserQuery::class,
+                get_class($query)
+            ));
         }
 
         if (false === $organization->dissociateUsers($query)) {
