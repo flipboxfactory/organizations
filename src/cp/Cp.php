@@ -29,11 +29,6 @@ class Cp extends BaseModule
      */
     public function init()
     {
-        // Services
-        $this->setComponents([
-            'settings' => services\Settings::class
-        ]);
-
         parent::init();
 
         // Base template directory
@@ -58,21 +53,5 @@ class Cp extends BaseModule
         }
 
         return parent::beforeAction($action);
-    }
-
-    /*******************************************
-     * SERVICES
-     *******************************************/
-
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
-     *
-     * @return services\Settings
-     */
-    public function getSettings()
-    {
-        /** @noinspection PhpUnhandledExceptionInspection */
-        /** @noinspection PhpIncompatibleReturnTypeInspection */
-        return $this->get('settings');
     }
 }

@@ -15,6 +15,7 @@ use flipbox\organizations\models\Settings;
 use flipbox\organizations\models\SiteSettings;
 use flipbox\organizations\Organizations;
 use yii\base\Model;
+use yii\web\HttpException;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -64,7 +65,17 @@ class Update extends CreateModel
      */
     protected function performAction(Model $model): bool
     {
-        return Organizations::getInstance()->getCp()->getSettings()->save($model);
+        $fieldLayout = $model->getFieldLayout();
+
+        // Save field layout
+        if (!Craft::$app->getFields()->saveLayout($fieldLayout)) {
+            throw new HttpException(401, "Unable to save field layout");
+        }
+
+        return Craft::$app->getPlugins()->savePluginSettings(
+            Organizations::getInstance(),
+            $model->toArray()
+        );
     }
 
     /**
