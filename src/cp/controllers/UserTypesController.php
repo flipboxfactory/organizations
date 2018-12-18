@@ -11,13 +11,9 @@ namespace flipbox\organizations\cp\controllers;
 use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\Organizations;
-use flipbox\organizations\records\UserAssociation;
+use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\records\UserType;
-use flipbox\organizations\records\UserTypeAssociation;
-use yii\db\Query;
 use yii\web\Response;
 
 /**
@@ -111,7 +107,7 @@ class UserTypesController extends AbstractController
         Organization $organization
     ): bool
     {
-        return $user->saveUserTypeAssociations($query, $organization);
+        return $user->saveUserTypes($query, $organization);
     }
 
     /**

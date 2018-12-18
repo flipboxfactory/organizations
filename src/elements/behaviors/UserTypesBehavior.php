@@ -7,9 +7,8 @@ use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\queries\UserTypeAssociationQuery;
-use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
 use flipbox\organizations\records\UserTypeAssociation;
@@ -160,7 +159,7 @@ class UserTypesBehavior extends Behavior
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function saveUserTypeAssociations(UserTypeQuery $query, Organization $organization): bool
+    public function saveUserTypes(UserTypeQuery $query, Organization $organization): bool
     {
         // Determine an association
         if (null === ($userAssociationId = $this->associationId($this->owner->getId(), $organization->getId()))) {

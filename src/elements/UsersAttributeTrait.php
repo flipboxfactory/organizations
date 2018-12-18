@@ -14,9 +14,8 @@ use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
 use flipbox\organizations\records\UserAssociation;
+use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -75,6 +74,29 @@ trait UsersAttributeTrait
      ************************************************************/
 
     /**
+     * @param array $criteria
+     * @return UserQuery
+     */
+    public function userQuery($criteria = []): UserQuery
+    {
+        $query = User::find()
+            ->organization($this)
+            ->orderBy([
+                'userOrder' => SORT_ASC,
+                'username' => SORT_ASC,
+            ]);
+
+        if (!empty($criteria)) {
+            QueryHelper::configure(
+                $query,
+                $criteria
+            );
+        }
+
+        return $query;
+    }
+
+    /**
      * Get an array of users associated to an organization
      *
      * @param array $criteria
@@ -83,8 +105,7 @@ trait UsersAttributeTrait
     public function getUsers($criteria = [])
     {
         if (null === $this->users) {
-            $this->users = User::find()
-                ->organization($this);
+            $this->users = $this->userQuery();
         }
 
         if (!empty($criteria)) {
@@ -268,7 +289,7 @@ trait UsersAttributeTrait
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function saveUserAssociations()
+    public function saveUsers()
     {
         $currentAssociations = UserAssociation::find()
             ->organizationId($this->getId() ?: false)

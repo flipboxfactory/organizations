@@ -7,9 +7,9 @@ use craft\elements\User;
 use craft\events\ModelEvent;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\validators\OrganizationsValidator;
@@ -83,8 +83,8 @@ class UserOrganizationsBehavior extends Behavior
         // Remove organizations
         $user->setOrganization([]);
 
-        // Save associations
-        $user->saveOrganizationAssociations();
+        // Save associations (which is really deleting them all)
+        $user->saveOrganizations();
     }
 
     /**
@@ -114,7 +114,7 @@ class UserOrganizationsBehavior extends Behavior
             }
         }
 
-        $this->saveOrganizationAssociations();
+        $this->saveOrganizations();
     }
 
     /**
@@ -137,7 +137,11 @@ class UserOrganizationsBehavior extends Behavior
     public function organizationQuery($criteria = []): OrganizationQuery
     {
         $query = Organization::find()
-            ->user($this->owner);
+            ->user($this->owner)
+            ->orderBy([
+                'organizationOrder' => SORT_ASC,
+                'title' => SORT_ASC
+            ]);
 
         if (!empty($criteria)) {
             QueryHelper::configure(
@@ -277,7 +281,7 @@ class UserOrganizationsBehavior extends Behavior
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    public function saveOrganizationAssociations(): bool
+    public function saveOrganizations(): bool
     {
         $currentAssociations = $this->currentAssociationQuery()->all();
 
@@ -352,8 +356,8 @@ class UserOrganizationsBehavior extends Behavior
         foreach ($organizations as $organization) {
             if (null === ($association = ArrayHelper::remove($currentAssociations, $organization->getId()))) {
                 $association = (new UserAssociation())
-                    ->setUser($organization)
-                    ->setOrganization($this);
+                    ->setUser($this->owner)
+                    ->setOrganization($organization);
             }
 
             if (!$association->save()) {

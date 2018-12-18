@@ -120,6 +120,78 @@ class UserAssociation extends ActiveRecord
     }
 
     /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        $this->ensureSortOrder(
+            [
+                'userId' => $this->userId
+            ],
+            'organizationOrder'
+        );
+
+        $this->ensureSortOrder(
+            [
+                'organizationId' => $this->organizationId
+            ],
+            'userOrder'
+        );
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->autoReOrder(
+            'organizationId',
+            [
+                'userId' => $this->userId
+            ],
+            'organizationOrder'
+        );
+
+        $this->autoReOrder(
+            'userId',
+            [
+                'organizationId' => $this->organizationId
+            ],
+            'userOrder'
+        );
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterDelete()
+    {
+        $this->autoReOrder(
+            'organizationId',
+            [
+                'userId' => $this->userId
+            ],
+            'organizationOrder'
+        );
+
+        $this->autoReOrder(
+            'userId',
+            [
+                'organizationId' => $this->organizationId
+            ],
+            'userOrder'
+        );
+
+        parent::afterDelete();
+    }
+
+    /**
      * @return ActiveQueryInterface
      */
     public function getTypes(): ActiveQueryInterface

@@ -12,7 +12,6 @@ use Craft;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\queries\OrganizationTypeQuery;
-use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationType as TypeModel;
 use flipbox\organizations\records\OrganizationTypeAssociation;
@@ -378,7 +377,7 @@ trait TypesAttributeTrait
      * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      * @throws \yii\db\StaleObjectException
      */
-    public function saveTypeAssociations(): bool
+    public function saveTypes(): bool
     {
         $currentAssociations = OrganizationTypeAssociation::find()
             ->organizationId($this->getId() ?: false)

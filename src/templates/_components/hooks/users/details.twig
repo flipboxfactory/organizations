@@ -1,5 +1,5 @@
 {% set user = context.user ?? null %}
-{% if user %}
+{% if user.id %}
     {% from _self import listOrganizations %}
     {{ listOrganizations(user) }}
 {% endif %}

@@ -12,24 +12,19 @@ use Craft;
 use craft\base\Element;
 use craft\elements\actions\Edit as EditAction;
 use craft\elements\db\ElementQueryInterface;
-use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\errors\ElementNotFoundException;
-use craft\helpers\ArrayHelper;
 use craft\helpers\DateTimeHelper;
 use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper as UrlHelper;
 use flipbox\craft\ember\helpers\ModelHelper;
-use flipbox\organizations\queries\OrganizationQuery;
-use flipbox\organizations\queries\OrganizationTypeQuery;
 use flipbox\organizations\models\DateJoinedAttributeTrait;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\records\Organization as OrganizationRecord;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationType as TypeModel;
-use flipbox\organizations\records\OrganizationTypeAssociation;
-use flipbox\organizations\records\UserAssociation;
 use yii\base\ErrorException as Exception;
 
 /**
@@ -623,12 +618,12 @@ class Organization extends Element
         }
 
         // Types
-        if (false === $this->saveTypeAssociations()) {
+        if (false === $this->saveTypes()) {
             throw new Exception("Unable to save types.");
         }
 
         // Users
-        if (false === $this->saveUserAssociations()) {
+        if (false === $this->saveUsers()) {
             throw new Exception("Unable to save users.");
         }
 
