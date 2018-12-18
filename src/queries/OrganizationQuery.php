@@ -48,6 +48,10 @@ class OrganizationQuery extends ElementQuery
      */
     protected function beforePrepare(): bool
     {
+        if (false === ($result = parent::beforePrepare())) {
+            return false;
+        }
+
         $alias = OrganizationRecord::tableAlias();
         $this->joinElementTable($alias);
 
@@ -58,7 +62,7 @@ class OrganizationQuery extends ElementQuery
         $this->prepareRelationsParams();
         $this->prepareAttributes($alias);
 
-        return parent::beforePrepare();
+        return true;
     }
 
     /**
@@ -104,10 +108,20 @@ class OrganizationQuery extends ElementQuery
     {
         $alias = OrganizationUsersRecord::tableAlias();
 
-        $this->subQuery->leftJoin(
+        $this->subQuery->innerJoin(
             OrganizationUsersRecord::tableName() . ' ' . $alias,
             '[[' . $alias . '.organizationId]] = [[elements.id]]'
         );
+
+        // Check if we're ordering by one of the association tables order columns
+        if (is_array($this->orderBy)) {
+            $columns = ['userOrder' => 'userOrder', 'organizationOrder' => 'organizationOrder'];
+            $matches = array_intersect_key($columns, $this->orderBy);
+
+            foreach ($matches as $param => $select) {
+                $this->subQuery->addSelect([$alias . '.' . $select]);
+            }
+        }
 
         return $alias;
     }

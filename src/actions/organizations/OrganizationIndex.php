@@ -10,8 +10,8 @@ namespace flipbox\organizations\actions\organizations;
 
 use flipbox\craft\ember\actions\elements\ElementIndex;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\elements\Organization;
+use flipbox\organizations\queries\OrganizationQuery;
 use yii\db\QueryInterface;
 
 /**

@@ -24,7 +24,6 @@ class UserQueryParamHandler extends BaseObject
     use OrganizationAttributeTrait,
         OrganizationTypeAttributeTrait,
         UserTypeAttributeTrait {
-        setOrganizationType as parentSetOrganizationType;
         setUserType as parentSetUserType;
     }
 
@@ -32,20 +31,6 @@ class UserQueryParamHandler extends BaseObject
      * @var OrganizationAttributesToUserQueryBehavior
      */
     private $owner;
-
-    /**
-     * Flag if the table is already joined (to prevent subsequent joins)
-     *
-     * @var bool
-     */
-    private $userTableJoined = false;
-
-    /**
-     * Flag if the table is already joined (to prevent subsequent joins)
-     *
-     * @var bool
-     */
-    private $userTypeTableJoined = false;
 
     /**
      * @inheritdoc
@@ -67,15 +52,6 @@ class UserQueryParamHandler extends BaseObject
     }
 
     /**
-     * @inheritdoc
-     */
-    public function setOrganizationType($value): UserQuery
-    {
-        $this->parentSetOrganizationType($value);
-        return $this->owner->owner;
-    }
-
-    /**
      * @param UserQuery $query
      */
     public function applyParams(UserQuery $query)
@@ -90,12 +66,10 @@ class UserQueryParamHandler extends BaseObject
             return;
         }
 
-        // Reset
-        $this->userTableJoined = false;
-        $this->userTypeTableJoined = false;
+        $this->joinOrganizationUserTable($query);
 
         $this->applyOrganizationParam(
-            $query->subQuery,
+            $query,
             $this->organization
         );
 
@@ -103,8 +77,6 @@ class UserQueryParamHandler extends BaseObject
             $query->subQuery,
             $this->userType
         );
-
-        // todo - implement types
     }
 
     /************************************************************
@@ -114,17 +86,23 @@ class UserQueryParamHandler extends BaseObject
     /**
      * @inheritdoc
      */
-    protected function joinOrganizationUserTable(Query $query): string
+    protected function joinOrganizationUserTable(UserQuery $query)
     {
         $alias = OrganizationUsersRecord::tableAlias();
 
-        if ($this->userTableJoined === false) {
-            $query->leftJoin(
-                OrganizationUsersRecord::tableName() . ' ' . $alias,
-                '[[' . $alias . '.userId]] = [[elements.id]]'
-            );
+        $query->subQuery->leftJoin(
+            OrganizationUsersRecord::tableName() . ' ' . $alias,
+            '[[' . $alias . '.userId]] = [[elements.id]]'
+        );
 
-            $this->userTableJoined = true;
+        // Check if we're ordering by one of the association table's order columns
+        if (is_array($query->orderBy)) {
+            $columns = ['userOrder' => 'userOrder', 'organizationOrder' => 'organizationOrder'];
+            $matches = array_intersect_key($columns, $query->orderBy);
+
+            foreach ($matches as $param => $select) {
+                $query->subQuery->addSelect([$alias . '.' . $select]);
+            }
         }
 
         return $alias;
@@ -133,21 +111,13 @@ class UserQueryParamHandler extends BaseObject
     /**
      * @inheritdoc
      */
-    protected function joinOrganizationUserTypeTable(Query $query): string
+    protected function joinOrganizationUserTypeTable(Query $query)
     {
         $alias = UserCollectionUsersRecord::tableAlias();
-        if ($this->userTypeTableJoined === false) {
-            $orgAlias = $this->joinOrganizationUserTable($query);
-
-            $query->leftJoin(
-                UserCollectionUsersRecord::tableName() . ' ' . $alias,
-                '[[' . $alias . '.userId]] = [[' . $orgAlias . '.id]]'
-            );
-
-            $this->userTypeTableJoined = true;
-        }
-
-        return $alias;
+        $query->leftJoin(
+            UserCollectionUsersRecord::tableName() . ' ' . $alias,
+            '[[' . $alias . '.userId]] = [[' . OrganizationUsersRecord::tableAlias() . '.id]]'
+        );
     }
 
 
@@ -159,15 +129,14 @@ class UserQueryParamHandler extends BaseObject
      * @param Query $query
      * @param $organization
      */
-    protected function applyOrganizationParam(Query $query, $organization)
+    protected function applyOrganizationParam(UserQuery $query, $organization)
     {
         if (empty($organization)) {
             return;
         }
 
-        $alias = $this->joinOrganizationUserTable($query);
-        $query->andWhere(
-            Db::parseParam($alias . '.organizationId', $this->parseOrganizationValue($organization))
+        $query->subQuery->andWhere(
+            Db::parseParam(OrganizationUsersRecord::tableAlias() . '.organizationId', $this->parseOrganizationValue($organization))
         );
     }
 
@@ -186,11 +155,9 @@ class UserQueryParamHandler extends BaseObject
             return;
         }
 
-        $alias = $this->joinOrganizationUserTypeTable($query);
+        $this->joinOrganizationUserTypeTable($query);
         $query->andWhere(
-            Db::parseParam($alias . '.typeId', $this->parseUserTypeValue($type))
+            Db::parseParam(UserCollectionUsersRecord::tableAlias() . '.typeId', $this->parseUserTypeValue($type))
         );
-
-        $query->distinct(true);
     }
 }

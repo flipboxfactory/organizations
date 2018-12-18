@@ -10,7 +10,6 @@ namespace flipbox\organizations\web\assets\userassociations;
 
 use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
-use flipbox\craft\elements\nestedIndex\web\assets\index\NestedElementIndex;
 use flipbox\craft\ember\web\assets\actions\Actions;
 
 /**

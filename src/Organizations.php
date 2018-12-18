@@ -89,7 +89,7 @@ class Organizations extends BasePlugin
         // User Query (prepare)
         Event::on(
             UserQuery::class,
-            UserQuery::EVENT_AFTER_PREPARE,
+            UserQuery::EVENT_BEFORE_PREPARE,
             function (CancelableEvent $e) {
                 /** @var UserQuery $query */
                 $query = $e->sender;

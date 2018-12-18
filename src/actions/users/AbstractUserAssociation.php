@@ -31,7 +31,7 @@ abstract class AbstractUserAssociation extends Action
      * @param UserAssociation $record
      * @return bool
      */
-    abstract protected function performAction(UserAssociation $record): bool;
+    abstract protected function performAction(User $user, Organization $organization, int $sortOrder = null): bool;
 
     /**
      * @param string|int $identifier
@@ -63,20 +63,29 @@ abstract class AbstractUserAssociation extends Action
             return $this->handleNotFoundResponse();
         }
 
-        $organization = Organization::findOne([
-            is_numeric($organization) ? 'id' : 'slug' => $organization
-        ]);
-
-        if (null === $organization) {
+        if (null === ($organization = Organization::findOne($organization))) {
             return $this->handleNotFoundResponse();
         }
 
-        $model = new UserAssociation([
-            'userId' => $user->getId(),
-            'organizationId' => $organization->getId(),
-            'userOrder' => $sortOrder
-        ]);
+        return $this->runInternal($user, $organization, $sortOrder);
+    }
 
-        return $this->runInternal($model);
+    /**
+     * @param $data
+     * @return mixed
+     * @throws \yii\web\HttpException
+     */
+    protected function runInternal(User $user, Organization $organization, int $sortOrder = null)
+    {
+        // Check access
+        if (($access = $this->checkAccess($user, $organization, $sortOrder)) !== true) {
+            return $access;
+        }
+
+        if (!$this->performAction($user, $organization, $sortOrder)) {
+            return $this->handleFailResponse($user);
+        }
+
+        return $this->handleSuccessResponse($user);
     }
 }

@@ -14,7 +14,6 @@ use craft\elements\db\ElementQueryInterface;
 use craft\elements\db\UserQuery;
 use craft\helpers\ArrayHelper;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\base\Exception;
 
 /**

@@ -9,15 +9,13 @@
 namespace flipbox\organizations\cp\actions\organization;
 
 use Craft;
-use craft\errors\ElementNotFoundException;
 use flipbox\craft\ember\actions\CheckAccessTrait;
 use flipbox\craft\ember\actions\LookupTrait;
 use flipbox\craft\ember\actions\PopulateTrait;
 use flipbox\organizations\actions\organizations\PopulateOrganizationTrait;
 use flipbox\organizations\cp\controllers\traits\Sites;
-use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\Organizations;
+use flipbox\organizations\elements\Organization as OrganizationElement;
 use yii\base\Action;
 use yii\base\BaseObject;
 
@@ -38,10 +36,13 @@ class SwitchType extends Action
     /**
      * @param null $organization
      * @return array|mixed
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     * @throws \yii\web\UnauthorizedHttpException
      */
     public function run($organization = null)
     {
-        $organization = null !== $organization ? $this->find($organization) : $this->create();
+        $organization = (null !== $organization) ? $this->find($organization) : $this->create();
         return $this->runInternal($organization);
     }
 
@@ -72,7 +73,9 @@ class SwitchType extends Action
 
     /**
      * @inheritdoc
-     * @param OrganizationElement $element
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     * @throws \yii\web\UnauthorizedHttpException
      */
     protected function runInternal(OrganizationElement $element)
     {
@@ -94,10 +97,6 @@ class SwitchType extends Action
      */
     protected function data(OrganizationElement $element): array
     {
-        if (!$this->ensureOrganization($element)) {
-            throw new ElementNotFoundException();
-        }
-
         $view = Craft::$app->getView();
 
         return [
@@ -137,15 +136,12 @@ class SwitchType extends Action
 
     /**
      * @inheritdoc
-     * @param OrganizationElement $record
-     * @return OrganizationElement
+     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
     public function populate(BaseObject $record): BaseObject
     {
-        if (true === $this->ensureOrganization($record)) {
-            $this->parentPopulate($record);
-            $this->populateFromRequest($record);
-        }
+        $this->parentPopulate($record);
+        $this->populateFromRequest($record);
 
         return $record;
     }

@@ -10,8 +10,8 @@ namespace flipbox\organizations\validators;
 
 use Craft;
 use craft\helpers\Json;
-use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\OrganizationQuery;
 use yii\base\Exception;
 use yii\validators\Validator;
 

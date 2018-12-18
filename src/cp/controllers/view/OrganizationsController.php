@@ -9,14 +9,14 @@
 namespace flipbox\organizations\cp\controllers\view;
 
 use Craft;
-use craft\elements\User as UserElement;
 use craft\elements\User;
+use craft\elements\User as UserElement;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use flipbox\craft\ember\helpers\SiteHelper;
 use flipbox\organizations\cp\controllers\traits\Sites;
-use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\elements\Organization;
+use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\events\RegisterOrganizationActionsEvent;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\records\OrganizationType;

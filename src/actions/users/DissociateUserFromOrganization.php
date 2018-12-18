@@ -8,7 +8,8 @@
 
 namespace flipbox\organizations\actions\users;
 
-use flipbox\organizations\records\UserAssociation;
+use craft\elements\User;
+use flipbox\organizations\elements\Organization;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -19,10 +20,12 @@ class DissociateUserFromOrganization extends AbstractUserAssociation
     /**
      * @inheritdoc
      * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
      */
-    protected function performAction(UserAssociation $record): bool
+    protected function performAction(User $user, Organization $organization, int $sortOrder = null): bool
     {
-        return $record->delete();
+        $query = Organization::find();
+        $query->setCachedResult([$organization]);
+
+        return $user->dissociateOrganizations($query);
     }
 }
