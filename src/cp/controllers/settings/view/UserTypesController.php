@@ -43,11 +43,10 @@ class UserTypesController extends AbstractController
     }
 
     /**
-     * Insert/UpdateOrganizationType
-     *
-     * @param string|int|null $identifier
-     * @param UserType $userType
+     * @param null $identifier
+     * @param UserType|null $userType
      * @return Response
+     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
     public function actionUpsert($identifier = null, UserType $userType = null)
     {

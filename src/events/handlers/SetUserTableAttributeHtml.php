@@ -9,9 +9,6 @@
 namespace flipbox\organizations\events\handlers;
 
 use craft\events\SetElementTableAttributeHtmlEvent;
-use flipbox\patron\Patron;
-use flipbox\patron\records\Token;
-use yii\base\ModelEvent;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

@@ -26,6 +26,7 @@ class DissociateUserFromOrganization extends AbstractUserAssociation
         $query = Organization::find();
         $query->setCachedResult([$organization]);
 
+        /** @noinspection PhpUndefinedMethodInspection */
         return $user->dissociateOrganizations($query);
     }
 }

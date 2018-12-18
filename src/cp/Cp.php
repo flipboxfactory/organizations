@@ -53,6 +53,7 @@ class Cp extends BaseModule
     public function beforeAction($action)
     {
         if (!Craft::$app->request->getIsCpRequest()) {
+            /** @noinspection PhpUnhandledExceptionInspection */
             throw new NotFoundHttpException();
         }
 
@@ -64,10 +65,14 @@ class Cp extends BaseModule
      *******************************************/
 
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @return services\Settings
      */
     public function getSettings()
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->get('settings');
     }
 }

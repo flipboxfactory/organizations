@@ -10,11 +10,12 @@ namespace flipbox\organizations\elements\actions;
 
 use Craft;
 use craft\base\ElementAction;
+use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\db\UserQuery;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\elements\Organization;
-use yii\base\Exception;
+use flipbox\organizations\objects\OrganizationMutatorTrait;
+use yii\base\InvalidArgumentException;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -22,10 +23,7 @@ use yii\base\Exception;
  */
 class RemoveUsers extends ElementAction
 {
-    /**
-     * @var string|int|array|Organization
-     */
-    public $organization;
+    use OrganizationMutatorTrait;
 
     /**
      * @return array
@@ -57,30 +55,24 @@ class RemoveUsers extends ElementAction
     }
 
     /**
-     * @param ElementQueryInterface $query
-     * @return bool
-     * @throws Exception
+     * @inheritdoc
+     * @param ElementQuery $query
      * @throws \Throwable
-     * @throws \craft\errors\ElementNotFoundException
      */
     public function performAction(ElementQueryInterface $query): bool
     {
-        if (empty($this->organization)) {
-            throw new Exception("Organization does not exist with the identifier '{$this->organization}'");
+        if (null === ($organization = $this->getOrganization())) {
+            throw new InvalidArgumentException("Organization could not be found");
         }
 
-        if ($this->organization instanceof Organization) {
-            $organization = $this->organization;
-        } else {
-            $organization = Organization::getOne([
-                $this->organization
-            ]);
+        if (!$query instanceof UserQuery) {
+            throw new InvalidArgumentException(sprintf(
+                    "Query must be an instance of %s, %s given.",
+                    UserQuery::class,
+                    get_class($query)
+                )
+            );
         }
-
-        // Prep for dissociation
-        $query->setCachedResult(
-            $query->all()
-        );
 
         if (false === $organization->dissociateUsers($query)) {
             $this->setMessage(
@@ -105,7 +97,7 @@ class RemoveUsers extends ElementAction
     {
         $message = 'Failed to remove user: ';
 
-        $users = $query->getCachedResult();
+        $users = $query->all();
         $badEmails = ArrayHelper::index($users, 'email');
 
         $message .= implode(", ", $badEmails);

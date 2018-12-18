@@ -74,7 +74,7 @@ class UserQueryParamHandler extends BaseObject
         );
 
         $this->applyUserTypeParam(
-            $query->subQuery,
+            $query,
             $this->userType
         );
     }
@@ -126,7 +126,7 @@ class UserQueryParamHandler extends BaseObject
      ************************************************************/
 
     /**
-     * @param Query $query
+     * @param UserQuery $query
      * @param $organization
      */
     protected function applyOrganizationParam(UserQuery $query, $organization)
@@ -146,17 +146,17 @@ class UserQueryParamHandler extends BaseObject
      ************************************************************/
 
     /**
-     * @param Query $query
+     * @param UserQuery $query
      * @param $type
      */
-    protected function applyUserTypeParam(Query $query, $type)
+    protected function applyUserTypeParam(UserQuery $query, $type)
     {
         if (empty($type)) {
             return;
         }
 
-        $this->joinOrganizationUserTypeTable($query);
-        $query->andWhere(
+        $this->joinOrganizationUserTypeTable($query->subQuery);
+        $query->subQuery->andWhere(
             Db::parseParam(UserCollectionUsersRecord::tableAlias() . '.typeId', $this->parseUserTypeValue($type))
         );
     }

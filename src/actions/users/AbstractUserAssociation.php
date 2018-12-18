@@ -71,9 +71,11 @@ abstract class AbstractUserAssociation extends Action
     }
 
     /**
-     * @param $data
+     * @param User $user
+     * @param Organization $organization
+     * @param int|null $sortOrder
      * @return mixed
-     * @throws \yii\web\HttpException
+     * @throws \yii\web\UnauthorizedHttpException
      */
     protected function runInternal(User $user, Organization $organization, int $sortOrder = null)
     {

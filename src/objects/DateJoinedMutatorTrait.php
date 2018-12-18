@@ -35,13 +35,16 @@ trait DateJoinedMutatorTrait
     }
 
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @return DateTime
      */
     public function getDateJoined()
     {
         if (empty($this->dateJoined)) {
+            /** @noinspection PhpUnhandledExceptionInspection */
             return DateTimeHelper::toDateTime(
-                new DateTime('now')
+                new DateTime()
             );
         }
 

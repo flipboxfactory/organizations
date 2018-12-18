@@ -40,6 +40,7 @@ class Organization extends ActiveRecordWithId
     {
         if ($this->getIsNewRecord()) {
             if (!$this->dateJoined) {
+                /** @noinspection PhpUnhandledExceptionInspection */
                 $this->dateJoined = Db::prepareDateForDb(new \DateTime());
             }
         }

@@ -9,7 +9,6 @@
 namespace flipbox\organizations\cp\services;
 
 use Craft;
-use flipbox\organizations\migrations\AlterOrganizationStates;
 use flipbox\organizations\models\Settings as SettingsModel;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\base\Component;

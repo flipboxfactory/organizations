@@ -251,6 +251,7 @@ class Organization extends Element
 
     /**
      * @inheritdoc
+     * @throws \yii\base\InvalidConfigException
      */
     public function rules()
     {
@@ -596,7 +597,6 @@ class Organization extends Element
 
     /**
      * @inheritdoc
-     * @throws Exception
      */
     public function beforeSave(bool $isNew): bool
     {

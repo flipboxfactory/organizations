@@ -17,7 +17,6 @@ use flipbox\organizations\cp\controllers\traits\Sites;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use yii\base\Action;
-use yii\base\BaseObject;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -138,11 +137,11 @@ class SwitchType extends Action
      * @inheritdoc
      * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
-    public function populate(BaseObject $record): BaseObject
+    public function populate(OrganizationElement $element): OrganizationElement
     {
-        $this->parentPopulate($record);
-        $this->populateFromRequest($record);
+        $this->parentPopulate($element);
+        $this->populateFromRequest($element);
 
-        return $record;
+        return $element;
     }
 }

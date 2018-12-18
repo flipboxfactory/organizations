@@ -11,8 +11,8 @@ namespace flipbox\organizations\cp\controllers;
 use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
+use flipbox\organizations\elements\behaviors\UserTypesBehavior;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\records\UserType;
 use yii\web\Response;
 
@@ -64,7 +64,9 @@ class UserTypesController extends AbstractController
 
     /**
      * @return Response
-     * @throws \Exception
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\db\StaleObjectException
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionSaveAssociations(): Response
@@ -85,29 +87,10 @@ class UserTypesController extends AbstractController
             $query->all()
         );
 
-        $this->saveAssociations(
-            $query,
-            $user,
-            $organization
-        );
+        /** @var UserTypesBehavior $user */
+        $user->saveUserTypes($query, $organization);
 
         return $this->asJson(['success' => true]);
-    }
-
-    /**
-     * @param UserTypeQuery $query
-     * @param User $user
-     * @param Organization $organization
-     * @return bool
-     * @throws \Exception
-     */
-    public function saveAssociations(
-        UserTypeQuery $query,
-        User $user,
-        Organization $organization
-    ): bool
-    {
-        return $user->saveUserTypes($query, $organization);
     }
 
     /**

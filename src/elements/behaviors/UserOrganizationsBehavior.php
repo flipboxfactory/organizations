@@ -76,12 +76,12 @@ class UserOrganizationsBehavior extends Behavior
      * @param User $user
      * @return void
      * @throws \Throwable
-     * @throws \yii\base\Exception
      */
     private function onAfterDelete(User $user)
     {
+        /** @var UserOrganizationsBehavior $user */
         // Remove organizations
-        $user->setOrganization([]);
+        $user->setOrganizations([]);
 
         // Save associations (which is really deleting them all)
         $user->saveOrganizations();
@@ -421,9 +421,7 @@ class UserOrganizationsBehavior extends Behavior
     }
 
     /**
-     * Reset organizations
-     *
-     * @return $this->owner
+     * @return User
      */
     public function resetOrganizations()
     {

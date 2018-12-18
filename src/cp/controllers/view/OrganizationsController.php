@@ -9,6 +9,7 @@
 namespace flipbox\organizations\cp\controllers\view;
 
 use Craft;
+use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\elements\User as UserElement;
 use craft\helpers\UrlHelper;
@@ -141,7 +142,8 @@ class OrganizationsController extends AbstractController
 
     /**
      * @param OrganizationType|null $default
-     * @return OrganizationType|mixed
+     * @return OrganizationType|mixed|null
+     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
     private function findActiveType(OrganizationType $default = null)
     {
@@ -216,6 +218,12 @@ class OrganizationsController extends AbstractController
      */
     private function getUserInputJs(OrganizationElement $element): array
     {
+        /** @noinspection PhpUndefinedMethodInspection */
+        /** @var UserQuery $query */
+        $query = User::find()
+            ->organization($element->getId())
+            ->status(null);
+
         return [
             'elementType' => UserElement::class,
             'sources' => '*',
@@ -228,10 +236,7 @@ class OrganizationsController extends AbstractController
             'limit' => null,
             'selectionLabel' => Craft::t('organizations', "Add a user"),
             'storageKey' => 'nested.index.input.organization.users',
-            'elements' => User::find()
-                ->organization($element->getId())
-                ->status(null)
-                ->ids(),
+            'elements' => $query->ids(),
             'addAction' => 'organizations/cp/users/associate',
             'selectTargetAttribute' => 'user',
             'selectParams' => [

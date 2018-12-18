@@ -43,11 +43,10 @@ class OrganizationTypesController extends AbstractController
     }
 
     /**
-     * Insert/UpdateOrganization
-     *
-     * @param string|int|null $identifier
-     * @param OrganizationType $type
+     * @param null $identifier
+     * @param OrganizationType|null $type
      * @return Response
+     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
     public function actionUpsert($identifier = null, OrganizationType $type = null)
     {

@@ -79,6 +79,7 @@ trait UsersAttributeTrait
      */
     public function userQuery($criteria = []): UserQuery
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         $query = User::find()
             ->organization($this)
             ->orderBy([
@@ -132,8 +133,7 @@ trait UsersAttributeTrait
         }
 
         // Reset the query
-        $this->users = User::find()
-            ->organizations($this);
+        $this->users = $this->userQuery();
 
         // Remove all users
         $this->users->setCachedResult([]);
@@ -222,7 +222,6 @@ trait UsersAttributeTrait
      *
      * @param array $users
      * @return $this
-     * @throws \yii\base\InvalidConfigException
      */
     public function removeUsers(array $users)
     {

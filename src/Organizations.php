@@ -12,14 +12,7 @@ use Craft;
 use craft\base\Plugin as BasePlugin;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
-use craft\events\CancelableEvent;
-use craft\events\DefineBehaviorsEvent;
-use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterElementDefaultTableAttributesEvent;
-use craft\events\RegisterElementSourcesEvent;
-use craft\events\RegisterElementTableAttributesEvent;
 use craft\events\RegisterUrlRulesEvent;
-use craft\events\SetElementTableAttributeHtmlEvent;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout as FieldLayoutModel;
 use craft\services\Elements;
@@ -27,15 +20,9 @@ use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use flipbox\craft\ember\modules\LoggerTrait;
-use flipbox\organizations\elements\behaviors\UserOrganizationsBehavior;
-use flipbox\organizations\elements\behaviors\UserTypesBehavior;
 use flipbox\organizations\elements\Organization as OrganizationElement;
-use flipbox\organizations\fields\Organization as OrganizationField;
-use flipbox\organizations\fields\OrganizationType as OrganizationTypeField;
 use flipbox\organizations\models\Settings as OrganizationSettings;
-use flipbox\organizations\queries\OrganizationAttributesToUserQueryBehavior;
 use flipbox\organizations\records\OrganizationType as OrganizationType;
-use flipbox\organizations\records\UserType;
 use flipbox\organizations\web\twig\variables\Organization as OrganizationVariable;
 use yii\base\Event;
 
@@ -272,6 +259,8 @@ class Organizations extends BasePlugin
 
     /**
      * @inheritdoc
+     * @return mixed|void|\yii\web\Response
+     * @throws \yii\base\ExitException
      */
     public function getSettingsResponse()
     {
@@ -289,7 +278,7 @@ class Organizations extends BasePlugin
      *******************************************/
 
     /**
-     * DeleteOrganization any existing field layouts, and create default settings
+     * @throws \yii\base\Exception
      */
     public function afterInstall()
     {

@@ -26,6 +26,7 @@ class AssociateUserToOrganization extends AbstractUserAssociation
         $query = Organization::find();
         $query->setCachedResult([$organization]);
 
+        /** @noinspection PhpUndefinedMethodInspection */
         return $user->associateOrganizations($query);
     }
 }
