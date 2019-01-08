@@ -9,8 +9,8 @@
 namespace flipbox\organizations\events\handlers;
 
 use craft\events\DefineBehaviorsEvent;
-use flipbox\organizations\elements\behaviors\UserOrganizationsBehavior;
-use flipbox\organizations\elements\behaviors\UserTypesBehavior;
+use flipbox\organizations\behaviors\UserOrganizationsBehavior;
+use flipbox\organizations\behaviors\UserTypesBehavior;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>

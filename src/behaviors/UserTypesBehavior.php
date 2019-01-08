@@ -1,6 +1,6 @@
 <?php
 
-namespace flipbox\organizations\elements\behaviors;
+namespace flipbox\organizations\behaviors;
 
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
@@ -45,7 +45,7 @@ class UserTypesBehavior extends Behavior
     }
 
     /**
-     * Get a query with associated types
+     * Get a query with associated user types
      *
      * @param array $criteria
      * @return UserTypeQuery
@@ -67,7 +67,7 @@ class UserTypesBehavior extends Behavior
     }
 
     /**
-     * AssociateUserToOrganization users to an type
+     * Set an array or query of user types to a user
      *
      * @param $userTypes
      * @return $this
@@ -87,7 +87,7 @@ class UserTypesBehavior extends Behavior
     }
 
     /**
-     * AssociateUserToOrganization an array of users to an type
+     * Add an array of user types to a user.  Note: This does not save the user type associations.
      *
      * @param $types
      * @return $this
@@ -115,7 +115,7 @@ class UserTypesBehavior extends Behavior
     }
 
     /**
-     * AssociateUserToOrganization a user to an type
+     * Add a user type to a user.  Note: This does not save the user type associations.
      *
      * @param UserType $type
      * @return $this

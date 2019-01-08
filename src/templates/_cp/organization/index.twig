@@ -1,26 +1,26 @@
 {% extends "_layouts/elementindex" %}
 
-{% block actionButton %}
-    <div class="buttons">
-        {% if types|length > 1 %}
-            <div class="btngroup submit first">
-                <a class="btn submit add icon"
-                   href="{{ url(baseCpPath~'/new') }}">{{ "New Organization"|t('organizations') }}</a>
+{#{% block actionButton %}#}
+    {#<div class="buttons">#}
+        {#{% if types|length > 1 %}#}
+            {#<div class="btngroup submit first">#}
+                {#<a class="btn submit add icon"#}
+                   {#href="{{ url(baseCpPath~'/new') }}">{{ "New Organization"|t('organizations') }}</a>#}
 
-                <div class="btn submit menubtn"></div>
-                <div class="menu">
-                    <ul>
-                        {% for type in types %}
-                            <li>
-                                <a href="{{ url(baseCpPath~'/new/'~type.handle, {type: type.handle}) }}">{{ type.name|t('organizations') }}</a>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-            </div>
-        {% else %}
-            <a class="btn submit add icon"
-               href="{{ url(baseCpPath~'/new') }}">{{ "New Organization"|t('organizations') }}</a>
-        {% endif %}
-    </div>
-{% endblock %}
+                {#<div class="btn submit menubtn"></div>#}
+                {#<div class="menu">#}
+                    {#<ul>#}
+                        {#{% for type in types %}#}
+                            {#<li>#}
+                                {#<a href="{{ url(baseCpPath~'/new/'~type.handle, {type: type.handle}) }}">{{ type.name|t('organizations') }}</a>#}
+                            {#</li>#}
+                        {#{% endfor %}#}
+                    {#</ul>#}
+                {#</div>#}
+            {#</div>#}
+        {#{% else %}#}
+            {#<a class="btn submit add icon"#}
+               {#href="{{ url(baseCpPath~'/new') }}">{{ "New Organization"|t('organizations') }}</a>#}
+        {#{% endif %}#}
+    {#</div>#}
+{#{% endblock %}#}

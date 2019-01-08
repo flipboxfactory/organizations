@@ -1,6 +1,6 @@
 <?php
 
-namespace flipbox\organizations\elements\behaviors;
+namespace flipbox\organizations\behaviors;
 
 use Craft;
 use craft\elements\User;
@@ -20,7 +20,7 @@ use yii\helpers\Json;
 
 /**
  * Class UserOrganizationsBehavior
- * @package flipbox\organizations\elements\behaviors
+ * @package flipbox\organizations\behaviors
  *
  * @property User $owner;
  */
@@ -176,7 +176,7 @@ class UserOrganizationsBehavior extends Behavior
     }
 
     /**
-     * AssociateUserToOrganization users to an organization
+     * Set an array or query of organizations to a user
      *
      * @param $organizations
      * @return $this
@@ -196,7 +196,7 @@ class UserOrganizationsBehavior extends Behavior
     }
 
     /**
-     * AssociateUserToOrganization an array of users to an organization
+     * Add an array of organizations to a user.  Note: This does not save the organization associations.
      *
      * @param $organizations
      * @return $this
@@ -224,7 +224,7 @@ class UserOrganizationsBehavior extends Behavior
     }
 
     /**
-     * AssociateUserToOrganization a user to an organization
+     * Add a organization to a user.  Note: This does not save the organization association.
      *
      * @param Organization $organization
      * @param bool $addToOrganization

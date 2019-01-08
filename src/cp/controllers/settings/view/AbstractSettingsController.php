@@ -10,7 +10,7 @@ namespace flipbox\organizations\cp\controllers\settings\view;
 
 use Craft;
 use flipbox\craft\ember\helpers\UrlHelper;
-use flipbox\organizations\cp\controllers\view\AbstractController as BaseAbstractController;
+use flipbox\organizations\cp\controllers\view\AbstractController;
 use flipbox\organizations\cp\Cp as CpModule;
 
 /**
@@ -19,7 +19,7 @@ use flipbox\organizations\cp\Cp as CpModule;
  *
  * @property CpModule $module
  */
-abstract class AbstractController extends BaseAbstractController
+abstract class AbstractSettingsController extends AbstractController
 {
     /**
      * The index view template path

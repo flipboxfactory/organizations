@@ -21,7 +21,7 @@ use yii\base\InvalidArgumentException;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class RemoveUsers extends ElementAction
+class DissociateUsersFromOrganizationAction extends ElementAction
 {
     use OrganizationMutatorTrait;
 
@@ -51,7 +51,7 @@ class RemoveUsers extends ElementAction
      */
     public function getTriggerLabel(): string
     {
-        return 'Remove';
+        return Craft::t('organizations', 'Disassociate Users');
     }
 
     /**
@@ -73,6 +73,9 @@ class RemoveUsers extends ElementAction
             ));
         }
 
+        // Get the count because it's cleared when dissociated
+        $userCount = $query->count();
+
         if (false === $organization->dissociateUsers($query)) {
             $this->setMessage(
                 Craft::t(
@@ -84,7 +87,7 @@ class RemoveUsers extends ElementAction
             return false;
         }
 
-        $this->setMessage($this->assembleSuccessMessage($query));
+        $this->setMessage($this->assembleSuccessMessage($userCount));
         return true;
     }
 
@@ -105,19 +108,19 @@ class RemoveUsers extends ElementAction
     }
 
     /**
-     * @param ElementQueryInterface|UserQuery $query
+     * @param int $count
      * @return string
      */
-    private function assembleSuccessMessage(ElementQueryInterface $query): string
+    private function assembleSuccessMessage(int $count): string
     {
         $message = 'User';
 
-        if ($query->count() != 1) {
-            $message = $query->count() . ' ' . $message . 's';
+        if ($count != 1) {
+            $message = '{count} ' . $message . 's';
         }
 
-        $message .= ' removed.';
+        $message .= ' dissociated.';
 
-        return Craft::t('organizations', $message);
+        return Craft::t('organizations', $message, ['count' => $count]);
     }
 }

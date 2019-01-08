@@ -17,12 +17,12 @@ use yii\web\Response;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class UserTypesController extends AbstractController
+class UserTypesController extends AbstractSettingsController
 {
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . '/userTypes';
+    const TEMPLATE_INDEX = AbstractSettingsController::TEMPLATE_BASE . '/userTypes';
 
     /**
      * The insert/update view template path
@@ -117,6 +117,7 @@ class UserTypesController extends AbstractController
         $this->baseVariables($variables);
         $variables['title'] .= ' - ' . Craft::t('organizations', 'Edit') . ' ' . $userType->name;
         $variables['continueEditingUrl'] = $this->getBaseContinueEditingUrl('/' . $userType->getId());
+        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
         $variables['crumbs'][] = [
             'label' => Craft::t('organizations', $userType->name),
             'url' => UrlHelper::url($variables['continueEditingUrl'])

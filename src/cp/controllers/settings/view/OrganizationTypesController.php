@@ -17,7 +17,7 @@ use yii\web\Response;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class OrganizationTypesController extends AbstractController
+class OrganizationTypesController extends AbstractSettingsController
 {
     /**
      * The index view template path
@@ -139,6 +139,7 @@ class OrganizationTypesController extends AbstractController
         $this->baseVariables($variables);
         $variables['title'] .= ' - ' . Craft::t('organizations', 'Edit') . ' ' . $type->name;
         $variables['continueEditingUrl'] = $this->getBaseContinueEditingUrl('/' . $type->getId());
+        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
         $variables['crumbs'][] = [
             'label' => $type->name,
             'url' => UrlHelper::url($variables['continueEditingUrl'])

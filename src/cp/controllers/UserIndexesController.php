@@ -13,7 +13,7 @@ use craft\controllers\ElementIndexesController;
 use craft\elements\User;
 use craft\events\RegisterElementActionsEvent;
 use craft\events\RegisterElementHtmlAttributesEvent;
-use flipbox\organizations\elements\actions\RemoveUsers;
+use flipbox\organizations\elements\actions\DissociateUsersFromOrganizationAction;
 use yii\base\Event;
 
 /**
@@ -33,7 +33,7 @@ class UserIndexesController extends ElementIndexesController
             function (RegisterElementActionsEvent $event) {
                 $event->actions = [
                     [
-                        'type' => RemoveUsers::class,
+                        'type' => DissociateUsersFromOrganizationAction::class,
                         'organization' => $event->data['organization'] ?? null
                     ]
                 ];

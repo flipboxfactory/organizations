@@ -10,7 +10,6 @@ namespace flipbox\organizations\actions\users;
 
 use Craft;
 use craft\elements\User;
-use flipbox\craft\ember\actions\LookupTrait;
 use flipbox\craft\ember\actions\ManageTrait;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\records\UserAssociation;
@@ -23,8 +22,7 @@ use yii\web\HttpException;
  */
 abstract class AbstractUserAssociation extends Action
 {
-    use LookupTrait,
-        ManageTrait;
+    use ManageTrait;
 
     /**
      * @inheritdoc
@@ -34,10 +32,40 @@ abstract class AbstractUserAssociation extends Action
     abstract protected function performAction(User $user, Organization $organization, int $sortOrder = null): bool;
 
     /**
+     * HTTP not found response code
+     *
+     * @return int
+     */
+    protected function statusCodeNotFound(): int
+    {
+        return $this->statusCodeNotFound ?? 404;
+    }
+
+    /**
+     * @return string
+     */
+    protected function messageNotFound(): string
+    {
+        return $this->messageNotFound ?? 'Unable to find object.';
+    }
+
+    /**
+     * @return null
+     * @throws HttpException
+     */
+    protected function handleNotFoundResponse()
+    {
+        throw new HttpException(
+            $this->statusCodeNotFound(),
+            $this->messageNotFound()
+        );
+    }
+
+    /**
      * @param string|int $identifier
      * @return User|null
      */
-    protected function find($identifier)
+    protected function findUser($identifier)
     {
         if (is_numeric($identifier)) {
             return Craft::$app->getUsers()->getUserById($identifier);
@@ -57,8 +85,9 @@ abstract class AbstractUserAssociation extends Action
         string $user,
         string $organization,
         int $sortOrder = null
-    ) {
-        if (null === ($user = $this->find($user))) {
+    )
+    {
+        if (null === ($user = $this->findUser($user))) {
             return $this->handleNotFoundResponse();
         }
 

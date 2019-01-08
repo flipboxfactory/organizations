@@ -30,7 +30,7 @@ class UserTypesController extends AbstractController
             parent::behaviors(),
             [
                 'error' => [
-                    'default' => 'type'
+                    'default' => 'userType'
                 ],
                 'redirect' => [
                     'only' => ['create', 'update', 'delete'],

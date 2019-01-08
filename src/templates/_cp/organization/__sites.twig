@@ -1,3 +1,4 @@
+{% if element.id is empty%}
 {% set siteIds = siteIds ?? craft.app.sites.getEditableSiteIds() %}
     {% if siteIds|length %}
         {% if selectedSiteId is not defined %}
@@ -40,3 +41,4 @@
             {% endfor %}
         </div>
     {% endif %}
+{% endif %}

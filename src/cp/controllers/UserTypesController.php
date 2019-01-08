@@ -11,7 +11,7 @@ namespace flipbox\organizations\cp\controllers;
 use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\elements\behaviors\UserTypesBehavior;
+use flipbox\organizations\behaviors\UserTypesBehavior;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\records\UserType;
 use yii\web\Response;

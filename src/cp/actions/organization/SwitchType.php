@@ -13,7 +13,8 @@ use flipbox\craft\ember\actions\CheckAccessTrait;
 use flipbox\craft\ember\actions\LookupTrait;
 use flipbox\craft\ember\actions\PopulateTrait;
 use flipbox\organizations\actions\organizations\PopulateOrganizationTrait;
-use flipbox\organizations\cp\controllers\traits\Sites;
+use flipbox\organizations\cp\controllers\OrganizationTabsTrait;
+use flipbox\organizations\cp\controllers\OrganizationSitesTrait;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use yii\base\Action;
@@ -24,7 +25,8 @@ use yii\base\Action;
  */
 class SwitchType extends Action
 {
-    use Sites,
+    use OrganizationSitesTrait,
+        OrganizationTabsTrait,
         PopulateOrganizationTrait,
         PopulateTrait,
         LookupTrait,
@@ -125,7 +127,7 @@ class SwitchType extends Action
                 'organizations/_cp/organization/__enabled',
                 [
                     'element' => $element,
-                    'showSites' => $this->hasMultipleSites()
+                    'showSites' => $this->showSites()
                 ]
             ),
             'headHtml' => $view->getHeadHtml(),

@@ -36,6 +36,7 @@ class UpdateOrganizationType extends UpdateRecord
     protected function populate(ActiveRecord $record): ActiveRecord
     {
         parent::populate($record);
+
         $this->populateSiteLayout($record);
         $this->populateSiteSettings($record);
 

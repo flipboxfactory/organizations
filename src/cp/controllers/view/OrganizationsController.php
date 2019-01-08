@@ -15,7 +15,8 @@ use craft\elements\User as UserElement;
 use craft\helpers\UrlHelper;
 use craft\models\Site;
 use flipbox\craft\ember\helpers\SiteHelper;
-use flipbox\organizations\cp\controllers\traits\Sites;
+use flipbox\organizations\cp\controllers\OrganizationTabsTrait;
+use flipbox\organizations\cp\controllers\OrganizationSitesTrait;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\events\RegisterOrganizationActionsEvent;
@@ -32,7 +33,8 @@ use yii\web\Response;
  */
 class OrganizationsController extends AbstractController
 {
-    use Sites;
+    use OrganizationSitesTrait,
+        OrganizationTabsTrait;
 
     /**
      * The template base path
@@ -88,11 +90,14 @@ class OrganizationsController extends AbstractController
         // Organization
         if (null === $organization) {
             if (null === $identifier) {
-                $organization = new Organization();
-            } else {
-                $organization = Organization::getOne([
-                    is_numeric($identifier) ? 'id' : 'slug' => $identifier,
+                $organization = new Organization([
                     'siteId' => $site->id
+                ]);
+            } else {
+                $organization = Organization::findOne([
+                    is_numeric($identifier) ? 'id' : 'slug' => $identifier,
+                    'siteId' => $site->id,
+                    'status' => null
                 ]);
             }
         }
@@ -115,7 +120,7 @@ class OrganizationsController extends AbstractController
 
         $variables['enabledSiteIds'] = $this->getEnabledSiteIds($organization);
         $variables['siteIds'] = $this->getSiteIds();
-        $variables['showSites'] = $this->hasMultipleSites();
+        $variables['showSites'] = $this->showSites();
         $variables['siteUrl'] = $this->getSiteUrl($organization);
 
         $variables['fullPageForm'] = true;
@@ -257,18 +262,20 @@ class OrganizationsController extends AbstractController
     {
         $siteSettings = $this->module->module->getSettings()->getSiteSettings();
 
-        if (true === $this->hasMultipleSites()) {
-            $siteSetting = reset($siteSettings);
+        $site = Craft::$app->getRequest()->getParam('site');
+
+        if (true === Craft::$app->getIsMultiSite()) {
+            $siteSetting = $siteSettings[$site] ?? reset($siteSettings);
             return $siteSetting->getSite();
         }
 
-        $site = $this->resolveSiteFromRequest();
+        $site = Craft::$app->getSites()->currentSite;
 
         if (array_key_exists($site->id, $siteSettings)) {
             return $site;
         }
 
-        throw new Exception("Site is not enabled");
+        return reset($siteSettings);
     }
 
 
@@ -306,6 +313,7 @@ class OrganizationsController extends AbstractController
         $this->baseVariables($variables);
         $variables['title'] .= ' - ' . Craft::t('organizations', 'Edit') . ' ' . $organization->title;
         $variables['continueEditingUrl'] = $this->getBaseContinueEditingUrl('/' . $organization->getId());
+        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
         $variables['crumbs'][] = [
             'label' => $organization->title,
             'url' => UrlHelper::url($variables['continueEditingUrl'])

@@ -10,7 +10,6 @@ namespace flipbox\organizations\records;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use craft\models\FieldLayout;
 use flipbox\craft\ember\helpers\ObjectHelper;
 use flipbox\craft\ember\models\HandleRulesTrait;
 use flipbox\craft\ember\records\ActiveRecordWithId;
@@ -96,31 +95,22 @@ class OrganizationType extends ActiveRecordWithId
 
         $fieldLayout = $this->getFieldLayout();
 
-        $this->handleOldFieldLayout($fieldLayout);
-
-        if ($fieldLayout->id == $this->getDefaultFieldLayoutId()) {
-            return true;
+        // Get old field layout (and delete it if necessary)
+        $oldFieldLayoutId = (int)$this->getOldAttribute('fieldLayoutId');
+        if ($oldFieldLayoutId != $fieldLayout->id &&
+            $oldFieldLayoutId != $this->getDefaultFieldLayoutId()
+        ) {
+            Craft::$app->getFields()->deleteLayoutById($oldFieldLayoutId);
         }
 
         if (!Craft::$app->getFields()->saveLayout($fieldLayout)) {
             return false;
         }
 
+        // Set the attribute (just to ensure)
+        $this->fieldLayoutId = $fieldLayout->id;
+
         return true;
-    }
-
-    /**
-     * @param FieldLayout $fieldLayout
-     */
-    protected function handleOldFieldLayout(FieldLayout $fieldLayout)
-    {
-        $oldFieldLayoutId = (int)$this->getOldAttribute('fieldLayoutId');
-
-        if ($oldFieldLayoutId != $fieldLayout->id &&
-            $oldFieldLayoutId != $this->getDefaultFieldLayoutId()
-        ) {
-            Craft::$app->getFields()->deleteLayoutById($oldFieldLayoutId);
-        }
     }
 
     /**
@@ -299,6 +289,17 @@ class OrganizationType extends ActiveRecordWithId
                     UniqueValidator::class
                 ]
             ]
+        );
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return array_merge(
+            parent::attributeLabels(),
+            $this->fieldLayoutAttributeLabels()
         );
     }
 
