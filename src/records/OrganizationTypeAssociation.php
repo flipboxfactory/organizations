@@ -9,10 +9,9 @@
 namespace flipbox\organizations\records;
 
 use Craft;
-use flipbox\craft\sortable\associations\records\SortableAssociation;
-use flipbox\craft\sortable\associations\services\SortableAssociations;
-use flipbox\organizations\db\OrganizationTypeAssociationQuery;
-use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\craft\ember\records\ActiveRecord;
+use flipbox\craft\ember\records\SortableTrait;
+use flipbox\organizations\queries\OrganizationTypeAssociationQuery;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -24,10 +23,11 @@ use flipbox\organizations\Organizations as OrganizationPlugin;
  * @property OrganizationType $type
  * @property Organization $organization
  */
-class OrganizationTypeAssociation extends SortableAssociation
+class OrganizationTypeAssociation extends ActiveRecord
 {
-    use traits\OrganizationTypeAttribute,
-        traits\OrganizationAttribute;
+    use SortableTrait,
+        OrganizationTypeAttributeTrait,
+        OrganizationAttributeTrait;
 
     /**
      * The table name
@@ -37,31 +37,18 @@ class OrganizationTypeAssociation extends SortableAssociation
     /**
      * @inheritdoc
      */
-    const TARGET_ATTRIBUTE = 'typeId';
-
-    /**
-     * @inheritdoc
-     */
-    const SOURCE_ATTRIBUTE = 'organizationId';
-
-    /**
-     * @inheritdoc
-     */
     protected $getterPriorityAttributes = ['typeId', 'organizationId'];
 
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
-     */
-    protected function associationService(): SortableAssociations
-    {
-        return OrganizationPlugin::getInstance()->getOrganizationTypeAssociations();
-    }
-
-    /**
-     * @inheritdoc
+     * @return OrganizationTypeAssociationQuery
      */
     public static function find()
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Craft::createObject(OrganizationTypeAssociationQuery::class, [get_called_class()]);
     }
 
@@ -77,6 +64,13 @@ class OrganizationTypeAssociation extends SortableAssociation
             [
                 [
                     [
+                        'typeId',
+                        'organizationId'
+                    ],
+                    'required'
+                ],
+                [
+                    [
                         'typeId'
                     ],
                     'unique',
@@ -87,5 +81,51 @@ class OrganizationTypeAssociation extends SortableAssociation
                 ]
             ]
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        $this->ensureSortOrder(
+            [
+                'organizationId' => $this->organizationId
+            ]
+        );
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->autoReOrder(
+            'typeId',
+            [
+                'organizationId' => $this->organizationId
+            ]
+        );
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterDelete()
+    {
+        $this->sequentialOrder(
+            'typeId',
+            [
+                'organizationId' => $this->organizationId
+            ]
+        );
+
+        parent::afterDelete();
     }
 }

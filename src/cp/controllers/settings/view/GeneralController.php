@@ -15,15 +15,15 @@ use craft\helpers\UrlHelper;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class GeneralController extends AbstractController
+class GeneralController extends AbstractSettingsController
 {
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . '/general';
+    const TEMPLATE_INDEX = AbstractSettingsController::TEMPLATE_BASE . '/general';
 
     /**
-     * Index
+     * OrganizationIndex
      *
      * @return \yii\web\Response
      */

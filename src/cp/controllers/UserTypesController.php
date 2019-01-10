@@ -11,7 +11,9 @@ namespace flipbox\organizations\cp\controllers;
 use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\Organizations;
+use flipbox\organizations\behaviors\UserTypesBehavior;
+use flipbox\organizations\elements\Organization;
+use flipbox\organizations\records\UserType;
 use yii\web\Response;
 
 /**
@@ -62,7 +64,9 @@ class UserTypesController extends AbstractController
 
     /**
      * @return Response
-     * @throws \Exception
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\db\StaleObjectException
      * @throws \yii\web\BadRequestHttpException
      */
     public function actionSaveAssociations(): Response
@@ -73,24 +77,18 @@ class UserTypesController extends AbstractController
             (int)$request->getRequiredBodyParam('user')
         );
 
-        $organization = Organizations::getInstance()->getOrganizations()->get(
-            $request->getRequiredBodyParam('organization')
-        );
+        $identifier = $request->getRequiredBodyParam('organization');
+        $organization = Organization::getOne($identifier);
 
         $types = array_keys(array_filter((array)$request->getRequiredBodyParam('types')));
-        $query = Organizations::getInstance()->getUserTypes()->getQuery([
-            'id' => empty($types) ? ':empty:' : $types
-        ]);
+        $query = UserType::find()->id(empty($types) ? ':empty:' : $types);
 
         $query->setCachedResult(
             $query->all()
         );
 
-        Organizations::getInstance()->getUserTypes()->saveAssociations(
-            $query,
-            $user,
-            $organization
-        );
+        /** @var UserTypesBehavior $user */
+        $user->saveUserTypes($query, $organization);
 
         return $this->asJson(['success' => true]);
     }
@@ -109,9 +107,9 @@ class UserTypesController extends AbstractController
             $request->getRequiredBodyParam('user')
         );
 
-        $organization = Organizations::getInstance()->getOrganizations()->get(
-            $request->getRequiredBodyParam('organization')
-        );
+        $identifier = $request->getRequiredBodyParam('organization');
+
+        $organization = Organization::getOne($identifier);
 
         $response = [];
 
@@ -135,7 +133,7 @@ class UserTypesController extends AbstractController
      */
     private function getUserTypes(): array
     {
-        $types = Organizations::getInstance()->getUserTypes()->getQuery()
+        $types = UserType::find()
             ->select(['name'])
             ->indexBy('id')
             ->column();

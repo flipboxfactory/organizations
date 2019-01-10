@@ -9,23 +9,25 @@
 namespace flipbox\organizations\records;
 
 use Craft;
-use flipbox\craft\sortable\associations\records\SortableAssociation;
-use flipbox\craft\sortable\associations\services\SortableAssociations;
-use flipbox\ember\helpers\ModelHelper;
-use flipbox\organizations\db\UserTypeAssociationQuery;
-use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\craft\ember\helpers\ModelHelper;
+use flipbox\craft\ember\records\ActiveRecord;
+use flipbox\craft\ember\records\SortableTrait;
+use flipbox\organizations\queries\UserTypeAssociationQuery;
 use yii\db\ActiveQueryInterface;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @property int $organizationId
+ * @property int $userId
+ * @property int $typeId
  * @property int $sortOrder
- * @property Organization $organization
  */
-class UserTypeAssociation extends SortableAssociation
+class UserTypeAssociation extends ActiveRecord
 {
+    use UserTypeAttributeTrait,
+        SortableTrait;
+
     /**
      * The table name
      */
@@ -34,26 +36,18 @@ class UserTypeAssociation extends SortableAssociation
     /**
      * @inheritdoc
      */
-    const TARGET_ATTRIBUTE = 'typeId';
+    protected $getterPriorityAttributes = ['typeId'];
 
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
-     */
-    const SOURCE_ATTRIBUTE = 'userId';
-
-    /**
-     * @inheritdoc
-     */
-    protected function associationService(): SortableAssociations
-    {
-        return OrganizationPlugin::getInstance()->getUserTypeAssociations();
-    }
-
-    /**
-     * @inheritdoc
+     * @return UserTypeAssociationQuery
      */
     public static function find()
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Craft::createObject(UserTypeAssociationQuery::class, [get_called_class()]);
     }
 
@@ -64,14 +58,8 @@ class UserTypeAssociation extends SortableAssociation
     {
         return array_merge(
             parent::rules(),
+            $this->typeRules(),
             [
-                [
-                    [
-                        'userId'
-                    ],
-                    'number',
-                    'integerOnly' => true
-                ],
                 [
                     [
                         'userId'
@@ -84,8 +72,7 @@ class UserTypeAssociation extends SortableAssociation
                 ],
                 [
                     [
-                        'userId',
-                        'typeId'
+                        'userId'
                     ],
                     'safe',
                     'on' => [
@@ -94,6 +81,52 @@ class UserTypeAssociation extends SortableAssociation
                 ]
             ]
         );
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        $this->ensureSortOrder(
+            [
+                'userId' => $this->userId
+            ]
+        );
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->autoReOrder(
+            'typeId',
+            [
+                'userId' => $this->userId
+            ]
+        );
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterDelete()
+    {
+        $this->sequentialOrder(
+            'typeId',
+            [
+                'userId' => $this->userId
+            ]
+        );
+
+        parent::afterDelete();
     }
 
     /**

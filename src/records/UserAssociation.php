@@ -9,13 +9,12 @@
 namespace flipbox\organizations\records;
 
 use Craft;
-use flipbox\craft\sortable\associations\records\SortableAssociationInterface;
-use flipbox\ember\helpers\ModelHelper;
-use flipbox\ember\records\ActiveRecord;
-use flipbox\ember\records\traits\IdAttribute;
-use flipbox\ember\records\traits\UserAttribute;
-use flipbox\organizations\db\UserAssociationQuery;
-use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\craft\ember\helpers\ModelHelper;
+use flipbox\craft\ember\records\ActiveRecord;
+use flipbox\craft\ember\records\IdAttributeTrait;
+use flipbox\craft\ember\records\SortableTrait;
+use flipbox\craft\ember\records\UserAttributeTrait;
+use flipbox\organizations\queries\UserAssociationQuery;
 use yii\db\ActiveQueryInterface;
 
 /**
@@ -28,11 +27,12 @@ use yii\db\ActiveQueryInterface;
  * @property Organization $organization
  * @property UserType[] $types
  */
-class UserAssociation extends ActiveRecord implements SortableAssociationInterface
+class UserAssociation extends ActiveRecord
 {
-    use UserAttribute,
-        IdAttribute,
-        traits\OrganizationAttribute;
+    use SortableTrait,
+        UserAttributeTrait,
+        IdAttributeTrait,
+        OrganizationAttributeTrait;
 
     /**
      * The table name
@@ -42,41 +42,41 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
     /**
      * @inheritdoc
      */
-    const TARGET_ATTRIBUTE = 'userId';
+    protected $getterPriorityAttributes = ['userId', 'organizationId'];
 
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
-     */
-    const SOURCE_ATTRIBUTE = 'organizationId';
-
-    /**
-     * @inheritdoc
+     * @return UserAssociationQuery
      */
     public static function find()
     {
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return Craft::createObject(UserAssociationQuery::class, [get_called_class()]);
     }
 
     /**
      * @inheritdoc
+     *
+     * @deprecated
      */
-    public function associate(bool $autoReorder = true): bool
+    public function associate(): bool
     {
-        return OrganizationPlugin::getInstance()->getUserOrganizationAssociations()->associate(
-            $this,
-            $autoReorder
-        );
+        return $this->save();
     }
 
     /**
-     * @inheritdoc
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     *
+     * @deprecated
      */
-    public function dissociate(bool $autoReorder = true): bool
+    public function dissociate(): bool
     {
-        return OrganizationPlugin::getInstance()->getUserOrganizationAssociations()->dissociate(
-            $this,
-            $autoReorder
-        );
+        return $this->delete();
     }
 
     /**
@@ -89,12 +89,11 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
             $this->idRules(),
             $this->userRules(),
             $this->organizationRules(),
-            $this->auditRules(),
             [
                 [
                     [
-                        static::SOURCE_ATTRIBUTE,
-                        static::TARGET_ATTRIBUTE,
+                        'userId',
+                        'organizationId'
                     ],
                     'required'
                 ],
@@ -108,8 +107,8 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
                 ],
                 [
                     [
-                        static::SOURCE_ATTRIBUTE,
-                        static::TARGET_ATTRIBUTE,
+                        'userId',
+                        'organizationId'
                     ],
                     'safe',
                     'on' => [
@@ -121,11 +120,84 @@ class UserAssociation extends ActiveRecord implements SortableAssociationInterfa
     }
 
     /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        $this->ensureSortOrder(
+            [
+                'userId' => $this->userId
+            ],
+            'organizationOrder'
+        );
+
+        $this->ensureSortOrder(
+            [
+                'organizationId' => $this->organizationId
+            ],
+            'userOrder'
+        );
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->autoReOrder(
+            'organizationId',
+            [
+                'userId' => $this->userId
+            ],
+            'organizationOrder'
+        );
+
+        $this->autoReOrder(
+            'userId',
+            [
+                'organizationId' => $this->organizationId
+            ],
+            'userOrder'
+        );
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterDelete()
+    {
+        $this->sequentialOrder(
+            'organizationId',
+            [
+                'userId' => $this->userId
+            ],
+            'organizationOrder'
+        );
+
+        $this->sequentialOrder(
+            'userId',
+            [
+                'organizationId' => $this->organizationId
+            ],
+            'userOrder'
+        );
+
+        parent::afterDelete();
+    }
+
+    /**
      * @return ActiveQueryInterface
      */
     public function getTypes(): ActiveQueryInterface
     {
         // Todo - order this by the sortOrder
+        /** @noinspection PhpUndefinedMethodInspection */
         return $this->hasMany(UserType::class, ['id' => 'typeId'])
             ->viaTable(
                 UserTypeAssociation::tableName(),

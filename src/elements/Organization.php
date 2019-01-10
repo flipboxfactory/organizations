@@ -13,24 +13,33 @@ use craft\base\Element;
 use craft\elements\actions\Edit as EditAction;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
+use craft\helpers\DateTimeHelper;
+use craft\helpers\Json;
 use craft\helpers\StringHelper;
 use craft\helpers\UrlHelper as UrlHelper;
-use flipbox\ember\helpers\ModelHelper;
-use flipbox\organizations\db\OrganizationQuery;
+use flipbox\craft\ember\elements\ExplicitElementTrait;
+use flipbox\craft\ember\helpers\ModelHelper;
+use flipbox\organizations\models\DateJoinedAttributeTrait;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\OrganizationQuery;
+use flipbox\organizations\records\Organization as OrganizationRecord;
+use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationType as TypeModel;
-use flipbox\organizations\traits\DateJoinedAttribute;
 use yii\base\ErrorException as Exception;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
+ *
+ * @method static Organization findOne($criteria = null)
+ * @method static Organization[] findAll($criteria = null) : array
  */
 class Organization extends Element
 {
-    use DateJoinedAttribute,
-        traits\TypesAttribute,
-        traits\UsersAttribute;
+    use ExplicitElementTrait,
+        DateJoinedAttributeTrait,
+        TypesAttributeTrait,
+        UsersAttributeTrait;
 
     /**
      * @inheritdoc
@@ -81,6 +90,21 @@ class Organization extends Element
     }
 
     /**
+     * Returns whether this element type can have statuses.
+     *
+     * @return boolean
+     */
+    public static function hasStatuses(): bool
+    {
+        return true;
+    }
+
+
+    /************************************************************
+     * QUERY
+     ************************************************************/
+
+    /**
      * @inheritdoc
      *
      * @return OrganizationQuery
@@ -91,26 +115,27 @@ class Organization extends Element
     }
 
     /**
-     * Returns whether this element type can have statuses.
-     *
-     * @return boolean
+     * @param mixed $criteria
+     * @param bool $one
+     * @return Element|Element[]|null
      */
-    public static function hasStatuses(): bool
+    protected static function findByCondition($criteria, bool $one)
     {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getRef()
-    {
-        if (!$primary = $this->getPrimaryType()) {
-            return $this->slug;
+        if (is_numeric($criteria)) {
+            $criteria = ['id' => $criteria];
         }
 
-        return $primary->handle . '/' . $this->slug;
+        if (is_string($criteria)) {
+            $criteria = ['slug' => $criteria];
+        }
+
+        return parent::findByCondition($criteria, $one);
     }
+
+
+    /************************************************************
+     * PROPERTIES / ATTRIBUTES
+     ************************************************************/
 
     /**
      * @return array
@@ -119,18 +144,13 @@ class Organization extends Element
     {
         return array_merge(
             parent::attributes(),
-            $this->dateJoinedAttributes(),
-            [
-                //                'types',
-                //                'activeType',
-                //                'primaryType',
-                //                'users',
-            ]
+            $this->dateJoinedAttributes()
         );
     }
 
     /**
      * @inheritdoc
+     * @throws \yii\base\InvalidConfigException
      */
     public function rules()
     {
@@ -162,15 +182,10 @@ class Organization extends Element
     {
         return array_merge(
             parent::attributeLabels(),
-            $this->dateJoinedAttributeLabels(),
-            [
-                //                'types' => Craft::t('organizations', 'Types'),
-                //                'activeType' => Craft::t('organizations', 'Active Type'),
-                //                'primaryType' => Craft::t('organizations', 'Primary Type'),
-                //                'users' => Craft::t('organizations', 'Users'),
-            ]
+            $this->dateJoinedAttributeLabels()
         );
     }
+
 
     /************************************************************
      * FIELD LAYOUT
@@ -181,16 +196,29 @@ class Organization extends Element
      */
     public function getFieldLayout()
     {
-        if (!$type = $this->getActiveType()) {
+        if (null === ($type = $this->getActiveType())) {
             return OrganizationPlugin::getInstance()->getSettings()->getFieldLayout();
         }
 
         return $type->getFieldLayout();
     }
 
+
     /************************************************************
      * ELEMENT ADMIN
      ************************************************************/
+
+    /**
+     * @inheritdoc
+     */
+    public function getRef()
+    {
+        if (!$primary = $this->getPrimaryType()) {
+            return $this->slug;
+        }
+
+        return $primary->handle . '/' . $this->slug;
+    }
 
     /**
      * @inheritdoc
@@ -237,7 +265,7 @@ class Organization extends Element
         $sources = self::defineDefaultSources();
 
         // Array of all organization types
-        $organizationTypes = OrganizationPlugin::getInstance()->getOrganizationTypes()->findAll();
+        $organizationTypes = OrganizationType::findAll([]);
 
         $sources[] = ['heading' => Craft::t('organizations', 'Types')];
 
@@ -262,7 +290,7 @@ class Organization extends Element
         $sources = self::defineDefaultSources();
 
         // Array of all organization types
-        $organizationUsers = OrganizationPlugin::getInstance()->getUsers()->getQuery();
+        $organizationUsers = User::find();
 
         $sources[] = ['heading' => Craft::t('organizations', 'Users')];
 
@@ -296,7 +324,7 @@ class Organization extends Element
         ]);
 
 //        if (Craft::$app->getUser()->checkPermission('deleteOrganizations')) {
-//            // Delete
+//            // Delete Organization
 //            $actions[] = DeleteAction::class;
 //        }
 
@@ -401,7 +429,15 @@ class Organization extends Element
      */
     public function getUriFormat()
     {
-        return OrganizationPlugin::getInstance()->getElement()->getUriFormat($this);
+        if (null === ($siteSettings = $this->getSiteSettings())) {
+            return null;
+        }
+
+        if (!$siteSettings->hasUrls()) {
+            return null;
+        }
+
+        return $siteSettings->getUriFormat();
     }
 
     /**
@@ -409,7 +445,57 @@ class Organization extends Element
      */
     public function route()
     {
-        return OrganizationPlugin::getInstance()->getElement()->getRoute($this);
+        if (in_array(
+            $this->getStatus(),
+            [static::STATUS_DISABLED, static::STATUS_ARCHIVED],
+            true
+        )) {
+            return null;
+        }
+
+        if (null === ($siteSettings = $this->getSiteSettings())) {
+            return null;
+        }
+
+        if (!$siteSettings->hasUrls()) {
+            return null;
+        }
+
+        return [
+            'templates/render',
+            [
+                'template' => $siteSettings->getTemplate(),
+                'variables' => [
+                    'organization' => $this,
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @return \flipbox\organizations\records\OrganizationTypeSiteSettings|null
+     */
+    protected function getSiteSettings()
+    {
+        try {
+            $settings = OrganizationPlugin::getInstance()->getSettings();
+            $siteSettings = $settings->getSiteSettings()[$this->siteId] ?? null;
+
+            if (null !== ($type = $this->getPrimaryType())) {
+                $siteSettings = $type->getSiteSettings()[$this->siteId] ?? $siteSettings;
+            }
+
+            return $siteSettings;
+        } catch (\Exception $e) {
+            OrganizationPlugin::error(
+                sprintf(
+                    "An exception was caught while to resolve site settings: %s",
+                    $e->getMessage()
+                )
+            );
+        }
+
+        return null;
     }
 
     /************************************************************
@@ -418,21 +504,94 @@ class Organization extends Element
 
     /**
      * @inheritdoc
-     * @throws Exception
      */
     public function beforeSave(bool $isNew): bool
     {
-        OrganizationPlugin::getInstance()->getElement()->beforeSave($this);
+        if (empty($this->getDateJoined())) {
+            $this->setDateJoined(DateTimeHelper::currentUTCDateTime());
+        }
+
         return parent::beforeSave($isNew);
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws /Exception
      */
     public function afterSave(bool $isNew)
     {
-        OrganizationPlugin::getInstance()->getElement()->afterSave($this, $isNew);
+        if (false === $this->saveRecord($isNew)) {
+            throw new Exception('Unable to save organization record');
+        }
+
+        // Types
+        if (false === $this->saveTypes()) {
+            throw new Exception("Unable to save types.");
+        }
+
+        // Users
+        if (false === $this->saveUsers()) {
+            throw new Exception("Unable to save users.");
+        }
+
         parent::afterSave($isNew);
+    }
+
+    /*******************************************
+     * RECORD
+     *******************************************/
+
+    /**
+     * @param bool $isNew
+     * @return bool
+     */
+    protected function saveRecord(bool $isNew): bool
+    {
+        $record = $this->elementToRecord();
+
+        if (!$record->save()) {
+            $this->addErrors($record->getErrors());
+
+            OrganizationPlugin::error(
+                Json::encode($this->getErrors()),
+                __METHOD__
+            );
+
+            return false;
+        }
+
+        if (false !== ($dateUpdated = DateTimeHelper::toDateTime($record->dateUpdated))) {
+            $this->dateUpdated = $dateUpdated;
+        }
+
+
+        if ($isNew) {
+            $this->id = $record->id;
+
+            if (false !== ($dateCreated = DateTimeHelper::toDateTime($record->dateCreated))) {
+                $this->dateCreated = $dateCreated;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     * @return OrganizationRecord
+     */
+    protected function elementToRecord(): OrganizationRecord
+    {
+        if (!$record = OrganizationRecord::findOne([
+            'id' => $this->getId()
+        ])) {
+            $record = new OrganizationRecord();
+        }
+
+        // PopulateOrganizationTypeTrait the record attributes
+        $record->id = $this->getId();
+        $record->dateJoined = $this->getDateJoined();
+
+        return $record;
     }
 }

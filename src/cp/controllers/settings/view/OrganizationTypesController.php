@@ -17,7 +17,7 @@ use yii\web\Response;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class OrganizationTypesController extends AbstractController
+class OrganizationTypesController extends AbstractSettingsController
 {
     /**
      * The index view template path
@@ -30,14 +30,6 @@ class OrganizationTypesController extends AbstractController
     const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . '/upsert';
 
     /**
-     * @return \flipbox\organizations\services\OrganizationTypes
-     */
-    protected function typeService()
-    {
-        return $this->module->module->getOrganizationTypes();
-    }
-
-    /**
      * @return Response
      */
     public function actionIndex()
@@ -45,25 +37,24 @@ class OrganizationTypesController extends AbstractController
         $variables = [];
         $this->baseVariables($variables);
 
-        $variables['types'] = $this->typeService()->findAll();
+        $variables['types'] = OrganizationType::findAll([]);
 
         return $this->renderTemplate(static::TEMPLATE_INDEX, $variables);
     }
 
     /**
-     * Insert/Update
-     *
-     * @param string|int|null $identifier
-     * @param OrganizationType $type
+     * @param null $identifier
+     * @param OrganizationType|null $type
      * @return Response
+     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
     public function actionUpsert($identifier = null, OrganizationType $type = null)
     {
         if (null === $type) {
             if (null === $identifier) {
-                $type = $this->typeService()->create();
+                $type = new OrganizationType();
             } else {
-                $type = $this->typeService()->get($identifier);
+                $type = OrganizationType::getOne($identifier);
             }
         }
 
@@ -148,6 +139,7 @@ class OrganizationTypesController extends AbstractController
         $this->baseVariables($variables);
         $variables['title'] .= ' - ' . Craft::t('organizations', 'Edit') . ' ' . $type->name;
         $variables['continueEditingUrl'] = $this->getBaseContinueEditingUrl('/' . $type->getId());
+        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
         $variables['crumbs'][] = [
             'label' => $type->name,
             'url' => UrlHelper::url($variables['continueEditingUrl'])

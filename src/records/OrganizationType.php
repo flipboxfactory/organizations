@@ -9,13 +9,15 @@
 namespace flipbox\organizations\records;
 
 use Craft;
-use flipbox\ember\helpers\ObjectHelper;
-use flipbox\ember\records\ActiveRecordWithId;
-use flipbox\ember\records\traits\FieldLayoutAttribute;
-use flipbox\ember\traits\HandleRules;
-use flipbox\ember\validators\ModelValidator;
-use flipbox\organizations\db\OrganizationTypeQuery;
+use craft\helpers\ArrayHelper;
+use flipbox\craft\ember\helpers\ObjectHelper;
+use flipbox\craft\ember\models\HandleRulesTrait;
+use flipbox\craft\ember\records\ActiveRecordWithId;
+use flipbox\craft\ember\records\FieldLayoutAttributeTrait;
+use flipbox\craft\ember\validators\ModelValidator;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use flipbox\organizations\queries\OrganizationTypeQuery;
+use yii\base\Exception;
 use yii\db\ActiveQueryInterface;
 use yii\validators\UniqueValidator;
 
@@ -23,14 +25,13 @@ use yii\validators\UniqueValidator;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method FieldLayoutModel parentResolveFieldLayout()
  * @property string $name
  * @property OrganizationTypeSiteSettings[] $siteSettingRecords
  */
 class OrganizationType extends ActiveRecordWithId
 {
-    use FieldLayoutAttribute,
-        HandleRules {
+    use FieldLayoutAttributeTrait,
+        HandleRulesTrait {
         resolveFieldLayout as parentResolveFieldLayout;
     }
 
@@ -64,13 +65,18 @@ class OrganizationType extends ActiveRecordWithId
         return $fieldLayout;
     }
 
+
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
      * @return OrganizationTypeQuery
      */
     public static function find()
     {
-        return new OrganizationTypeQuery;
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return Craft::createObject(OrganizationTypeQuery::class, [get_called_class()]);
     }
 
     /*******************************************
@@ -79,24 +85,90 @@ class OrganizationType extends ActiveRecordWithId
 
     /**
      * @inheritdoc
+     * @throws Exception
      */
     public function beforeSave($insert)
     {
-        if (false === OrganizationPlugin::getInstance()->getOrganizationTypes()->beforeSave($this)) {
+        if (false === parent::beforeSave($insert)) {
             return false;
         }
 
-        return parent::beforeSave($insert);
+        $fieldLayout = $this->getFieldLayout();
+
+        // Get old field layout (and delete it if necessary)
+        $oldFieldLayoutId = (int)$this->getOldAttribute('fieldLayoutId');
+        if ($oldFieldLayoutId != $fieldLayout->id &&
+            $oldFieldLayoutId != $this->getDefaultFieldLayoutId()
+        ) {
+            Craft::$app->getFields()->deleteLayoutById($oldFieldLayoutId);
+        }
+
+        if (!Craft::$app->getFields()->saveLayout($fieldLayout)) {
+            return false;
+        }
+
+        // Set the attribute (just to ensure)
+        $this->fieldLayoutId = $fieldLayout->id;
+
+        return true;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getDefaultFieldLayoutId(): int
+    {
+        return (int)OrganizationPlugin::getInstance()->getSettings()->getFieldLayout()->id;
     }
 
     /**
      * @inheritdoc
+     * @throws Exception
+     * @throws \Throwable
+     * @throws \craft\errors\SiteNotFoundException
+     * @throws \yii\db\StaleObjectException
      */
     public function afterSave($insert, $changedAttributes)
     {
-        OrganizationPlugin::getInstance()->getOrganizationTypes()->afterSave($this);
+        $successful = true;
+
+        /** @var OrganizationTypeSiteSettings[] $allSettings */
+        $allSettings = $this->hasMany(OrganizationTypeSiteSettings::class, ['typeId' => 'id'])
+            ->indexBy('siteId')
+            ->all();
+
+        foreach ($this->getSiteSettings() as $model) {
+            ArrayHelper::remove($allSettings, $model->siteId);
+            $model->typeId = $this->getId();
+
+            if (!$model->save()) {
+                $successful = false;
+                // Log the errors
+                $error = Craft::t(
+                    'organizations',
+                    "Couldn't save site settings due to validation errors:"
+                );
+                foreach ($model->getFirstErrors() as $attributeError) {
+                    $error .= "\n- " . Craft::t('organizations', $attributeError);
+                }
+
+                $this->addError('sites', $error);
+            }
+        }
+
+        // Delete old settings records
+        foreach ($allSettings as $settings) {
+            $settings->delete();
+        }
+
+        if (!$successful) {
+            throw new Exception("Unable to save site settings");
+        };
+
         parent::afterSave($insert, $changedAttributes);
     }
+
+
 
     /*******************************************
      * SITE SETTINGS
@@ -155,6 +227,7 @@ class OrganizationType extends ActiveRecordWithId
             $record = new OrganizationTypeSiteSettings();
         }
 
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return ObjectHelper::populate(
             $record,
             $site
@@ -220,9 +293,19 @@ class OrganizationType extends ActiveRecordWithId
     }
 
     /**
-     * Returns the type’s site settings.
-     *
-     * @return ActiveQueryInterface The relational query object.
+     * @return array
+     */
+    public function attributeLabels()
+    {
+        return array_merge(
+            parent::attributeLabels(),
+            $this->fieldLayoutAttributeLabels()
+        );
+    }
+
+    /**
+     * @return ActiveQueryInterface
+     * @throws \craft\errors\SiteNotFoundException
      */
     protected function getSiteSettingRecords(): ActiveQueryInterface
     {

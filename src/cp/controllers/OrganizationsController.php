@@ -10,9 +10,9 @@ namespace flipbox\organizations\cp\controllers;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\actions\organizations\Create;
-use flipbox\organizations\actions\organizations\Delete;
-use flipbox\organizations\actions\organizations\Update;
+use flipbox\organizations\actions\organizations\CreateOrganization;
+use flipbox\organizations\actions\organizations\DeleteOrganization;
+use flipbox\organizations\actions\organizations\UpdateOrganization;
 use flipbox\organizations\cp\actions\organization\SwitchType;
 
 /**
@@ -103,9 +103,9 @@ class OrganizationsController extends AbstractController
      */
     public function actionCreate()
     {
-        /** @var Create $action */
+        /** @var CreateOrganization $action */
         $action = Craft::createObject([
-            'class' => Create::class
+            'class' => CreateOrganization::class
         ], [
             'create',
             $this
@@ -125,9 +125,9 @@ class OrganizationsController extends AbstractController
             $organization = Craft::$app->getRequest()->getBodyParam('organization');
         }
 
-        /** @var Update $action */
+        /** @var UpdateOrganization $action */
         $action = Craft::createObject([
-            'class' => Update::class
+            'class' => UpdateOrganization::class
         ], [
             'update',
             $this
@@ -149,9 +149,9 @@ class OrganizationsController extends AbstractController
             $organization = Craft::$app->getRequest()->getBodyParam('organization');
         }
 
-        /** @var Delete $action */
+        /** @var DeleteOrganization $action */
         $action = Craft::createObject([
-            'class' => Delete::class
+            'class' => DeleteOrganization::class
         ], [
             'delete',
             $this

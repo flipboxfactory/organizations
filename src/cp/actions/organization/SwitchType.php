@@ -9,16 +9,15 @@
 namespace flipbox\organizations\cp\actions\organization;
 
 use Craft;
-use craft\errors\ElementNotFoundException;
-use flipbox\ember\actions\element\traits\Lookup;
-use flipbox\ember\actions\traits\CheckAccess;
-use flipbox\ember\actions\traits\Populate;
-use flipbox\organizations\actions\organizations\traits\Populate as PopulateOrganization;
-use flipbox\organizations\cp\controllers\traits\Sites;
+use flipbox\craft\ember\actions\CheckAccessTrait;
+use flipbox\craft\ember\actions\LookupTrait;
+use flipbox\craft\ember\actions\PopulateTrait;
+use flipbox\organizations\actions\organizations\PopulateOrganizationTrait;
+use flipbox\organizations\cp\controllers\OrganizationTabsTrait;
+use flipbox\organizations\cp\controllers\OrganizationSitesTrait;
+use flipbox\organizations\elements\Organization;
 use flipbox\organizations\elements\Organization as OrganizationElement;
-use flipbox\organizations\Organizations;
 use yii\base\Action;
-use yii\base\BaseObject;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -26,21 +25,25 @@ use yii\base\BaseObject;
  */
 class SwitchType extends Action
 {
-    use Sites,
-        Populate,
-        PopulateOrganization,
-        Lookup,
-        CheckAccess {
+    use OrganizationSitesTrait,
+        OrganizationTabsTrait,
+        PopulateOrganizationTrait,
+        PopulateTrait,
+        LookupTrait,
+        CheckAccessTrait {
         populate as parentPopulate;
     }
 
     /**
      * @param null $organization
      * @return array|mixed
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     * @throws \yii\web\UnauthorizedHttpException
      */
     public function run($organization = null)
     {
-        $organization = null !== $organization ? $this->find($organization) : $this->create();
+        $organization = (null !== $organization) ? $this->find($organization) : $this->create();
         return $this->runInternal($organization);
     }
 
@@ -51,10 +54,10 @@ class SwitchType extends Action
     protected function find($identifier)
     {
         $site = $this->resolveSiteFromRequest();
-        return Organizations::getInstance()->getOrganizations()->find(
-            $identifier,
+        return Organization::findOne([
+            is_numeric($identifier) ? 'id' : 'slug' => $identifier,
             $site ? $site->id : null
-        );
+        ]);
     }
 
     /**
@@ -64,14 +67,16 @@ class SwitchType extends Action
     protected function create()
     {
         $site = $this->resolveSiteFromRequest();
-        return Organizations::getInstance()->getOrganizations()->create([
+        return new Organization([
             'siteId' => $site ? $site->id : null
         ]);
     }
 
     /**
      * @inheritdoc
-     * @param OrganizationElement $element
+     * @throws \Twig_Error_Loader
+     * @throws \yii\base\Exception
+     * @throws \yii\web\UnauthorizedHttpException
      */
     protected function runInternal(OrganizationElement $element)
     {
@@ -93,10 +98,6 @@ class SwitchType extends Action
      */
     protected function data(OrganizationElement $element): array
     {
-        if (!$this->ensureOrganization($element)) {
-            throw new ElementNotFoundException();
-        }
-
         $view = Craft::$app->getView();
 
         return [
@@ -126,7 +127,7 @@ class SwitchType extends Action
                 'organizations/_cp/organization/__enabled',
                 [
                     'element' => $element,
-                    'showSites' => $this->hasMultipleSites()
+                    'showSites' => $this->showSites()
                 ]
             ),
             'headHtml' => $view->getHeadHtml(),
@@ -136,16 +137,13 @@ class SwitchType extends Action
 
     /**
      * @inheritdoc
-     * @param OrganizationElement $object
-     * @return OrganizationElement
+     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
-    public function populate(BaseObject $object): BaseObject
+    public function populate(OrganizationElement $element): OrganizationElement
     {
-        if (true === $this->ensureOrganization($object)) {
-            $this->parentPopulate($object);
-            $this->populateFromRequest($object);
-        }
+        $this->parentPopulate($element);
+        $this->populateFromRequest($element);
 
-        return $object;
+        return $element;
     }
 }

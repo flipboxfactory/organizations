@@ -17,25 +17,17 @@ use yii\web\Response;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
-class UserTypesController extends AbstractController
+class UserTypesController extends AbstractSettingsController
 {
     /**
      * The index view template path
      */
-    const TEMPLATE_INDEX = AbstractController::TEMPLATE_BASE . '/userTypes';
+    const TEMPLATE_INDEX = AbstractSettingsController::TEMPLATE_BASE . '/userTypes';
 
     /**
      * The insert/update view template path
      */
     const TEMPLATE_UPSERT = self::TEMPLATE_INDEX . '/upsert';
-
-    /**
-     * @return \flipbox\organizations\services\UserTypes
-     */
-    protected function userTypeService()
-    {
-        return $this->module->module->getUserTypes();
-    }
 
     /**
      * @return Response
@@ -45,25 +37,24 @@ class UserTypesController extends AbstractController
         $variables = [];
         $this->baseVariables($variables);
 
-        $variables['types'] = $this->userTypeService()->findAll();
+        $variables['types'] = UserType::findAll([]);
 
         return $this->renderTemplate(static::TEMPLATE_INDEX, $variables);
     }
 
     /**
-     * Insert/Update
-     *
-     * @param string|int|null $identifier
-     * @param UserType $userType
+     * @param null $identifier
+     * @param UserType|null $userType
      * @return Response
+     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
     public function actionUpsert($identifier = null, UserType $userType = null)
     {
         if (null === $userType) {
             if (null === $identifier) {
-                $userType = $this->userTypeService()->create();
+                $userType = new UserType();
             } else {
-                $userType = $this->userTypeService()->get($identifier);
+                $userType = UserType::getOne($identifier);
             }
         }
 
@@ -126,6 +117,7 @@ class UserTypesController extends AbstractController
         $this->baseVariables($variables);
         $variables['title'] .= ' - ' . Craft::t('organizations', 'Edit') . ' ' . $userType->name;
         $variables['continueEditingUrl'] = $this->getBaseContinueEditingUrl('/' . $userType->getId());
+        $variables['saveShortcutRedirect'] = $variables['continueEditingUrl'];
         $variables['crumbs'][] = [
             'label' => Craft::t('organizations', $userType->name),
             'url' => UrlHelper::url($variables['continueEditingUrl'])

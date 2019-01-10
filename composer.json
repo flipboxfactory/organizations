@@ -1,7 +1,7 @@
 {
 	"name": "flipboxfactory/organizations",
 	"description": "Simple parent + child management",
-	"version": "1.0.0-rc.25",
+	"version": "1.0.0",
 	"type": "craft-plugin",
 	"keywords": [
 		"flipbox",
@@ -23,14 +23,12 @@
 		"rss": "https://github.com/flipboxfactory/organizations/commits/master.atom"
 	},
 	"require": {
-		"craftcms/cms": "^3.0.0",
-		"flipboxfactory/craft-ember": "^1.0.0",
-		"flipboxfactory/craft-elements-nested-index": "^1.0.0",
-		"flipboxfactory/craft-sortable-associations": "^1.0.1"
+		"flipboxfactory/craft-ember": "^2.1",
+		"flipboxfactory/craft-elements-nested-index": "^2.0"
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.2",
-		"codeception/codeception": "^2.4",
+		"codeception/codeception": "^2.4.0",
 		"vlucas/phpdotenv": "^2.4"
 	},
 	"autoload": {
@@ -50,9 +48,13 @@
 		"developerUrl": "https://www.flipboxfactory.com",
 		"class": "flipbox\\organizations\\Organizations",
 		"changelogUrl": "https://raw.githubusercontent.com/flipboxfactory/organizations/master/CHANGELOG.md",
-		"downloadUrl": "https://github.com/flipboxfactory/organizations/archive/master.zip",
+		"documentationUrl": "https://organizations.flipboxfactory.com",
 		"hasCpSettings": true,
 		"hasCpSection": true,
-		"schemaVersion": "1.2.0"
+		"schemaVersion": "1.2.0",
+		"branch-alias": {
+			"dev-develop": "1.0.x-dev",
+			"dev-master": "1.0.x-dev"
+		}
 	}
 }

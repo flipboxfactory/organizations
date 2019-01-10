@@ -9,15 +9,13 @@
 namespace flipbox\organizations\cp\actions\general;
 
 use Craft;
-use craft\helpers\ArrayHelper;
-use craft\helpers\StringHelper;
-use flipbox\ember\actions\model\ModelCreate;
-use flipbox\ember\exceptions\ModelNotFoundException;
+use flipbox\craft\ember\actions\models\CreateModel;
+use flipbox\organizations\cp\actions\general\traits\SiteSettingAttributesTrait;
 use flipbox\organizations\models\Settings;
 use flipbox\organizations\models\SiteSettings;
 use flipbox\organizations\Organizations;
-use yii\base\BaseObject;
 use yii\base\Model;
+use yii\web\HttpException;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -25,28 +23,10 @@ use yii\base\Model;
  *
  * @method array parentNormalizeSiteConfig($config = [])
  */
-class Update extends ModelCreate
+class Update extends CreateModel
 {
-    use traits\SiteSettingAttributes {
+    use SiteSettingAttributesTrait {
         normalizeSiteConfig as parentNormalizeSiteConfig;
-    }
-
-    /**
-     * @param BaseObject $settings
-     * @return bool
-     * @throws ModelNotFoundException
-     */
-    protected function ensureSettings(BaseObject $settings): bool
-    {
-        if (!$settings instanceof Settings) {
-            throw new ModelNotFoundException(sprintf(
-                "Settings must be an instance of '%s', '%s' given.",
-                Settings::class,
-                get_class($settings)
-            ));
-        }
-
-        return true;
     }
 
     /**
@@ -54,30 +34,15 @@ class Update extends ModelCreate
      *
      * @return array
      */
-    protected function validBodyParams(): array
-    {
-        return [
-            'requireOwner',
-            'uniqueOwner'
-        ];
-    }
+    public $validBodyParams = [
+        'requireOwner',
+        'uniqueOwner'
+    ];
 
     /**
      * @inheritdoc
      */
-    public function statusCodeSuccess(): int
-    {
-        return 200;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function attributeValuesFromBody(): array
-    {
-        $attributes = parent::attributeValuesFromBody();
-        return $attributes;
-    }
+    public $statusCodeSuccess = 200;
 
     /**
      * @param array $config
@@ -94,28 +59,23 @@ class Update extends ModelCreate
     }
 
     /**
-     * @param string|array $config
-     * @return array
-     */
-    protected function normalizeStateConfig($config = []): array
-    {
-        if (!is_array($config)) {
-            $config = [
-                'label' => StringHelper::toTitleCase((string)$config),
-                'value' => $config
-            ];
-        }
-
-        return [ArrayHelper::getValue($config, 'value') => ArrayHelper::getValue($config, 'label')];
-    }
-
-    /**
      * @inheritdoc
      * @param Settings $model
+     * @throws \Throwable
      */
     protected function performAction(Model $model): bool
     {
-        return Organizations::getInstance()->getCp()->getSettings()->save($model);
+        $fieldLayout = $model->getFieldLayout();
+
+        // Save field layout
+        if (!Craft::$app->getFields()->saveLayout($fieldLayout)) {
+            throw new HttpException(401, "Unable to save field layout");
+        }
+
+        return Craft::$app->getPlugins()->savePluginSettings(
+            Organizations::getInstance(),
+            $model->toArray()
+        );
     }
 
     /**
@@ -134,18 +94,16 @@ class Update extends ModelCreate
 
     /**
      * @inheritdoc
-     * @param Settings $object
+     * @param Settings $model
      * @return Settings
      */
-    protected function populate(BaseObject $object): BaseObject
+    protected function populate(Model $model): Model
     {
-        if (true === $this->ensureSettings($object)) {
-            parent::populate($object);
-            $this->populateSiteSettings($object);
-            $this->populateSiteLayout($object);
-        }
+        parent::populate($model);
+        $this->populateSiteSettings($model);
+        $this->populateSiteLayout($model);
 
-        return $object;
+        return $model;
     }
 
     /**

@@ -186,7 +186,7 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
             return;
         }
 
-        // Update status
+        // UpdateOrganization status
         $option.children('.status').addClass('active');
 
         var value = $option.attr('data-type');
@@ -219,7 +219,7 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
             return;
         }
 
-        // Update status
+        // UpdateOrganization status
         $option.children('.status').removeClass('active');
 
         var value = $option.attr('data-type');
@@ -270,7 +270,7 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
                         Craft.initUiElements(this.$sidebar);
                         // Craft.initUiElements($usersContent);
 
-                        // Update the slug generator with the new title input
+                        // UpdateOrganization the slug generator with the new title input
                         if (typeof slugGenerator !== 'undefined') {
                             slugGenerator.setNewSource('#title');
                         }

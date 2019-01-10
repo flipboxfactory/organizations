@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 <div class="meta user-types-hud">
-    {% set selectedTypes = craft.organizations.userTypes.getQuery({
+    {% set selectedTypes = craft.organizations.userTypes({
         organization: organization,
         user: user,
         select: ['typeId']

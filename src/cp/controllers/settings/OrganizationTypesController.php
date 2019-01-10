@@ -10,9 +10,9 @@ namespace flipbox\organizations\cp\controllers\settings;
 
 use Craft;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\actions\organizations\types\Create;
-use flipbox\organizations\actions\organizations\types\Delete;
-use flipbox\organizations\actions\organizations\types\Update;
+use flipbox\organizations\actions\organizations\CreateOrganizationType;
+use flipbox\organizations\actions\organizations\DeleteOrganizationType;
+use flipbox\organizations\actions\organizations\UpdateOrganizationType;
 use flipbox\organizations\cp\controllers\AbstractController;
 
 /**
@@ -78,9 +78,9 @@ class OrganizationTypesController extends AbstractController
      */
     public function actionCreate()
     {
-        /** @var Create $action */
+        /** @var CreateOrganizationType $action */
         $action = Craft::createObject([
-            'class' => Create::class,
+            'class' => CreateOrganizationType::class,
             'checkAccess' => [$this, 'checkCreateAccess']
         ], [
             'create',
@@ -103,9 +103,9 @@ class OrganizationTypesController extends AbstractController
             $type = Craft::$app->getRequest()->getBodyParam('type');
         }
 
-        /** @var Update $action */
+        /** @var UpdateOrganizationType $action */
         $action = Craft::createObject([
-            'class' => Update::class,
+            'class' => UpdateOrganizationType::class,
             'checkAccess' => [$this, 'checkUpdateAccess']
         ], [
             'update',
@@ -128,9 +128,9 @@ class OrganizationTypesController extends AbstractController
             $type = Craft::$app->getRequest()->getBodyParam('type');
         }
 
-        /** @var Delete $action */
+        /** @var DeleteOrganizationType $action */
         $action = Craft::createObject([
-            'class' => Delete::class,
+            'class' => DeleteOrganizationType::class,
             'checkAccess' => [$this, 'checkDeleteAccess']
         ], [
             'delete',

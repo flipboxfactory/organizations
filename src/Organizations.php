@@ -12,10 +12,6 @@ use Craft;
 use craft\base\Plugin as BasePlugin;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
-use craft\events\CancelableEvent;
-use craft\events\DefineBehaviorsEvent;
-use craft\events\RegisterComponentTypesEvent;
-use craft\events\RegisterElementSourcesEvent;
 use craft\events\RegisterUrlRulesEvent;
 use craft\helpers\UrlHelper;
 use craft\models\FieldLayout as FieldLayoutModel;
@@ -23,13 +19,8 @@ use craft\services\Elements;
 use craft\services\Fields;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
-use flipbox\ember\modules\LoggerTrait;
-use flipbox\organizations\db\behaviors\OrganizationAttributesToUserQueryBehavior;
-use flipbox\organizations\elements\behaviors\UserOrganizationsBehavior;
-use flipbox\organizations\elements\behaviors\UserTypesBehavior;
+use flipbox\craft\ember\modules\LoggerTrait;
 use flipbox\organizations\elements\Organization as OrganizationElement;
-use flipbox\organizations\fields\Organization as OrganizationField;
-use flipbox\organizations\fields\OrganizationType as OrganizationTypeField;
 use flipbox\organizations\models\Settings as OrganizationSettings;
 use flipbox\organizations\records\OrganizationType as OrganizationType;
 use flipbox\organizations\web\twig\variables\Organization as OrganizationVariable;
@@ -50,21 +41,6 @@ class Organizations extends BasePlugin
      */
     public function init()
     {
-        // Services
-        $this->setComponents([
-            'element' => services\Element::class,
-            'organizations' => services\Organizations::class,
-            'organizationTypes' => services\OrganizationTypes::class,
-            'organizationTypeSettings' => services\OrganizationTypeSettings::class,
-            'organizationTypeAssociations' => services\OrganizationTypeAssociations::class,
-            'organizationUserAssociations' => services\OrganizationUserAssociations::class,
-            'records' => services\Records::class,
-            'users' => services\Users::class,
-            'userOrganizationAssociations' => services\UserOrganizationAssociations::class,
-            'userTypes' => services\UserTypes::class,
-            'userTypeAssociations' => services\UserTypeAssociations::class,
-        ]);
-
         // Sub-Modules
         $this->setModules([
             'cp' => cp\Cp::class
@@ -76,53 +52,80 @@ class Organizations extends BasePlugin
         Event::on(
             Fields::class,
             Fields::EVENT_REGISTER_FIELD_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = OrganizationField::class;
-                $event->types[] = OrganizationTypeField::class;
-            }
+            [
+                events\handlers\RegisterFieldTypes::class,
+                'handle'
+            ]
         );
 
         // Elements
         Event::on(
             Elements::class,
             Elements::EVENT_REGISTER_ELEMENT_TYPES,
-            function (RegisterComponentTypesEvent $event) {
-                $event->types[] = OrganizationElement::class;
-            }
+            [
+                events\handlers\RegisterElements::class,
+                'handle'
+            ]
         );
 
-        // User Query (attach behavior)
+        // User Query Behavior(s)
         Event::on(
             UserQuery::class,
             UserQuery::EVENT_DEFINE_BEHAVIORS,
-            function (DefineBehaviorsEvent $e) {
-                $e->behaviors['organization'] = OrganizationAttributesToUserQueryBehavior::class;
-            }
+            [
+                events\handlers\AttachUserQueryBehaviors::class,
+                'handle'
+            ]
         );
 
         // User Query (prepare)
         Event::on(
             UserQuery::class,
-            UserQuery::EVENT_AFTER_PREPARE,
-            function (CancelableEvent $e) {
-                /** @var UserQuery $query */
-                $query = $e->sender;
-
-                /** @var OrganizationAttributesToUserQueryBehavior $behavior */
-                if (null !== ($behavior = $query->getBehavior('organization'))) {
-                    $behavior->applyOrganizationParams($query);
-                }
-            }
+            UserQuery::EVENT_BEFORE_PREPARE,
+            [
+                events\handlers\PrepareUserQuery::class,
+                'handle'
+            ]
         );
 
-        // User (attach behavior)
+        // User Behavior(s)
         Event::on(
             User::class,
             User::EVENT_DEFINE_BEHAVIORS,
-            function (DefineBehaviorsEvent $e) {
-                $e->behaviors['organizations'] = UserOrganizationsBehavior::class;
-                $e->behaviors['types'] = UserTypesBehavior::class;
-            }
+            [
+                events\handlers\AttachUserBehaviors::class,
+                'handle'
+            ]
+        );
+
+        // User Type sources
+        Event::on(
+            User::class,
+            User::EVENT_REGISTER_SOURCES,
+            [
+                events\handlers\RegisterUserElementSources::class,
+                'handle'
+            ]
+        );
+
+        // Register attributes available on User index view
+        Event::on(
+            User::class,
+            User::EVENT_REGISTER_TABLE_ATTRIBUTES,
+            [
+                events\handlers\RegisterUserTableAttributes::class,
+                'handle'
+            ]
+        );
+
+        // Set attributes on User index
+        Event::on(
+            User::class,
+            User::EVENT_SET_TABLE_ATTRIBUTE_HTML,
+            [
+                events\handlers\SetUserTableAttributeHtml::class,
+                'handle'
+            ]
         );
 
         // CP routes
@@ -140,29 +143,6 @@ class Organizations extends BasePlugin
                 /** @var CraftVariable $variable */
                 $variable = $event->sender;
                 $variable->set('organizations', OrganizationVariable::class);
-            }
-        );
-
-        // User Type sources
-        Event::on(
-            User::class,
-            User::EVENT_REGISTER_SOURCES,
-            function (RegisterElementSourcesEvent $event) {
-                if ($event->context === 'index') {
-                    $event->sources[] = [
-                        'heading' => "Organization Groups"
-                    ];
-
-                    $types = static::getInstance()->getUserTypes()->findAll();
-                    foreach ($types as $type) {
-                        $event->sources[] = [
-                            'key' => 'type:' . $type->id,
-                            'label' => Craft::t('organizations', $type->name),
-                            'criteria' => ['organization' => ['userType' => $type->id]],
-                            'hasThumbs' => true
-                        ];
-                    }
-                }
             }
         );
 
@@ -279,6 +259,8 @@ class Organizations extends BasePlugin
 
     /**
      * @inheritdoc
+     * @return mixed|void|\yii\web\Response
+     * @throws \yii\base\ExitException
      */
     public function getSettingsResponse()
     {
@@ -296,11 +278,11 @@ class Organizations extends BasePlugin
      *******************************************/
 
     /**
-     * Delete any existing field layouts, and create default settings
+     * @throws \yii\base\Exception
      */
     public function afterInstall()
     {
-        // Create default field layout
+        // CreateOrganization default field layout
         $fieldLayout = new FieldLayoutModel();
         $fieldLayout->type = self::class;
 
@@ -342,113 +324,13 @@ class Organizations extends BasePlugin
     /*******************************************
      * MODULES
      *******************************************/
-    /**
-     * @return cp\Cp
-     * @deprecated
-     */
-    public function getConfiguration()
-    {
-        return $this->getCp();
-    }
 
     /**
      * @return cp\Cp
      */
     public function getCp()
     {
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
         return $this->getModule('cp');
-    }
-
-
-    /*******************************************
-     * SERVICES
-     *******************************************/
-
-    /**
-     * @return services\Element
-     */
-    public function getElement()
-    {
-        return $this->get('element');
-    }
-
-    /**
-     * @return services\Organizations
-     */
-    public function getOrganizations()
-    {
-        return $this->get('organizations');
-    }
-
-    /**
-     * @return services\OrganizationTypes
-     */
-    public function getOrganizationTypes()
-    {
-        return $this->get('organizationTypes');
-    }
-
-    /**
-     * @return services\OrganizationTypeSettings
-     */
-    public function getOrganizationTypeSettings()
-    {
-        return $this->get('organizationTypeSettings');
-    }
-
-    /**
-     * @return services\OrganizationTypeAssociations
-     */
-    public function getOrganizationTypeAssociations()
-    {
-        return $this->get('organizationTypeAssociations');
-    }
-
-    /**
-     * @return services\OrganizationUserAssociations
-     */
-    public function getOrganizationUserAssociations()
-    {
-        return $this->get('organizationUserAssociations');
-    }
-
-    /**
-     * @return services\Records
-     */
-    public function getRecords()
-    {
-        return $this->get('records');
-    }
-
-    /**
-     * @return services\Users
-     */
-    public function getUsers()
-    {
-        return $this->get('users');
-    }
-
-    /**
-     * @return services\UserOrganizationAssociations
-     */
-    public function getUserOrganizationAssociations()
-    {
-        return $this->get('userOrganizationAssociations');
-    }
-
-    /**
-     * @return services\UserTypes
-     */
-    public function getUserTypes()
-    {
-        return $this->get('userTypes');
-    }
-
-    /**
-     * @return services\UserTypeAssociations
-     */
-    public function getUserTypeAssociations()
-    {
-        return $this->get('userTypeAssociations');
     }
 }

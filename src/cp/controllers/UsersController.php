@@ -9,9 +9,9 @@
 namespace flipbox\organizations\cp\controllers;
 
 use Craft;
-use flipbox\ember\helpers\ArrayHelper;
-use flipbox\organizations\actions\users\Associate;
-use flipbox\organizations\actions\users\Dissociate;
+use craft\helpers\ArrayHelper;
+use flipbox\organizations\actions\users\AssociateUserToOrganization;
+use flipbox\organizations\actions\users\DissociateUserFromOrganization;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -79,9 +79,9 @@ class UsersController extends AbstractController
             $user = Craft::$app->getRequest()->getBodyParam('user');
         }
 
-        /** @var Associate $action */
+        /** @var AssociateUserToOrganization $action */
         $action = Craft::createObject([
-            'class' => Associate::class
+            'class' => AssociateUserToOrganization::class
         ], [
             'associate',
             $this
@@ -109,9 +109,9 @@ class UsersController extends AbstractController
             $user = Craft::$app->getRequest()->getBodyParam('user');
         }
 
-        /** @var Dissociate $action */
+        /** @var DissociateUserFromOrganization $action */
         $action = Craft::createObject([
-            'class' => Dissociate::class
+            'class' => DissociateUserFromOrganization::class
         ], [
             'dissociate',
             $this

@@ -8,9 +8,10 @@
 
 namespace flipbox\organizations\records;
 
-use flipbox\ember\records\ActiveRecordWithId;
-use flipbox\ember\traits\HandleRules;
-use flipbox\organizations\db\UserTypeQuery;
+use Craft;
+use flipbox\craft\ember\models\HandleRulesTrait;
+use flipbox\craft\ember\records\ActiveRecordWithId;
+use flipbox\organizations\queries\UserTypeQuery;
 use yii\validators\UniqueValidator;
 
 /**
@@ -21,7 +22,7 @@ use yii\validators\UniqueValidator;
  */
 class UserType extends ActiveRecordWithId
 {
-    use HandleRules;
+    use HandleRulesTrait;
 
     /**
      * The table name
@@ -29,12 +30,16 @@ class UserType extends ActiveRecordWithId
     const TABLE_ALIAS = Organization::TABLE_ALIAS . '_user_types';
 
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @inheritdoc
      * @return UserTypeQuery
      */
     public static function find()
     {
-        return new UserTypeQuery;
+        /** @noinspection PhpUnhandledExceptionInspection */
+        /** @noinspection PhpIncompatibleReturnTypeInspection */
+        return Craft::createObject(UserTypeQuery::class, [get_called_class()]);
     }
 
     /**
@@ -75,5 +80,18 @@ class UserType extends ActiveRecordWithId
     public function __toString()
     {
         return (string)$this->getAttribute('name');
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static function findByCondition($condition)
+    {
+        if (!is_numeric($condition) && is_string($condition)) {
+            $condition = ['handle' => $condition];
+        }
+
+        /** @noinspection PhpInternalEntityUsedInspection */
+        return parent::findByCondition($condition);
     }
 }

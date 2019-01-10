@@ -1,0 +1,4 @@
+{% for organization in organizations %}
+        <span class="status {{ organization.status }}"></span><a href="{{ organization.getCpEditUrl() }}">{{ organization.title }}</a>
+        {% if not loop.last %}<br />{% endif %}
+{% endfor %}
