@@ -172,7 +172,7 @@ class UserAssociation extends ActiveRecord
      */
     public function afterDelete()
     {
-        $this->autoReOrder(
+        $this->sequentialOrder(
             'organizationId',
             [
                 'userId' => $this->userId
@@ -180,7 +180,7 @@ class UserAssociation extends ActiveRecord
             'organizationOrder'
         );
 
-        $this->autoReOrder(
+        $this->sequentialOrder(
             'userId',
             [
                 'organizationId' => $this->organizationId

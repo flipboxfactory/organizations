@@ -417,7 +417,7 @@ class Organization extends Element
         ]);
 
 //        if (Craft::$app->getUser()->checkPermission('deleteOrganizations')) {
-//            // DeleteOrganization
+//            // Delete Organization
 //            $actions[] = DeleteAction::class;
 //        }
 

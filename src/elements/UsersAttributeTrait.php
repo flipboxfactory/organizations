@@ -290,7 +290,8 @@ trait UsersAttributeTrait
      */
     public function saveUsers()
     {
-        // Cached results
+
+        // No changes?
         if (null === ($users = $this->getUsers()->getCachedResult())) {
             return true;
         }
@@ -316,7 +317,7 @@ trait UsersAttributeTrait
             $associations[] = $association;
         }
 
-        // DeleteOrganization those removed
+        // Delete those removed
         foreach ($currentAssociations as $currentAssociation) {
             if (!$currentAssociation->delete()) {
                 $success = false;

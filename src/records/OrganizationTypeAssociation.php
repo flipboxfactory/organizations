@@ -82,4 +82,50 @@ class OrganizationTypeAssociation extends ActiveRecord
             ]
         );
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeSave($insert)
+    {
+        $this->ensureSortOrder(
+            [
+                'organizationId' => $this->organizationId
+            ]
+        );
+
+        return parent::beforeSave($insert);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->autoReOrder(
+            'typeId',
+            [
+                'organizationId' => $this->organizationId
+            ]
+        );
+
+        parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @inheritdoc
+     * @throws \yii\db\Exception
+     */
+    public function afterDelete()
+    {
+        $this->sequentialOrder(
+            'typeId',
+            [
+                'organizationId' => $this->organizationId
+            ]
+        );
+
+        parent::afterDelete();
+    }
 }

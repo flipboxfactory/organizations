@@ -379,7 +379,7 @@ trait TypesAttributeTrait
      */
     public function saveTypes(): bool
     {
-        // Cached results
+        // No changes?
         if (null === ($types = $this->getTypes()->getCachedResult())) {
             return true;
         }
@@ -404,7 +404,7 @@ trait TypesAttributeTrait
             $associations[] = $association;
         }
 
-        // DeleteOrganization those removed
+        // Delete those removed
         foreach ($currentAssociations as $currentAssociation) {
             if (!$currentAssociation->delete()) {
                 $success = false;
