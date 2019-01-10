@@ -35,10 +35,14 @@ class UpdateOrganization extends UpdateElement
     public function find($identifier)
     {
         $site = $this->resolveSiteFromRequest();
-        return Organization::findOne([
+        $organization = Organization::findOne([
             is_numeric($identifier) ? 'id' : 'slug' => $identifier,
             'siteId' => $site ? $site->id : null
         ]);
+
+        $organization->setScenario(Organization::SCENARIO_LIVE);
+
+        return $organization;
     }
 
     /**

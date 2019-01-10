@@ -44,8 +44,8 @@ trait TypesAttributeTrait
      */
     public function setTypesFromRequest(string $identifier = 'types')
     {
-        if ($types = Craft::$app->getRequest()->getBodyParam($identifier, [])) {
-            $this->setTypes($types);
+        if (null !== ($types = Craft::$app->getRequest()->getBodyParam($identifier))) {
+            $this->setTypes((array) $types);
         }
 
         return $this;

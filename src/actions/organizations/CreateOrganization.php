@@ -27,11 +27,12 @@ class CreateOrganization extends CreateElement
      */
     public function newElement(array $config = []): ElementInterface
     {
-        $element = new Organization();
+        $organization = new Organization();
 
-        $element->setAttributes($config);
+        $organization->setScenario(Organization::SCENARIO_LIVE);
+        $organization->setAttributes($config);
 
-        return $element;
+        return $organization;
     }
 
     /**

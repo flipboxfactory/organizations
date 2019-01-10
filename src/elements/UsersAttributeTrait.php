@@ -61,9 +61,8 @@ trait UsersAttributeTrait
      */
     public function setUsersFromRequest(string $identifier = 'users')
     {
-        if ($users = Craft::$app->getRequest()->getBodyParam($identifier, [])) {
-            // Set users array
-            $this->setUsers($users);
+        if (null !== ($users = Craft::$app->getRequest()->getBodyParam($identifier))) {
+            $this->setUsers((array) $users);
         }
 
         return $this;
