@@ -30,6 +30,9 @@ use yii\base\ErrorException as Exception;
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
+ *
+ * @method static Organization findOne($criteria = null)
+ * @method static Organization[] findAll($criteria = null) : array
  */
 class Organization extends Element
 {
