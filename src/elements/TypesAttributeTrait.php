@@ -379,28 +379,17 @@ trait TypesAttributeTrait
      */
     public function saveTypes(): bool
     {
+        // No changes?
+        if (null === ($types = $this->getTypes()->getCachedResult())) {
+            return true;
+        }
+
         $currentAssociations = OrganizationTypeAssociation::find()
             ->organizationId($this->getId() ?: false)
             ->indexBy('typeId')
             ->all();
 
         $success = true;
-
-        // DeleteOrganization
-        if (null === ($types = $this->getTypes()->getCachedResult())) {
-            foreach ($currentAssociations as $currentAssociation) {
-                if (!$currentAssociation->delete()) {
-                    $success = false;
-                }
-            }
-
-            if (!$success) {
-                $this->addError('types', 'Unable to dissociate types.');
-            }
-
-            return $success;
-        }
-
         $associations = [];
         $order = 1;
         foreach ($types as $type) {
@@ -415,7 +404,7 @@ trait TypesAttributeTrait
             $associations[] = $association;
         }
 
-        // DeleteOrganization those removed
+        // Delete those removed
         foreach ($currentAssociations as $currentAssociation) {
             if (!$currentAssociation->delete()) {
                 $success = false;

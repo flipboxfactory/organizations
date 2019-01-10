@@ -156,7 +156,7 @@ class OrganizationType extends ActiveRecordWithId
             }
         }
 
-        // DeleteOrganization old settings records
+        // Delete old settings records
         foreach ($allSettings as $settings) {
             $settings->delete();
         }

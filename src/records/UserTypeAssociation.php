@@ -119,7 +119,7 @@ class UserTypeAssociation extends ActiveRecord
      */
     public function afterDelete()
     {
-        $this->autoReOrder(
+        $this->sequentialOrder(
             'typeId',
             [
                 'userId' => $this->userId

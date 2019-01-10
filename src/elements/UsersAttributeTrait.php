@@ -289,6 +289,12 @@ trait UsersAttributeTrait
      */
     public function saveUsers()
     {
+
+        // No changes?
+        if (null === ($users = $this->getUsers()->getCachedResult())) {
+            return true;
+        }
+
         $currentAssociations = UserAssociation::find()
             ->organizationId($this->getId() ?: false)
             ->indexBy('userId')
@@ -296,21 +302,6 @@ trait UsersAttributeTrait
             ->all();
 
         $success = true;
-
-        if (null === ($users = $this->getUsers()->getCachedResult())) {
-            foreach ($currentAssociations as $currentAssociation) {
-                if (!$currentAssociation->delete()) {
-                    $success = false;
-                }
-            }
-
-            if (!$success) {
-                $this->addError('types', 'Unable to dissociate users.');
-            }
-
-            return $success;
-        }
-
         $associations = [];
         $order = 1;
         foreach ($users as $user) {
@@ -325,7 +316,7 @@ trait UsersAttributeTrait
             $associations[] = $association;
         }
 
-        // DeleteOrganization those removed
+        // Delete those removed
         foreach ($currentAssociations as $currentAssociation) {
             if (!$currentAssociation->delete()) {
                 $success = false;

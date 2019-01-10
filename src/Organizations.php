@@ -286,7 +286,7 @@ class Organizations extends BasePlugin
         $fieldLayout = new FieldLayoutModel();
         $fieldLayout->type = self::class;
 
-        // DeleteOrganization existing layouts
+        // Delete existing layouts
         Craft::$app->getFields()->deleteLayoutsByType(self::class);
         Craft::$app->getFields()->deleteLayoutsByType(OrganizationType::class);
         Craft::$app->getFields()->deleteLayoutsByType(OrganizationElement::class);
