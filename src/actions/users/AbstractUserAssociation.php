@@ -85,8 +85,7 @@ abstract class AbstractUserAssociation extends Action
         string $user,
         string $organization,
         int $sortOrder = null
-    )
-    {
+    ) {
         if (null === ($user = $this->findUser($user))) {
             return $this->handleNotFoundResponse();
         }

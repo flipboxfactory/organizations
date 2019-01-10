@@ -48,7 +48,7 @@
 		"developerUrl": "https://www.flipboxfactory.com",
 		"class": "flipbox\\organizations\\Organizations",
 		"changelogUrl": "https://raw.githubusercontent.com/flipboxfactory/organizations/master/CHANGELOG.md",
-		"downloadUrl": "https://github.com/flipboxfactory/organizations/archive/master.zip",
+		"documentationUrl": "https://organizations.flipboxfactory.com",
 		"hasCpSettings": true,
 		"hasCpSection": true,
 		"schemaVersion": "1.2.0",
