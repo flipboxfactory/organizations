@@ -94,7 +94,7 @@ class OrganizationsController extends AbstractController
                     'siteId' => $site->id
                 ]);
             } else {
-                $organization = Organization::findOne([
+                $organization = Organization::getOne([
                     is_numeric($identifier) ? 'id' : 'slug' => $identifier,
                     'siteId' => $site->id,
                     'status' => null
