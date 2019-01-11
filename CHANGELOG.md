@@ -1,5 +1,9 @@
 Changelog
 =========
+## 1.0.1 - 2019-01-11
+### Changed
+- Passing an element to Organization::findOne() will check and return the element
+
 ## 1.0.0 - 2019-01-10
 ### Added
 - GA release
