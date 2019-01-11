@@ -31,7 +31,6 @@ use yii\base\ErrorException as Exception;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method static Organization findOne($criteria = null)
  * @method static Organization[] findAll($criteria = null) : array
  */
 class Organization extends Element
@@ -112,6 +111,19 @@ class Organization extends Element
     public static function find(): ElementQueryInterface
     {
         return new OrganizationQuery(static::class);
+    }
+
+    /**
+     * @inheritdoc
+     * @return static|null
+     */
+    public static function findOne($criteria = null)
+    {
+        if ($criteria instanceof self) {
+            return $criteria;
+        }
+
+        return parent::findOne($criteria);
     }
 
     /**
