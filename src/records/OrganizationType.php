@@ -79,6 +79,22 @@ class OrganizationType extends ActiveRecordWithId
         return Craft::createObject(OrganizationTypeQuery::class, [get_called_class()]);
     }
 
+    /**
+     * @inheritdoc
+     */
+    protected static function findByCondition($condition)
+    {
+        if (is_numeric($condition)) {
+            $condition = ['id' => $condition];
+        }
+
+        if (is_string($condition)) {
+            $condition = ['handle' => $condition];
+        }
+
+        return parent::findByCondition($condition);
+    }
+
     /*******************************************
      * EVENTS
      *******************************************/
