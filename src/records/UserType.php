@@ -45,6 +45,22 @@ class UserType extends ActiveRecordWithId
     /**
      * @inheritdoc
      */
+    protected static function findByCondition($condition)
+    {
+        if (is_numeric($condition)) {
+            $condition = ['id' => $condition];
+        }
+
+        if (is_string($condition)) {
+            $condition = ['handle' => $condition];
+        }
+
+        return parent::findByCondition($condition);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function rules()
     {
         return array_merge(
@@ -80,18 +96,5 @@ class UserType extends ActiveRecordWithId
     public function __toString()
     {
         return (string)$this->getAttribute('name');
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected static function findByCondition($condition)
-    {
-        if (!is_numeric($condition) && is_string($condition)) {
-            $condition = ['handle' => $condition];
-        }
-
-        /** @noinspection PhpInternalEntityUsedInspection */
-        return parent::findByCondition($condition);
     }
 }
