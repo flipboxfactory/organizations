@@ -1,5 +1,9 @@
 Changelog
 =========
+## 1.0.2 - 2019-01-15
+### Changed
+- Gracefully handle looking up a record by the unique handle or id.
+
 ## 1.0.1 - 2019-01-11
 ### Changed
 - Passing an element to Organization::findOne() will check and return the element
