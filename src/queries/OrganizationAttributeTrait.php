@@ -8,7 +8,7 @@
 
 namespace flipbox\organizations\queries;
 
-use flipbox\craft\ember\helpers\ArrayHelper;
+use craft\db\Query;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
 
@@ -64,42 +64,20 @@ trait OrganizationAttributeTrait
 
     /**
      * @param $value
-     * @param string $join
-     * @return array
+     * @return array|string
      */
-    protected function parseOrganizationValue($value, string $join = 'and'): array
+    protected function parseOrganizationValue($value)
     {
-        if (false === QueryHelper::parseBaseParam($value, $join)) {
-            foreach ($value as $operator => &$v) {
-                $this->resolveOrganizationValue($operator, $v);
+        return QueryHelper::prepareParam(
+            $value,
+            function (string $slug) {
+                $value = (new Query())
+                    ->select(['id'])
+                    ->from(['{{%elements_sites}} elements_sites'])
+                    ->where(['slug' => $slug])
+                    ->scalar();
+                return empty($value) ? false : $value;
             }
-        }
-
-        $value = ArrayHelper::filterEmptyAndNullValuesFromArray($value);
-
-        if (empty($value)) {
-            return [];
-        }
-
-        return array_merge([$join], $value);
-    }
-
-    /**
-     * @param $operator
-     * @param $value
-     */
-    protected function resolveOrganizationValue($operator, &$value)
-    {
-        if (false === QueryHelper::findParamValue($value, $operator)) {
-            if (is_string($value)) {
-                if ($element = Organization::findOne(['slug' => $value, 'status' => null])) {
-                    $value = $element->id;
-                }
-            }
-
-            if ($value) {
-                $value = QueryHelper::assembleParamValue($value, $operator);
-            }
-        }
+        );
     }
 }

@@ -8,7 +8,7 @@
 
 namespace flipbox\organizations\queries;
 
-use flipbox\craft\ember\helpers\ArrayHelper;
+use craft\db\Query;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\records\OrganizationType;
 
@@ -64,52 +64,20 @@ trait OrganizationTypeAttributeTrait
 
     /**
      * @param $value
-     * @param string $join
-     * @return array
+     * @return array|string
      */
-    protected function parseOrganizationTypeValue($value, string $join = 'and'): array
+    protected function parseOrganizationTypeValue($value)
     {
-        if (false === QueryHelper::parseBaseParam($value, $join)) {
-            foreach ($value as $operator => &$v) {
-                $this->resolveOrganizationTypeValue($operator, $v);
+        return QueryHelper::prepareParam(
+            $value,
+            function (string $handle) {
+                $value = (new Query())
+                    ->select(['id'])
+                    ->from([OrganizationType::tableName()])
+                    ->where(['handle' => $handle])
+                    ->scalar();
+                return empty($value) ? false : $value;
             }
-        }
-
-        $value = ArrayHelper::filterEmptyAndNullValuesFromArray($value);
-
-        if (empty($value)) {
-            return [];
-        }
-
-        return array_merge([$join], $value);
-    }
-
-    /**
-     * @param $operator
-     * @param $value
-     */
-    protected function resolveOrganizationTypeValue($operator, &$value)
-    {
-        if (false === QueryHelper::findParamValue($value, $operator)) {
-            if (is_string($value)) {
-                $value = $this->resolveTypeStringValue($value);
-            }
-
-            if ($value) {
-                $value = QueryHelper::assembleParamValue($value, $operator);
-            }
-        }
-    }
-
-    /**
-     * @param string $value
-     * @return int|null
-     */
-    protected function resolveTypeStringValue(string $value)
-    {
-        if (!$record = OrganizationType::findOne($value)) {
-            return null;
-        }
-        return $record->id;
+        );
     }
 }

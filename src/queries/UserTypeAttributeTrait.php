@@ -9,8 +9,6 @@
 namespace flipbox\organizations\queries;
 
 use craft\db\Query;
-use craft\helpers\Db;
-use flipbox\craft\ember\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\records\UserType;
 
@@ -66,55 +64,20 @@ trait UserTypeAttributeTrait
 
     /**
      * @param $value
-     * @param string $join
-     * @return array
+     * @return array|string
      */
-    protected function parseUserTypeValue($value, string $join = 'and'): array
+    protected function parseUserTypeValue($value)
     {
-        if (false === QueryHelper::parseBaseParam($value, $join)) {
-            foreach ($value as $operator => &$v) {
-                $this->resolveUserTypeValue($operator, $v);
+        return QueryHelper::prepareParam(
+            $value,
+            function (string $handle) {
+                $value = (new Query())
+                    ->select(['id'])
+                    ->from([UserType::tableName()])
+                    ->where(['handle' => $handle])
+                    ->scalar();
+                return empty($value) ? false : $value;
             }
-        }
-
-        $value = ArrayHelper::filterEmptyAndNullValuesFromArray($value);
-
-        if (empty($value)) {
-            return [];
-        }
-
-        // parse param to allow for mixed variables
-        return array_merge([$join], $value);
-    }
-
-    /**
-     * @param $operator
-     * @param $value
-     */
-    protected function resolveUserTypeValue($operator, &$value)
-    {
-        if (false === QueryHelper::findParamValue($value, $operator)) {
-            if (is_string($value)) {
-                $value = $this->resolveUserTypeStringValue($value);
-            }
-
-            if ($value) {
-                $value = QueryHelper::assembleParamValue($value, $operator);
-            }
-        }
-    }
-
-    /**
-     * @param string $value
-     * @return string|false
-     */
-    protected function resolveUserTypeStringValue(string $value)
-    {
-        $value = (new Query())
-            ->select(['id'])
-            ->from([UserType::tableName()])
-            ->where(Db::parseParam('handle', $value))
-            ->scalar();
-        return empty($value) ? false : $value;
+        );
     }
 }
