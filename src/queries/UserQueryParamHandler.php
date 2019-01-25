@@ -158,14 +158,14 @@ class UserQueryParamHandler extends BaseObject
             return;
         }
 
-        $query->subQuery->distinct(true);
-
         $this->joinOrganizationUserTypeTable($query->subQuery);
-        $query->subQuery->andWhere(
-            Db::parseParam(
-                UserCollectionUsersRecord::tableAlias() . '.typeId',
-                $this->parseUserTypeValue($type)
-            )
-        );
+        $query->subQuery
+            ->distinct(true)
+            ->andWhere(
+                Db::parseParam(
+                    UserCollectionUsersRecord::tableAlias() . '.typeId',
+                    $this->parseUserTypeValue($type)
+                )
+            );
     }
 }

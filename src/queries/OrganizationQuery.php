@@ -234,7 +234,10 @@ class OrganizationQuery extends ElementQuery
         }
 
         $alias = $this->joinOrganizationTypeTable();
-        $this->subQuery->andWhere(
+
+        $this->subQuery
+            ->distinct(true)
+            ->andWhere(
             Db::parseParam($alias . '.typeId', $this->parseOrganizationTypeValue($this->organizationType))
         );
     }
