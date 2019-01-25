@@ -238,7 +238,7 @@ class OrganizationQuery extends ElementQuery
         $this->subQuery
             ->distinct(true)
             ->andWhere(
-            Db::parseParam($alias . '.typeId', $this->parseOrganizationTypeValue($this->organizationType))
-        );
+                Db::parseParam($alias . '.typeId', $this->parseOrganizationTypeValue($this->organizationType))
+            );
     }
 }
