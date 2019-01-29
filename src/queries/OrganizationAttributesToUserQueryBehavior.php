@@ -105,5 +105,9 @@ class OrganizationAttributesToUserQueryBehavior extends Behavior
         if (null !== ($subValue = ArrayHelper::remove($value, 'userType'))) {
             $this->handler->setUserType($subValue);
         }
+
+        if (null !== ($subValue = ArrayHelper::remove($value, 'userState'))) {
+            $this->handler->setUserState($subValue);
+        }
     }
 }

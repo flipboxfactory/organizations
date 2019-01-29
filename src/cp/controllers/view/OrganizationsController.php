@@ -136,7 +136,7 @@ class OrganizationsController extends AbstractController
         $variables['elementType'] = UserElement::class;
         $variables['usersInputJsClass'] = 'Craft.NestedElementIndexSelectInput';
         $variables['usersInputJs'] = $this->getUserInputJs($organization);
-        $variables['usersIndexJsClass'] = 'Craft.OrganizationUserIndex';
+        $variables['usersIndexJsClass'] = 'Craft.NestedElementIndex';
         $variables['usersIndexJs'] = $this->getUserIndexJs($organization);
 
         return $this->renderTemplate(
@@ -195,7 +195,7 @@ class OrganizationsController extends AbstractController
     {
         return [
             'source' => 'nested',
-            'context' => 'index',
+            'context' => 'organizations',
             'showStatusMenu' => true,
             'showSiteMenu' => true,
             'hideSidebar' => false,

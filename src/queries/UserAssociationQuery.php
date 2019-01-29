@@ -27,6 +27,30 @@ class UserAssociationQuery extends CacheableActiveQuery
         OrganizationAttributeTrait;
 
     /**
+     * @var string|string[]|null
+     */
+    public $state;
+
+    /**
+     * @param string|string[]|null $value
+     * @return static The query object
+     */
+    public function setState($value)
+    {
+        $this->state = $value;
+        return $this;
+    }
+
+    /**
+     * @param string|string[]|null $value
+     * @return static The query object
+     */
+    public function state($value)
+    {
+        return $this->setState($value);
+    }
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -43,6 +67,14 @@ class UserAssociationQuery extends CacheableActiveQuery
      */
     public function prepare($builder)
     {
+        $attributes = ['state'];
+
+        foreach ($attributes as $attribute) {
+            if (null !== ($value = $this->{$attribute})) {
+                $this->andWhere(Db::parseParam($attribute, $value));
+            }
+        }
+
         if ($this->user !== null) {
             $this->andWhere(
                 Db::parseParam('userId', $this->parseUserValue($this->user))

@@ -33,6 +33,30 @@ class UserQueryParamHandler extends BaseObject
     private $owner;
 
     /**
+     * @var string|string[]|null
+     */
+    public $userState;
+
+    /**
+     * @param string|string[]|null $value
+     * @return UserQuery
+     */
+    public function setUserState($value): UserQuery
+    {
+        $this->userState = $value;
+        return $this->owner->owner;
+    }
+
+    /**
+     * @param string|string[]|null $value
+     * @return UserQuery
+     */
+    public function userState($value): UserQuery
+    {
+        return $this->setUserState($value);
+    }
+
+    /**
      * @inheritdoc
      * @param OrganizationAttributesToUserQueryBehavior $owner
      */
@@ -60,7 +84,8 @@ class UserQueryParamHandler extends BaseObject
             (
                 $this->organization === null &&
                 $this->organizationType === null &&
-                $this->userType === null
+                $this->userType === null &&
+                $this->userState === null
             )
         ) {
             return;
@@ -76,6 +101,11 @@ class UserQueryParamHandler extends BaseObject
         $this->applyUserTypeParam(
             $query,
             $this->userType
+        );
+
+        $this->applyUserStateParam(
+            $query,
+            $this->userState
         );
     }
 
@@ -145,7 +175,7 @@ class UserQueryParamHandler extends BaseObject
 
 
     /************************************************************
-     * USER CATEGORY
+     * USER TYPE
      ************************************************************/
 
     /**
@@ -167,5 +197,28 @@ class UserQueryParamHandler extends BaseObject
                     $this->parseUserTypeValue($type)
                 )
             );
+    }
+
+
+    /************************************************************
+     * USER STATE
+     ************************************************************/
+
+    /**
+     * @param UserQuery $query
+     * @param $state
+     */
+    protected function applyUserStateParam(UserQuery $query, $state)
+    {
+        if (empty($state)) {
+            return;
+        }
+
+        $query->subQuery->andWhere(
+            Db::parseParam(
+                OrganizationUsersRecord::tableAlias() . '.state',
+                $state
+            )
+        );
     }
 }

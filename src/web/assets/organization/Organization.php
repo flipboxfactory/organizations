@@ -24,18 +24,13 @@ class Organization extends AssetBundle
     public function init()
     {
         $this->js = [
-            'js/HUDEditor' . $this->dotJs(),
-            'js/OrganizationUserTypeEditor' . $this->dotJs(),
-            'js/TableOrganizationUserIndexView' . $this->dotJs(),
-            'js/OrganizationUserIndex' . $this->dotJs(),
+            'js/UserAssociationEditor' . $this->dotJs(),
             'js/OrganizationTypeSwitcher' . $this->dotJs(),
 //            'js/OrganizationDelete' . $this->dotJs()
         ];
 
         $this->css = [
-            'css/HUDEditor.css',
             'css/OrganizationTypeSwitcher.css',
-            'css/TableOrganizationUserIndexView.css',
             'css/Organization.css'
         ];
 

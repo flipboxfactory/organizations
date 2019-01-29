@@ -9,6 +9,7 @@
 namespace flipbox\organizations\events\handlers;
 
 use craft\events\RegisterElementSourcesEvent;
+use flipbox\organizations\Organizations;
 use flipbox\organizations\records\UserType;
 
 /**
@@ -22,9 +23,9 @@ class RegisterUserElementSources
      */
     public static function handle(RegisterElementSourcesEvent $event)
     {
-        if ($event->context === 'index') {
+        if ($event->context === 'organizations') {
             $event->sources[] = [
-                'heading' => "Organization Groups"
+                'heading' => "Organization Types"
             ];
 
             $types = UserType::findAll([]);
@@ -33,6 +34,20 @@ class RegisterUserElementSources
                     'key' => 'type:' . $type->id,
                     'label' => \Craft::t('organizations', $type->name),
                     'criteria' => ['organization' => ['userType' => $type->id]],
+                    'hasThumbs' => true
+                ];
+            }
+
+            $event->sources[] = [
+                'heading' => "Organization States"
+            ];
+
+            $states = Organizations::getInstance()->getSettings()->getUserStates();
+            foreach ($states as $state => $label) {
+                $event->sources[] = [
+                    'key' => 'state:' . $state,
+                    'label' => $label,
+                    'criteria' => ['organization' => ['userState' => $state]],
                     'hasThumbs' => true
                 ];
             }

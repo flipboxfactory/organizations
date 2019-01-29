@@ -9,12 +9,13 @@
 namespace flipbox\organizations\migrations;
 
 use craft\db\Migration;
+use flipbox\organizations\Organizations;
 use flipbox\organizations\records\UserAssociation;
 
 /**
- * This migration adds a new column to support multiple user association sort types.
+ * This migration adds a 'state' column to the organization user association record.
  */
-class m180507_121214_user_association_sort extends Migration
+class m190128_091129_user_state_column extends Migration
 {
     /**
      * @inheritdoc
@@ -25,20 +26,20 @@ class m180507_121214_user_association_sort extends Migration
         $table = $this->getDb()->getSchema()->getTableSchema(
             UserAssociation::tableName()
         );
+        
+        if (!isset($table->columns[AlterUserStates::COLUMN_NAME])) {
+            $states = array_keys(Organizations::getInstance()->getSettings()->getUserStates());
+            $defaultState = Organizations::getInstance()->getSettings()->getDefaultUserState();
 
-        if (isset($table->columns['sortOrder'])) {
-            $this->renameColumn(
-                UserAssociation::tableName(),
-                'sortOrder',
-                'organizationOrder'
-            );
-        }
+            $type = $this->enum(
+                AlterUserStates::COLUMN_NAME,
+                $states
+            )->defaultValue($defaultState)->notNull()->after('organizationOrder');
 
-        if (!isset($table->columns['userOrder'])) {
             $this->addColumn(
                 UserAssociation::tableName(),
-                'userOrder',
-                $this->smallInteger()->unsigned()->after('organizationid')
+                AlterUserStates::COLUMN_NAME,
+                $type
             );
         }
     }
@@ -48,7 +49,7 @@ class m180507_121214_user_association_sort extends Migration
      */
     public function safeDown()
     {
-        echo "m180507_1212141_user_association_sort cannot be reverted.\n";
+        echo "m190128_091129_user_state_column cannot be reverted.\n";
         return true;
     }
 }
