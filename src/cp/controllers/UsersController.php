@@ -145,7 +145,8 @@ class UsersController extends AbstractController
         }
 
         if (null === $user) {
-            $user = Craft::$app->getRequest()->getBodyParam('user',
+            $user = Craft::$app->getRequest()->getBodyParam(
+                'user',
                 Craft::$app->getRequest()->getBodyParam('elementId')
             );
         }
@@ -165,7 +166,7 @@ class UsersController extends AbstractController
 
         $user = $userAssociation->getUser();
 
-        if(null !== ($types = Craft::$app->getRequest()->getBodyParam('types'))) {
+        if (null !== ($types = Craft::$app->getRequest()->getBodyParam('types'))) {
             $query = UserType::find()->id(empty($types) ? ':empty:' : $types);
 
             $query->setCachedResult(
@@ -276,7 +277,8 @@ class UsersController extends AbstractController
         }
 
         if (null === $user) {
-            $user = Craft::$app->getRequest()->getBodyParam('user',
+            $user = Craft::$app->getRequest()->getBodyParam(
+                'user',
                 Craft::$app->getRequest()->getBodyParam('elementId')
             );
         }

@@ -71,11 +71,15 @@ class EditUserAssociation extends ElementAction
                     new Craft.UserAssociationEditor(\$element, {
                         params: {
                             organization: {$organizationId},
-                            includeTableAttributesForSource: 'organizations:' + index_nested_index_organization_users.sourceKey
+                            includeTableAttributesForSource: 'organizations:' + 
+                                index_nested_index_organization_users.sourceKey
                         },
                         onSaveElement: $.proxy(function(response) {
                             if (response.tableAttributes) {
-                                index_nested_index_organization_users.view._updateTableAttributes(\$element, response.tableAttributes);
+                                index_nested_index_organization_users.view._updateTableAttributes(
+                                    \$element, 
+                                    response.tableAttributes
+                                );
                             }
                         }, this)
                     });

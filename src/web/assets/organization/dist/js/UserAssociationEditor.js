@@ -11,7 +11,7 @@ Craft.UserAssociationEditor = Craft.BaseElementEditor.extend(
         },
 
         // replacing hard coded action url w/ this.settings.loadHudAction
-        loadHud: function() {
+        loadHud: function () {
             this.onBeginLoading();
             var data = this.getBaseData();
             data.includeSites = this.settings.showSiteSwitcher;
@@ -19,10 +19,10 @@ Craft.UserAssociationEditor = Craft.BaseElementEditor.extend(
         },
 
         // replacing hard coded action url w/ this.settings.loadHudAction
-        reloadForm: function(data, callback) {
+        reloadForm: function (data, callback) {
             data = $.extend(this.getBaseData(), data);
 
-            Craft.postActionRequest(this.settings.loadHudAction, data, $.proxy(function(response, textStatus) {
+            Craft.postActionRequest(this.settings.loadHudAction, data, $.proxy(function (response, textStatus) {
                 if (textStatus === 'success') {
                     this.updateForm(response);
                 }
@@ -34,7 +34,7 @@ Craft.UserAssociationEditor = Craft.BaseElementEditor.extend(
         },
 
         // replacing hard coded action url w/ this.settings.saveAction
-        saveElement: function() {
+        saveElement: function () {
             var validators = this.settings.validators;
 
             if ($.isArray(validators)) {
@@ -48,7 +48,7 @@ Craft.UserAssociationEditor = Craft.BaseElementEditor.extend(
             this.$spinner.removeClass('hidden');
 
             var data = $.param(this.getBaseData()) + '&' + this.hud.$body.serialize();
-            Craft.postActionRequest(this.settings.saveAction, data, $.proxy(function(response, textStatus) {
+            Craft.postActionRequest(this.settings.saveAction, data, $.proxy(function (response, textStatus) {
                 this.$spinner.addClass('hidden');
 
                 if (textStatus === 'success') {
@@ -61,16 +61,14 @@ Craft.UserAssociationEditor = Craft.BaseElementEditor.extend(
                             if ($a.length && response.cpEditUrl) {
                                 $a.attr('href', response.cpEditUrl);
                                 $a.text(response.newTitle);
-                            }
-                            else {
+                            } else {
                                 $title.text(response.newTitle);
                             }
                         }
 
                         this.closeHud();
                         this.onSaveElement(response);
-                    }
-                    else {
+                    } else {
                         this.updateForm(response);
                         Garnish.shake(this.hud.$hud);
                     }
@@ -91,4 +89,5 @@ Craft.UserAssociationEditor = Craft.BaseElementEditor.extend(
             loadHudAction: 'organizations/cp/users/association-editor-html',
             saveAction: 'organizations/cp/users/save-association',
         }
-    });
+    }
+);
