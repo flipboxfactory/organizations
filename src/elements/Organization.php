@@ -11,6 +11,7 @@ namespace flipbox\organizations\elements;
 use Craft;
 use craft\base\Element;
 use craft\elements\actions\Edit as EditAction;
+use craft\elements\actions\SetStatus;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\helpers\DateTimeHelper;
@@ -329,10 +330,13 @@ class Organization extends Element
     {
         $actions = [];
 
+        // Status
+        $actions[] = SetStatus::class;
+
         // Edit
         $actions[] = Craft::$app->getElements()->createAction([
             'type' => EditAction::class,
-            'label' => Craft::t('organizations', 'Edit organization'),
+            'label' => Craft::t('organizations', 'Edit'),
         ]);
 
 //        if (Craft::$app->getUser()->checkPermission('deleteOrganizations')) {

@@ -1,11 +1,15 @@
 Changelog
 =========
+## 1.0.4 - 2019-01-29
+### Changed
+- Managing organization user roles has moved to an element action.
+
+### Added
+- Added a 'state' to Organization Users
+
 ## 1.0.3 - 2019-01-25
 ### Changed
 - Query params are prepared in a more simple and direct way
-
-### Added
-- Distinct references when 
 
 ## 1.0.2 - 2019-01-15
 ### Changed
