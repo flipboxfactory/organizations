@@ -108,6 +108,26 @@ class Settings extends Model
     }
 
     /**
+     * @return array
+     */
+    public function getUserStates(): array
+    {
+        return [
+            'active' => Craft::t('organizations', 'Active'),
+            'pending' => Craft::t('organizations', 'Pending'),
+            'inactive' => Craft::t('organizations', 'InActive')
+        ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultUserState(): string
+    {
+        return 'active';
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()

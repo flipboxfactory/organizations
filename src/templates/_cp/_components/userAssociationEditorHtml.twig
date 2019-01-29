@@ -1,0 +1,54 @@
+{% import "_includes/forms" as forms %}
+
+{% set selectedTypes = association.getTypes().select(['id']).column() %}
+{% set types = craft.organizations.userTypes.all() %}
+
+
+    <div style="padding-left: 24px; padding-right: 24px;">
+        <h6 class="group-heading">{{ "Organization State"|t('organizations') }}</h6>
+        {% set stateOptions = [] %}
+        {% for state, name in craft.organizations.settings.getUserStates() %}
+            {% set stateOptions = stateOptions|merge([{
+                label: name,
+                value: state
+            }]) %}
+        {% endfor %}
+
+        {{ forms.selectField({
+            label: '',
+            id: 'state',
+            name: 'state',
+            options: stateOptions,
+            value: association.state,
+            errors: association.getErrors('state'),
+        }) }}
+    </div>
+    {% if types|length %}
+        <div class="meta">
+            <br /><br />
+        {#<hr />#}
+        <div style="padding-left: 24px; padding-right: 24px;">
+            <h6 class="group-heading">{{ "Organization Types"|t('organizations') }}</h6>
+        </div>
+
+            {% set selectedTypes = craft.organizations.userTypes({
+                organization: association.organizationId,
+                user: association.userId,
+                select: ['typeId']
+            }).column() %}
+
+            {% namespace 'types' %}
+                {% for type in craft.organizations.userTypes.all() %}
+                    {% set selected = type.id in selectedTypes %}
+                    {{ forms.lightswitchField({
+                        label: type.name,
+                        id: type.id,
+                        name: type.id,
+                        value: type.id,
+                        on: selected,
+                    }) }}
+                {% endfor %}
+            {% endnamespace %}
+        </div>
+    {% endif %}
+</div>

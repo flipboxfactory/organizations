@@ -44,7 +44,7 @@
                            data-confirm="{{ 'Are you sure you want to delete this organization?'|t('organizations') }}"
                            data-redirect="{{ baseCpPath|hash }}"
                            role="option"
-                           tabindex="-1">{{ "DeleteOrganization"|t('app') }}</a>
+                           tabindex="-1">{{ "Delete"|t('app') }}</a>
                     </li>
                 </ul>
             {% endif %}
@@ -67,8 +67,11 @@
 
         {% if organization.id %}
             <div id="user-index"{% if tabs|length > 1 %} class="hidden"{% endif %}>
+                {% set sources = craft.app.elementIndexes.getSources(elementType, 'organizations') %}
                 {% include "nested-element-index/_elements/index" with {
                     element: organization,
+                    sources: sources,
+                    customizableSources: false,
                     container: 'nested-index-organization-users',
                     elementType: elementType,
                     indexJsClass: usersIndexJsClass,

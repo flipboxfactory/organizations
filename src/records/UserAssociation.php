@@ -14,6 +14,7 @@ use flipbox\craft\ember\records\ActiveRecord;
 use flipbox\craft\ember\records\IdAttributeTrait;
 use flipbox\craft\ember\records\SortableTrait;
 use flipbox\craft\ember\records\UserAttributeTrait;
+use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
 use yii\db\ActiveQueryInterface;
 
@@ -24,6 +25,7 @@ use yii\db\ActiveQueryInterface;
  * @property int $organizationId
  * @property int $organizationOrder The order which an organization lists its users
  * @property int $userOrder The order which a user lists its organizations
+ * @property string $state The user state
  * @property Organization $organization
  * @property UserType[] $types
  */
@@ -43,6 +45,19 @@ class UserAssociation extends ActiveRecord
      * @inheritdoc
      */
     protected $getterPriorityAttributes = ['userId', 'organizationId'];
+
+    /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        // Default state
+        if (empty($this->state)) {
+            $this->state = Organizations::getInstance()->getSettings()->getDefaultUserState();
+        }
+    }
 
     /**
      * @noinspection PhpDocMissingThrowsInspection
@@ -93,9 +108,24 @@ class UserAssociation extends ActiveRecord
                 [
                     [
                         'userId',
-                        'organizationId'
+                        'organizationId',
+                        'state'
                     ],
                     'required'
+                ],
+                [
+                    [
+                        'state'
+                    ],
+                    'in',
+                    'range' => array_keys(Organizations::getInstance()->getSettings()->getUserStates())
+                ],
+                [
+                    [
+                        'state'
+                    ],
+                    'default',
+                    'value' => Organizations::getInstance()->getSettings()->getDefaultUserState()
                 ],
                 [
                     [
