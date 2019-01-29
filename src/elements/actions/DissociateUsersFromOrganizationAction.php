@@ -51,7 +51,7 @@ class DissociateUsersFromOrganizationAction extends ElementAction
      */
     public function getTriggerLabel(): string
     {
-        return Craft::t('organizations', 'Disassociate Users');
+        return Craft::t('organizations', 'Disassociate');
     }
 
     /**
