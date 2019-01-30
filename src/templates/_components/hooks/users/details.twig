@@ -20,7 +20,7 @@
     <div class="meta read-only" id="organization-associations">
         <h4 class="heading">Organizations</h4>
         <div class="elements">
-            {% set context = 'field' %}
+            {% set context = 'index' %}
             {% for element in organizations %}
                 {% hook "cp.elements.element" %}
             {% endfor %}

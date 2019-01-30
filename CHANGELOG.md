@@ -1,5 +1,9 @@
 Changelog
 =========
+## 1.0.4.1 - 2019-01-29
+### Fixed
+- UserAssociation asset bundle was restored after accidentally being removed.
+
 ## 1.0.4 - 2019-01-29
 ### Changed
 - Managing organization user roles has moved to an element action.
