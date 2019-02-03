@@ -337,6 +337,39 @@ trait UsersAttributeTrait
     }
 
     /**
+     * @param User $user
+     * @param int|null $sortOrder
+     * @return bool
+     */
+    public function associateUser(User $user, int $sortOrder = null): bool
+    {
+        if (null === ($association = UserAssociation::find()
+                ->organizationId($this->getId() ?: false)
+                ->userId($user->getId() ?: false)
+                ->one())
+        ) {
+            $association = new UserAssociation([
+                'organization' => $this,
+                'user' => $user
+            ]);
+        }
+
+        if (null !== $sortOrder) {
+            $association->userOrder = $sortOrder;
+        }
+
+        if (!$association->save()) {
+            $this->addError('organizations', 'Unable to associate user.');
+
+            return false;
+        }
+
+        $this->resetUsers();
+
+        return true;
+    }
+
+    /**
      * @param UserQuery $query
      * @return bool
      * @throws \Throwable
@@ -374,6 +407,33 @@ trait UsersAttributeTrait
         $this->resetUsers();
 
         return $success;
+    }
+
+    /**
+     * @param User $user
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function dissociateUser(User $user): bool
+    {
+        if (null === ($association = UserAssociation::find()
+                ->organizationId($this->getId() ?: false)
+                ->userId($user->getId() ?: false)
+                ->one())
+        ) {
+            return true;
+        }
+
+        if (!$association->delete()) {
+            $this->addError('organizations', 'Unable to dissociate user.');
+
+            return false;
+        }
+
+        $this->resetUsers();
+
+        return true;
     }
 
     /**

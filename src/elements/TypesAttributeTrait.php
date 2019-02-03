@@ -425,6 +425,39 @@ trait TypesAttributeTrait
     }
 
     /**
+     * @param TypeModel $type
+     * @param int|null $sortOrder
+     * @return bool
+     */
+    public function associateType(OrganizationType $type, int $sortOrder = null): bool
+    {
+        if (null === ($association = OrganizationTypeAssociation::find()
+            ->organizationId($this->getId() ?: false)
+            ->typeId($type->getId() ?: false)
+            ->one())
+        ) {
+            $association = new OrganizationTypeAssociation([
+                'organization' => $this,
+                'type' => $type
+            ]);
+        }
+
+        if (null !== $sortOrder) {
+            $association->sortOrder = $sortOrder;
+        }
+
+        if (!$association->save()) {
+            $this->addError('organizations', 'Unable to associate type.');
+
+            return false;
+        }
+
+        $this->resetTypes();
+
+        return true;
+    }
+
+    /**
      * @param OrganizationTypeQuery $query
      * @return bool
      * @throws \Throwable
@@ -462,6 +495,33 @@ trait TypesAttributeTrait
         $this->resetTypes();
 
         return $success;
+    }
+
+    /**
+     * @param TypeModel $type
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function dissociateType(OrganizationType $type): bool
+    {
+        if (null === ($association = OrganizationTypeAssociation::find()
+                ->organizationId($this->getId() ?: false)
+                ->typeId($type->getId() ?: false)
+                ->one())
+        ) {
+            return true;
+        }
+
+        if (!$association->delete()) {
+            $this->addError('organizations', 'Unable to dissociate type.');
+
+            return false;
+        }
+
+        $this->resetTypes();
+
+        return true;
     }
 
     /**
