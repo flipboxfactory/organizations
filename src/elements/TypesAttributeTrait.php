@@ -437,7 +437,7 @@ trait TypesAttributeTrait
             return true;
         }
 
-        $currentAssociations = $currentAssociations = OrganizationTypeAssociation::find()
+        $currentAssociations = OrganizationTypeAssociation::find()
             ->organizationId($this->getId() ?: false)
             ->indexBy('typeId')
             ->all();
@@ -476,7 +476,7 @@ trait TypesAttributeTrait
             return true;
         }
 
-        $currentAssociations = $currentAssociations = OrganizationTypeAssociation::find()
+        $currentAssociations = OrganizationTypeAssociation::find()
             ->organizationId($this->getId() ?: false)
             ->indexBy('typeId')
             ->all();

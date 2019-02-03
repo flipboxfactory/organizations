@@ -1,5 +1,9 @@
 Changelog
 =========
+## 1.0.5 - 2019-01-29
+### Fixed
+- Scenarios when saving a user would delete all their associated organizations.
+
 ## 1.0.4.1 - 2019-01-29
 ### Fixed
 - UserAssociation asset bundle was restored after accidentally being removed.

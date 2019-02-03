@@ -283,25 +283,14 @@ class UserOrganizationsBehavior extends Behavior
      */
     public function saveOrganizations(): bool
     {
+        // No changes?
+        if (null === ($records = $this->getOrganizations()->getCachedResult())) {
+            return true;
+        }
+
         $currentAssociations = $this->currentAssociationQuery()->all();
 
         $success = true;
-
-        if (null === ($records = $this->getOrganizations()->getCachedResult())) {
-            // Delete anything that's currently set
-            foreach ($currentAssociations as $currentAssociation) {
-                if (!$currentAssociation->delete()) {
-                    $success = false;
-                }
-            }
-
-            if (!$success) {
-                $this->owner->addError('types', 'Unable to dissociate organizations.');
-            }
-
-            return $success;
-        }
-
         $associations = [];
         $order = 1;
         foreach ($records as $type) {
