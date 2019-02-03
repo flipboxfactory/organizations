@@ -283,25 +283,14 @@ class UserOrganizationsBehavior extends Behavior
      */
     public function saveOrganizations(): bool
     {
+        // No changes?
+        if (null === ($records = $this->getOrganizations()->getCachedResult())) {
+            return true;
+        }
+
         $currentAssociations = $this->currentAssociationQuery()->all();
 
         $success = true;
-
-        if (null === ($records = $this->getOrganizations()->getCachedResult())) {
-            // Delete anything that's currently set
-            foreach ($currentAssociations as $currentAssociation) {
-                if (!$currentAssociation->delete()) {
-                    $success = false;
-                }
-            }
-
-            if (!$success) {
-                $this->owner->addError('types', 'Unable to dissociate organizations.');
-            }
-
-            return $success;
-        }
-
         $associations = [];
         $order = 1;
         foreach ($records as $type) {
@@ -335,6 +324,39 @@ class UserOrganizationsBehavior extends Behavior
         }
 
         return $success;
+    }
+
+    /**
+     * @param Organization $organization
+     * @param int|null $sortOrder
+     * @return bool
+     */
+    public function associateOrganization(Organization $organization, int $sortOrder = null): bool
+    {
+        if (null === ($association = UserAssociation::find()
+                ->userId($this->owner->getId() ?: false)
+                ->organizationId($organization->getId() ?: false)
+                ->one())
+        ) {
+            $association = new UserAssociation([
+                'organization' => $organization,
+                'user' => $this->owner
+            ]);
+        }
+
+        if (null !== $sortOrder) {
+            $association->organizationOrder = $sortOrder;
+        }
+
+        if (!$association->save()) {
+            $this->owner->addError('organizations', 'Unable to associate organization.');
+
+            return false;
+        }
+
+        $this->resetOrganizations();
+
+        return true;
     }
 
     /**
@@ -372,6 +394,33 @@ class UserOrganizationsBehavior extends Behavior
         $this->resetOrganizations();
 
         return $success;
+    }
+
+    /**
+     * @param Organization $organization
+     * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
+     */
+    public function dissociateOrganization(Organization $organization): bool
+    {
+        if (null === ($association = UserAssociation::find()
+                ->userId($this->owner->getId() ?: false)
+                ->organizationId($organization->getId() ?: false)
+                ->one())
+        ) {
+            return true;
+        }
+
+        if (!$association->delete()) {
+            $this->owner->addError('organizations', 'Unable to dissociate organization.');
+
+            return false;
+        }
+
+        $this->resetOrganizations();
+
+        return true;
     }
 
     /**
