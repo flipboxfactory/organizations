@@ -161,6 +161,11 @@ class UserTypesBehavior extends Behavior
      */
     public function saveUserTypes(UserTypeQuery $query, Organization $organization): bool
     {
+        // No changes?
+        if (null === ($types = $query->getCachedResult())) {
+            return true;
+        }
+
         // Determine an association
         if (null === ($userAssociationId = $this->associationId($this->owner->getId(), $organization->getId()))) {
             $this->owner->addError('types', 'User is not associated to organization.');
@@ -173,22 +178,6 @@ class UserTypesBehavior extends Behavior
             ->all();
 
         $success = true;
-
-        if (null === ($types = $query->getCachedResult())) {
-            // Delete anything that's currently set
-            foreach ($currentAssociations as $currentAssociation) {
-                if (!$currentAssociation->delete()) {
-                    $success = false;
-                }
-            }
-
-            if (!$success) {
-                $this->owner->addError('types', 'Unable to dissociate types.');
-            }
-
-            return $success;
-        }
-
         $associations = [];
         $order = 1;
         foreach ($types as $type) {
