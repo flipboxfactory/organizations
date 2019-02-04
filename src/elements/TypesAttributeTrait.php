@@ -86,6 +86,30 @@ trait TypesAttributeTrait
     }
 
     /************************************************************
+     * TYPES QUERY
+     ************************************************************/
+
+    /**
+     * @param array $criteria
+     * @return OrganizationTypeQuery
+     */
+    public function userTypeQuery($criteria = []): OrganizationTypeQuery
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        $query = OrganizationType::find()
+            ->organization($this);
+
+        if (!empty($criteria)) {
+            QueryHelper::configure(
+                $query,
+                $criteria
+            );
+        }
+
+        return $query;
+    }
+    
+    /************************************************************
      * TYPES
      ************************************************************/
 
@@ -98,8 +122,7 @@ trait TypesAttributeTrait
     public function getTypes($criteria = [])
     {
         if (null === $this->types) {
-            $this->types = OrganizationType::find()
-                ->organization($this);
+            $this->types = $this->userTypeQuery();
         }
 
         if (!empty($criteria)) {
@@ -126,8 +149,7 @@ trait TypesAttributeTrait
         }
 
         // Reset the query
-        $this->types = OrganizationType::find()
-            ->organization($this);
+        $this->types = $this->userTypeQuery();
 
         // Remove all types
         $this->types->setCachedResult([]);

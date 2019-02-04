@@ -15,7 +15,6 @@ use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\records\UserAssociation;
-use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -39,7 +38,7 @@ trait UsersAttributeTrait
 
         $map = (new Query())
             ->select(['organizationId as source', 'userId as target'])
-            ->from(OrganizationUsersRecord::tableName())
+            ->from(UserAssociation::tableName())
             ->where(['organizationId' => $sourceElementIds])
             ->all();
 
@@ -68,8 +67,9 @@ trait UsersAttributeTrait
         return $this;
     }
 
+    
     /************************************************************
-     * USERS
+     * USERS QUERY
      ************************************************************/
 
     /**
@@ -137,7 +137,13 @@ trait UsersAttributeTrait
         // Remove all users
         $this->users->setCachedResult([]);
 
-        $this->addUsers($users);
+        if (!empty($users)) {
+            if (!is_array($users)) {
+                $users = [$users];
+            }
+
+            $this->addUsers($users);
+        }
 
         return $this;
     }
@@ -167,6 +173,10 @@ trait UsersAttributeTrait
         return $this;
     }
 
+    /**
+     * @param $user
+     * @return User
+     */
     protected function resolveUser($user)
     {
         if (is_array($user) &&
