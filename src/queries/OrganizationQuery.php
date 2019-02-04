@@ -36,6 +36,7 @@ class OrganizationQuery extends ElementQuery
     use UserAttributeTrait,
         UserGroupAttributeTrait,
         UserTypeAttributeTrait,
+        UserStateAttributeTrait,
         OrganizationTypeAttributeTrait;
 
     /**
@@ -94,6 +95,7 @@ class OrganizationQuery extends ElementQuery
         $this->applyUserParam($alias);
         $this->applyUserGroupParam($alias);
         $this->applyUserTypeParam($alias);
+        $this->applyUserStateParam($alias);
     }
 
 
@@ -193,7 +195,7 @@ class OrganizationQuery extends ElementQuery
 
 
     /************************************************************
-     * USER COLLECTION
+     * USER TYPE
      ************************************************************/
 
     /**
@@ -216,6 +218,27 @@ class OrganizationQuery extends ElementQuery
 
         $this->subQuery->andWhere(
             Db::parseParam($typeAlias . '.typeId', $this->parseUserTypeValue($this->userType))
+        );
+    }
+
+
+    /************************************************************
+     * USER STATE
+     ************************************************************/
+
+    /**
+     * @param string $alias
+     *
+     * @return void
+     */
+    protected function applyUserStateParam(string $alias)
+    {
+        if (empty($this->userState)) {
+            return;
+        }
+
+        $this->subQuery->andWhere(
+            Db::parseParam($alias . '.state', $this->userState)
         );
     }
 

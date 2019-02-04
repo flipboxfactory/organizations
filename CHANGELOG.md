@@ -1,6 +1,10 @@
 Changelog
 =========
-## 1.0.5 - 2019-01-29
+## 1.0.6 - 2019-02-04
+### Added
+- User State filters to applicable queries
+
+## 1.0.5 - 2019-02-02
 ### Fixed
 - Scenarios when saving a user would delete all their associated organizations.
 
