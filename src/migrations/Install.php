@@ -13,6 +13,7 @@ use craft\records\Element as ElementRecord;
 use craft\records\FieldLayout as FieldLayoutRecord;
 use craft\records\Site as SiteRecord;
 use craft\records\User as UserRecord;
+use flipbox\organizations\Organizations;
 use flipbox\organizations\records\Organization as OrganizationRecord;
 use flipbox\organizations\records\OrganizationType as OrganizationTypeRecord;
 use flipbox\organizations\records\OrganizationTypeAssociation as OrganizationTypeAssociationRecord;
@@ -62,6 +63,8 @@ class Install extends Migration
      */
     protected function createTables()
     {
+        $settings = Organizations::getInstance()->getSettings();
+
         $this->createTable(OrganizationRecord::tableName(), [
             'id' => $this->primaryKey(),
             'dateJoined' => $this->dateTime()->notNull(),
@@ -105,6 +108,9 @@ class Install extends Migration
             'id' => $this->primaryKey(),
             'userId' => $this->integer()->notNull(),
             'organizationId' => $this->integer()->notNull(),
+            'state' => $this->enum('state', array_keys($settings->getUserStates()))
+                ->defaultValue($settings->getDefaultUserState())
+                ->notNull(),
             'userOrder' => $this->smallInteger()->unsigned(),
             'organizationOrder' => $this->smallInteger()->unsigned(),
             'dateCreated' => $this->dateTime()->notNull(),
