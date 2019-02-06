@@ -139,8 +139,7 @@ class UserOrganizationsBehavior extends Behavior
         $query = Organization::find()
             ->user($this->owner)
             ->orderBy([
-                'organizationOrder' => SORT_ASC,
-                'title' => SORT_ASC
+                'organizationOrder' => SORT_ASC
             ]);
 
         if (!empty($criteria)) {
