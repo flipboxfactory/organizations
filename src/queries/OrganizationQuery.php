@@ -47,6 +47,11 @@ class OrganizationQuery extends ElementQuery
     /**
      * @inheritdoc
      */
+    protected $defaultOrderBy = ['dateJoined' => SORT_DESC];
+
+    /**
+     * @inheritdoc
+     */
     protected function beforePrepare(): bool
     {
         if (false === ($result = parent::beforePrepare())) {
@@ -162,7 +167,6 @@ class OrganizationQuery extends ElementQuery
         $this->subQuery->andWhere(
             Db::parseParam($alias . '.userId', $this->parseUserValue($this->user))
         );
-        $this->subQuery->distinct(true);
     }
 
 
@@ -259,7 +263,6 @@ class OrganizationQuery extends ElementQuery
         $alias = $this->joinOrganizationTypeTable();
 
         $this->subQuery
-            ->distinct(true)
             ->andWhere(
                 Db::parseParam($alias . '.typeId', $this->parseOrganizationTypeValue($this->organizationType))
             );

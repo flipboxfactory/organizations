@@ -190,7 +190,6 @@ class UserQueryParamHandler extends BaseObject
 
         $this->joinOrganizationUserTypeTable($query->subQuery);
         $query->subQuery
-            ->distinct(true)
             ->andWhere(
                 Db::parseParam(
                     UserCollectionUsersRecord::tableAlias() . '.typeId',
