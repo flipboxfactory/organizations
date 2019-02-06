@@ -1,5 +1,10 @@
 Changelog
 =========
+
+## 1.0.7 - 2019-02-06
+### Fixed
+- Ordering of associated users by title would result in a query error. 
+
 ## 1.0.6 - 2019-02-04
 ### Added
 - User State filters to applicable queries
