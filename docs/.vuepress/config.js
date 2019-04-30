@@ -1,9 +1,10 @@
 module.exports = {
     title: 'Organizations',
-    description: 'Simple parent + child management',
+    description: 'Parent + child organization management for Craft CMS',
     base: '/',
-    //theme: 'flipbox',
+    theme: 'flipbox',
     themeConfig: {
+        logo: '/icon.svg',
         docsRepo: 'flipboxfactory/organizations',
         docsDir: 'docs',
         docsBranch: 'master',
@@ -17,7 +18,7 @@ module.exports = {
             // any other languages you want to include in code toggles...
         },
         nav: [
-            {text: 'Documentation', link: 'https://organizations.flipboxfactory.com'},
+            {text: 'Details', link: 'https://flipboxfactory.com/craft-cms-plugins/organizations'},
             {text: 'Changelog', link: 'https://github.com/flipboxfactory/organizations/blob/master/CHANGELOG.md'},
             {text: 'Repo', link: 'https://github.com/flipboxfactory/organizations'}
         ],
@@ -25,17 +26,16 @@ module.exports = {
             '/': [
                 {
                     title: 'Getting Started',
-                    collapsable: true,
+                    collapsable: false,
                     children: [
                         ['/', 'Introduction'],
-                        ['/requirements', 'Requirements'],
                         ['/installation', 'Installation / Upgrading'],
                         ['/support', 'Support'],
                     ]
                 },
                 {
                     title: 'Configure',
-                    collapsable: true,
+                    collapsable: false,
                     children: [
                         ['/configure/', 'Overview'],
                         ['/configure/organization-types', 'Organization Types'],
@@ -44,14 +44,14 @@ module.exports = {
                 },
                 {
                     title: 'Templating',
-                    collapsable: true,
+                    collapsable: false,
                     children: [
                         ['/templating/', 'Overview']
                     ]
                 },
                 {
                     title: 'Services',
-                    collapsable: true,
+                    collapsable: false,
                     children: [
                         ['/services/elements', 'Organization Elements'],
                         ['/services/organization-types', 'Organization Types'],
@@ -61,19 +61,19 @@ module.exports = {
                 },
                 {
                     title: 'Objects',
-                    collapsable: true,
+                    collapsable: false,
                     children: [
                         ['/objects/organization', 'Organization'],
                         ['/objects/organization-type', 'Organization Type'],
                         ['/objects/organization-type-site-settings', 'Organization Type Site Settings'],
-                        ['/objects/settings', 'Settings'],
+                        ['/objects/user', 'User'],
                         ['/objects/user-type', 'User Type'],
-                        ['/objects/user', 'User']
+                        ['/objects/settings', 'Settings'],
                     ]
                 },
                 {
                     title: 'Queries',
-                    collapsable: true,
+                    collapsable: false,
                     children: [
                         ['/queries/organization', 'Organization Query'],
                         ['/queries/organization-type', 'Organization Type Query'],
@@ -85,11 +85,10 @@ module.exports = {
         }
     },
     markdown: {
-        anchor: { level: [2, 3] },
+        anchor: { level: [2, 3, 4] },
         toc: { includeLevel: [3] },
         config(md) {
-            let markup = require('./markup') // TODO Change after using theme
-            md.use(markup)
+            md.use(require('vuepress-theme-flipbox/markup'))
         }
     }
 }
