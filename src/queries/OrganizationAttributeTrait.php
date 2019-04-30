@@ -65,7 +65,7 @@ trait OrganizationAttributeTrait
 
     /**
      * @param $value
-     * @return array|string
+     * @return int
      * @throws QueryAbortedException
      */
     protected function parseOrganizationValue($value)

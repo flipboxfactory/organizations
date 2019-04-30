@@ -37,6 +37,13 @@ class Organizations extends BasePlugin
     use LoggerTrait;
 
     /**
+     * The plugin category (used for logging)
+     *
+     * @var string
+     */
+    public static $category = 'organizations';
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -156,14 +163,6 @@ class Organizations extends BasePlugin
                 );
             });
         }
-    }
-
-    /**
-     * @return string
-     */
-    protected static function getLogFileName(): string
-    {
-        return 'organizations';
     }
 
     /*******************************************
