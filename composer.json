@@ -23,6 +23,7 @@
 		"rss": "https://github.com/flipboxfactory/organizations/commits/master.atom"
 	},
 	"require": {
+		"craftcms/cms": "^3.0",
 		"flipboxfactory/craft-ember": "^2.2",
 		"flipboxfactory/craft-elements-nested-index": "^2.1"
 	},

@@ -100,7 +100,7 @@
         {% js %}
             new Craft.HandleGenerator('#name', '#handle');
             {% for site in craft.app.sites.getAllSites() %}
-                new Craft.UriFormatGenerator('#name', '#siteSettings tr[data-id="{{ site.handle }}"] textarea[name$="[uriFormat]"]', { suffix: '/{handle}' });
+                new Craft.UriFormatGenerator('#name', '#siteSettings tr[data-id="{{ site.handle }}"] textarea[name$="[uriFormat]"]', { suffix: '/{slug}' });
                 new Craft.UriFormatGenerator('#name', '#siteSettings tr[data-id="{{ site.handle }}"] textarea[name$="[template]"]', { suffix: '/_organization' });
             {% endfor %}
         {% endjs %}

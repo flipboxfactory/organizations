@@ -9,6 +9,7 @@
 namespace flipbox\organizations\queries;
 
 use craft\db\Query;
+use craft\db\QueryAbortedException;
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;
 use craft\records\UserGroup_User as UserGroupUsersRecord;
@@ -157,9 +158,15 @@ class OrganizationQuery extends ElementQuery
      * @param string $alias
      *
      * @return void
+     * @throws QueryAbortedException
      */
     protected function applyUserParam(string $alias)
     {
+        // Is the query already doomed?
+        if ($this->user !== null && empty($this->user)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($this->user)) {
             return;
         }
@@ -178,9 +185,15 @@ class OrganizationQuery extends ElementQuery
      * @param string $alias
      *
      * @return void
+     * @throws QueryAbortedException
      */
     protected function applyUserGroupParam(string $alias)
     {
+        // Is the query already doomed?
+        if ($this->userGroup !== null && empty($this->userGroup)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($this->userGroup)) {
             return;
         }
@@ -206,9 +219,15 @@ class OrganizationQuery extends ElementQuery
      * @param string $alias
      *
      * @return void
+     * @throws QueryAbortedException
      */
     protected function applyUserTypeParam(string $alias)
     {
+        // Is the query already doomed?
+        if ($this->userType !== null && empty($this->userType)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($this->userType)) {
             return;
         }
@@ -234,9 +253,15 @@ class OrganizationQuery extends ElementQuery
      * @param string $alias
      *
      * @return void
+     * @throws QueryAbortedException
      */
     protected function applyUserStateParam(string $alias)
     {
+        // Is the query already doomed?
+        if ($this->userState !== null && empty($this->userState)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($this->userState)) {
             return;
         }
@@ -253,9 +278,15 @@ class OrganizationQuery extends ElementQuery
 
     /**
      * @return void
+     * @throws QueryAbortedException
      */
     protected function applyTypeParam()
     {
+        // Is the query already doomed?
+        if ($this->organizationType !== null && empty($this->organizationType)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($this->organizationType)) {
             return;
         }

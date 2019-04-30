@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\queries;
 
+use craft\db\QueryAbortedException;
 use craft\elements\db\UserQuery;
 use craft\helpers\Db;
 use flipbox\organizations\records\UserAssociation as OrganizationUsersRecord;
@@ -77,6 +78,7 @@ class UserQueryParamHandler extends BaseObject
 
     /**
      * @param UserQuery $query
+     * @throws QueryAbortedException
      */
     public function applyParams(UserQuery $query)
     {
@@ -158,9 +160,16 @@ class UserQueryParamHandler extends BaseObject
     /**
      * @param UserQuery $query
      * @param $organization
+     *
+     * @throws QueryAbortedException
      */
     protected function applyOrganizationParam(UserQuery $query, $organization)
     {
+        // Is the query already doomed?
+        if ($organization !== null && empty($organization)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($organization)) {
             return;
         }
@@ -181,9 +190,16 @@ class UserQueryParamHandler extends BaseObject
     /**
      * @param UserQuery $query
      * @param $type
+     *
+     * @throws QueryAbortedException
      */
     protected function applyUserTypeParam(UserQuery $query, $type)
     {
+        // Is the query already doomed?
+        if ($type !== null && empty($type)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($type)) {
             return;
         }
@@ -206,9 +222,16 @@ class UserQueryParamHandler extends BaseObject
     /**
      * @param UserQuery $query
      * @param $state
+     *
+     * @throws QueryAbortedException
      */
     protected function applyUserStateParam(UserQuery $query, $state)
     {
+        // Is the query already doomed?
+        if ($state !== null && empty($state)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($state)) {
             return;
         }
