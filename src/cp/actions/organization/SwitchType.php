@@ -104,7 +104,7 @@ class SwitchType extends Action
             'tabsHtml' => $view->renderTemplate(
                 '_includes/tabs',
                 [
-                    'tabs' => $this->getTabs($element, false)
+                    'tabs' => $this->getTabs($element, true)
                 ]
             ),
             'fieldsHtml' => $view->renderTemplate(

@@ -32,64 +32,14 @@ class Settings extends Model
     public $userSidebarTemplate = 'organizations/_components/hooks/users/details';
 
     /**
-     * @var int|null|false
+     * @var int
      */
-    public $organizationTypeAssociationsCacheDuration = false;
+    private $usersTabOrder = 2;
 
     /**
-     * @var null|Dependency
+     * @var string
      */
-    public $organizationTypeAssociationsCacheDependency = null;
-
-    /**
-     * @var int|null|false
-     */
-    public $organizationTypeSettingsCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $organizationTypeSettingsCacheDependency = null;
-
-    /**
-     * @var int|null|false
-     */
-    public $organizationUserAssociationsCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $organizationUserAssociationsCacheDependency = null;
-
-    /**
-     * @var int|null|false
-     */
-    public $usersCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $usersCacheDependency = null;
-
-    /**
-     * @var int|null|false
-     */
-    public $userOrganizationAssociationsCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $userOrganizationAssociationsCacheDependency = null;
-
-    /**
-     * @var int|null|false
-     */
-    public $userTypeAssociationsCacheDuration = false;
-
-    /**
-     * @var null|Dependency
-     */
-    public $userTypeAssociationsCacheDependency = null;
+    private $usersTabLabel = 'Users';
 
     /**
      * @return string
@@ -117,6 +67,46 @@ class Settings extends Model
             'pending' => Craft::t('organizations', 'Pending'),
             'inactive' => Craft::t('organizations', 'InActive')
         ];
+    }
+
+    /**
+     * Get the User tab order found on the Organization entry page.
+     */
+    public function getUsersTabOrder(): int
+    {
+        return $this->usersTabOrder;
+    }
+
+    /**
+     * Set the User tab order found on the Organization entry page.
+     *
+     * @param int $order
+     * @return $this
+     */
+    public function setUsersTabOrder(int $order)
+    {
+        $this->usersTabOrder = $order;
+        return $this;
+    }
+
+    /**
+     * Get the User tab label found on the Organization entry page.
+     */
+    public function getUsersTabLabel(): string
+    {
+        return $this->usersTabLabel;
+    }
+
+    /**
+     * Set the User tab label found on the Organization entry page.
+     *
+     * @param string $label
+     * @return $this
+     */
+    public function setUsersTabLabel(string $label)
+    {
+        $this->usersTabLabel = $label;
+        return $this;
     }
 
     /**

@@ -244,9 +244,6 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
                 function (response, textStatus, jqXHR) {
                     this.$spinner.addClass('hidden');
                     if (jqXHR.status === 200) {
-                        // Copy the user tab + content
-                        var $usersTabLink = this.$tabs.find('ul li a#tab-users');
-                        var $usersTab = $usersTabLink.parent('li').clone();
 
                         // Fields (except user tab content)
                         this.$fields.children(':not(#user-index)').remove();
@@ -254,7 +251,6 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
 
                         // Tabs
                         this.$tabs.html(response.tabsHtml);
-                        this.$tabs.find('ul').append($usersTab);
 
                         // Replace content
                         this.$sites.html(response.sitesHtml);

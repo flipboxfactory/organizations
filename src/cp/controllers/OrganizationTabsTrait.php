@@ -12,6 +12,7 @@ use Craft;
 use craft\base\Field;
 use craft\models\FieldLayoutTab;
 use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\Organizations;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -36,10 +37,13 @@ trait OrganizationTabsTrait
         if (null !== $organization->getId() &&
             true === $includeUsers
         ) {
-            $tabs['users'] = [
-                'label' => Craft::t('organizations', 'Users'),
-                'url' => '#user-index'
-            ];
+
+            if (($tab = Organizations::getInstance()->getSettings()->getUsersTabOrder()) > 0) {
+                array_splice($tabs, $tab - 1, 0, [[
+                    'label' => Organizations::t(Organizations::getInstance()->getSettings()->getUsersTabLabel()),
+                    'url' => '#user-index'
+                ]]);
+            }
         }
 
         return $tabs;
