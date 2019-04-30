@@ -9,6 +9,7 @@
 namespace flipbox\organizations\queries;
 
 use craft\db\Query;
+use craft\db\QueryAbortedException;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
 
@@ -65,10 +66,11 @@ trait OrganizationAttributeTrait
     /**
      * @param $value
      * @return array|string
+     * @throws QueryAbortedException
      */
     protected function parseOrganizationValue($value)
     {
-        return QueryHelper::prepareParam(
+        $return = QueryHelper::prepareParam(
             $value,
             function (string $slug) {
                 $value = (new Query())
@@ -79,5 +81,11 @@ trait OrganizationAttributeTrait
                 return empty($value) ? false : $value;
             }
         );
+
+        if ($return !== null && empty($return)) {
+            throw new QueryAbortedException();
+        }
+
+        return $return;
     }
 }
