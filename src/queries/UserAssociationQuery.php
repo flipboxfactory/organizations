@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\queries;
 
+use craft\db\QueryAbortedException;
 use craft\helpers\Db;
 use flipbox\craft\ember\queries\CacheableActiveQuery;
 use flipbox\craft\ember\queries\UserAttributeTrait;
@@ -64,6 +65,7 @@ class UserAssociationQuery extends CacheableActiveQuery
 
     /**
      * @inheritdoc
+     * @throws QueryAbortedException
      */
     public function prepare($builder)
     {
@@ -75,18 +77,49 @@ class UserAssociationQuery extends CacheableActiveQuery
             }
         }
 
-        if ($this->user !== null) {
-            $this->andWhere(
-                Db::parseParam('userId', $this->parseUserValue($this->user))
-            );
-        }
-
-        if ($this->organization !== null) {
-            $this->andWhere(
-                Db::parseParam('organizationId', $this->parseOrganizationValue($this->organization))
-            );
-        }
+        $this->applyUserParam();
+        $this->applyOrganizationParam();
 
         return parent::prepare($builder);
+    }
+
+    /**
+     * @return void
+     * @throws QueryAbortedException
+     */
+    protected function applyUserParam()
+    {
+        // Is the query already doomed?
+        if ($this->user !== null && empty($this->user)) {
+            throw new QueryAbortedException();
+        }
+
+        if (empty($this->user)) {
+            return;
+        }
+
+        $this->andWhere(
+            Db::parseParam('userId', $this->parseUserValue($this->user))
+        );
+    }
+
+    /**
+     * @return void
+     * @throws QueryAbortedException
+     */
+    protected function applyOrganizationParam()
+    {
+        // Is the query already doomed?
+        if ($this->organization !== null && empty($this->organization)) {
+            throw new QueryAbortedException();
+        }
+
+        if (empty($this->organization)) {
+            return;
+        }
+
+        $this->andWhere(
+            Db::parseParam('organizationId', $this->parseOrganizationValue($this->organization))
+        );
     }
 }

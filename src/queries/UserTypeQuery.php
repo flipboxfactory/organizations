@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\queries;
 
+use craft\db\QueryAbortedException;
 use craft\helpers\Db;
 use flipbox\craft\ember\queries\AuditAttributesTrait;
 use flipbox\craft\ember\queries\CacheableActiveQuery;
@@ -141,6 +142,7 @@ class UserTypeQuery extends CacheableActiveQuery
 
     /**
      * @inheritdoc
+     * @throws QueryAbortedException
      */
     public function prepare($builder)
     {
@@ -167,6 +169,7 @@ class UserTypeQuery extends CacheableActiveQuery
 
     /**
      * Prepares relation params
+     * @throws QueryAbortedException
      */
     protected function prepareRelationsParams()
     {
@@ -231,9 +234,15 @@ class UserTypeQuery extends CacheableActiveQuery
 
     /**
      * @param string $alias
+     * @throws QueryAbortedException
      */
     protected function applyUserParam(string $alias)
     {
+        // Is the query already doomed?
+        if ($this->user !== null && empty($this->user)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($this->user)) {
             return;
         }
@@ -250,9 +259,15 @@ class UserTypeQuery extends CacheableActiveQuery
 
     /**
      * @param string $alias
+     * @throws QueryAbortedException
      */
     protected function applyOrganizationParam(string $alias)
     {
+        // Is the query already doomed?
+        if ($this->organization !== null && empty($this->organization)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($this->organization)) {
             return;
         }

@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+### Fixed
+- When passing 'false' to query params, throw an exception to halt query execution [#13](https://github.com/flipboxfactory/organizations/issues/13)
+
 ## 1.0.7 - 2019-02-06
 ### Fixed
 - Ordering of associated users by title would result in a query error. 

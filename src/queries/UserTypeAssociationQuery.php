@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\queries;
 
+use craft\db\QueryAbortedException;
 use craft\helpers\Db;
 use flipbox\craft\ember\queries\ActiveQuery;
 use flipbox\organizations\records\UserTypeAssociation;
@@ -72,17 +73,58 @@ class UserTypeAssociationQuery extends ActiveQuery
 
     /**
      * @inheritdoc
+     * @throws QueryAbortedException
      */
     public function prepare($builder)
     {
-        if ($this->userId !== null) {
-            $this->andWhere(Db::parseParam('userId', $this->userId));
+        // Is the query already doomed?
+        if ($this->userId !== null && empty($this->userId)) {
+            throw new QueryAbortedException();
         }
 
-        if ($this->typeId !== null) {
-            $this->andWhere(Db::parseParam('typeId', $this->typeId));
-        }
+        $this->applyUserParam();
+        $this->applyTypeParam();
 
         return parent::prepare($builder);
+    }
+
+    /**
+     * @return void
+     * @throws QueryAbortedException
+     */
+    protected function applyUserParam()
+    {
+        // Is the query already doomed?
+        if ($this->userId !== null && empty($this->userId)) {
+            throw new QueryAbortedException();
+        }
+
+        if (empty($this->userId)) {
+            return;
+        }
+
+        $this->andWhere(
+            Db::parseParam('userId', $this->userId)
+        );
+    }
+
+    /**
+     * @return void
+     * @throws QueryAbortedException
+     */
+    protected function applyTypeParam()
+    {
+        // Is the query already doomed?
+        if ($this->typeId !== null && empty($this->typeId)) {
+            throw new QueryAbortedException();
+        }
+
+        if (empty($this->typeId)) {
+            return;
+        }
+
+        $this->andWhere(
+            Db::parseParam('typeId', $this->typeId)
+        );
     }
 }

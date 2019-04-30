@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\queries;
 
+use craft\db\QueryAbortedException;
 use craft\helpers\Db;
 use flipbox\craft\ember\queries\ActiveQuery;
 use flipbox\craft\ember\queries\AuditAttributesTrait;
@@ -65,8 +66,8 @@ class OrganizationTypeAssociationQuery extends ActiveQuery
 
     /**
      * @param $value
-     * @see $this->>organizationType()
      * @return static
+     * @see $this->>organizationType()
      */
     public function type($value)
     {
@@ -75,8 +76,8 @@ class OrganizationTypeAssociationQuery extends ActiveQuery
 
     /**
      * @param $value
-     * @see $this->>organizationType()
      * @return static
+     * @see $this->>organizationType()
      */
     public function typeId($value)
     {
@@ -85,6 +86,7 @@ class OrganizationTypeAssociationQuery extends ActiveQuery
 
     /**
      * @inheritdoc
+     * @throws QueryAbortedException
      */
     public function prepare($builder)
     {
@@ -98,20 +100,50 @@ class OrganizationTypeAssociationQuery extends ActiveQuery
             }
         }
 
-        if ($this->organizationType !== null) {
-            $this->andWhere(
-                Db::parseParam('typeId', $this->parseOrganizationTypeValue($this->organizationType))
-            );
-        }
-
-        if ($this->organization !== null) {
-            $this->andWhere(
-                Db::parseParam('organizationId', $this->parseOrganizationValue($this->organization))
-            );
-        }
-
         $this->applyAuditAttributeConditions();
+        $this->applyOrganizationParam();
+        $this->applyOrganizationTypeParam();
 
         return parent::prepare($builder);
+    }
+
+    /**
+     * @return void
+     * @throws QueryAbortedException
+     */
+    protected function applyOrganizationTypeParam()
+    {
+        // Is the query already doomed?
+        if ($this->organizationType !== null && empty($this->organizationType)) {
+            throw new QueryAbortedException();
+        }
+
+        if (empty($this->organizationType)) {
+            return;
+        }
+
+        $this->andWhere(
+            Db::parseParam('typeId', $this->parseOrganizationTypeValue($this->organizationType))
+        );
+    }
+
+    /**
+     * @return void
+     * @throws QueryAbortedException
+     */
+    protected function applyOrganizationParam()
+    {
+        // Is the query already doomed?
+        if ($this->organization !== null && empty($this->organization)) {
+            throw new QueryAbortedException();
+        }
+
+        if (empty($this->organization)) {
+            return;
+        }
+
+        $this->andWhere(
+            Db::parseParam('organizationId', $this->parseOrganizationValue($this->organization))
+        );
     }
 }

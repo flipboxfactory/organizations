@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\queries;
 
+use craft\db\QueryAbortedException;
 use craft\helpers\Db;
 use flipbox\craft\ember\queries\AuditAttributesTrait;
 use flipbox\craft\ember\queries\CacheableActiveQuery;
@@ -100,6 +101,7 @@ class OrganizationTypeQuery extends CacheableActiveQuery
 
     /**
      * @inheritdoc
+     * @throws QueryAbortedException
      */
     public function prepare($builder)
     {
@@ -126,14 +128,23 @@ class OrganizationTypeQuery extends CacheableActiveQuery
 
     /**
      * Prepares relation params
+     * @throws QueryAbortedException
      */
     protected function prepareRelationsParams()
     {
+        // Is the query already doomed?
+        if ($this->organization !== null && empty($this->organization)) {
+            throw new QueryAbortedException();
+        }
+
         if (empty($this->organization)) {
             return;
         }
 
-        $this->applyOrganizationParam($this, $this->organization);
+        $alias = $this->joinTypeAssociationTable();
+        $this->andWhere(
+            Db::parseParam($alias . '.organizationId', $this->parseOrganizationValue($this->organization))
+        );
     }
 
     /*******************************************
@@ -141,15 +152,14 @@ class OrganizationTypeQuery extends CacheableActiveQuery
      *******************************************/
 
     /**
-     * @param OrganizationTypeQuery $query
      * @return string
      */
-    protected function joinTypeAssociationTable(OrganizationTypeQuery $query): string
+    protected function joinTypeAssociationTable(): string
     {
         $alias = TypeAssociationRecord::tableAlias();
 
         if ($this->associationTableJoined === false) {
-            $query->leftJoin(
+            $this->leftJoin(
                 TypeAssociationRecord::tableName() . ' ' . $alias,
                 '[[' . $alias . '.typeId]] = [[' . TypeRecord::tableAlias() . '.id]]'
             );
@@ -158,25 +168,5 @@ class OrganizationTypeQuery extends CacheableActiveQuery
         }
 
         return $alias;
-    }
-
-    /*******************************************
-     * PARAMS
-     *******************************************/
-
-    /**
-     * @param OrganizationTypeQuery $query
-     * @param $organization
-     */
-    protected function applyOrganizationParam(OrganizationTypeQuery $query, $organization)
-    {
-        if (empty($organization)) {
-            return;
-        }
-
-        $alias = $this->joinTypeAssociationTable($query);
-        $query->andWhere(
-            Db::parseParam($alias . '.organizationId', $this->parseOrganizationValue($organization))
-        );
     }
 }
