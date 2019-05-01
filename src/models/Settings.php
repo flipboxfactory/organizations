@@ -8,14 +8,13 @@
 
 namespace flipbox\organizations\models;
 
-use Craft;
 use craft\base\Model;
 use flipbox\craft\ember\helpers\ModelHelper;
 use flipbox\craft\ember\helpers\SiteHelper;
 use flipbox\craft\ember\models\FieldLayoutAttributeTrait;
 use flipbox\craft\ember\validators\ModelValidator;
 use flipbox\organizations\elements\Organization;
-use yii\caching\Dependency;
+use flipbox\organizations\Organizations;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -34,7 +33,7 @@ class Settings extends Model
     /**
      * @var int
      */
-    private $usersTabOrder = 2;
+    private $usersTabOrder = 10;
 
     /**
      * @var string
@@ -63,9 +62,9 @@ class Settings extends Model
     public function getUserStates(): array
     {
         return [
-            'active' => Craft::t('organizations', 'Active'),
-            'pending' => Craft::t('organizations', 'Pending'),
-            'inactive' => Craft::t('organizations', 'InActive')
+            'active' => Organizations::t('Active'),
+            'pending' => Organizations::t('Pending'),
+            'inactive' => Organizations::t('InActive')
         ];
     }
 
@@ -134,7 +133,16 @@ class Settings extends Model
                 ],
                 [
                     [
-                        'siteSettings'
+                        'usersTabOrder'
+                    ],
+                    'number',
+                    'integerOnly' => true
+                ],
+                [
+                    [
+                        'siteSettings',
+                        'usersTabOrder',
+                        'usersTabLabel'
                     ],
                     'safe',
                     'on' => [
@@ -154,7 +162,10 @@ class Settings extends Model
             parent::attributes(),
             $this->fieldLayoutAttributes(),
             [
-                'siteSettings'
+                'siteSettings',
+                'usersTabOrder',
+                'usersTabLabel',
+
             ]
         );
     }
@@ -168,7 +179,9 @@ class Settings extends Model
             parent::attributeLabels(),
             $this->fieldLayoutAttributeLabels(),
             [
-                'siteSettings' => Craft::t('organizations', 'Site Settings')
+                'siteSettings' => Organizations::t('Site Settings'),
+                'usersTabOrder' => Organizations::t('User\'s Tab Order'),
+                'usersTabLabel' => Organizations::t('User\'s Tab Label')
             ]
         );
     }

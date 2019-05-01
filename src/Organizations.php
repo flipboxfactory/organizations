@@ -179,19 +179,19 @@ class Organizations extends BasePlugin
             [
                 'subnav' => [
                     'organizations.organizations' => [
-                        'label' => Craft::t('organizations', 'Organizations'),
+                        'label' => static::t('Organizations'),
                         'url' => 'organizations'
                     ],
                     'organizations.general' => [
-                        'label' => Craft::t('organizations', 'Settings'),
+                        'label' => static::t('Settings'),
                         'url' => 'organizations/settings'
                     ],
                     'organizations.organization-types' => [
-                        'label' => Craft::t('organizations', 'Organization Types'),
+                        'label' => static::t('Organization Types'),
                         'url' => 'organizations/settings/organization-types',
                     ],
                     'organizations.user-types' => [
-                        'label' => Craft::t('organizations', 'User Types'),
+                        'label' => static::t('User Types'),
                         'url' => 'organizations/settings/user-types',
                     ]
                 ]
