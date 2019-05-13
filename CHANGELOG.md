@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## Unreleased
+### Fixed
+- Removing all user types would result in a Postgres query error [#17](https://github.com/flipboxfactory/organizations/issues/17)
+
 ## 1.0.8 - 2019-04-28
 ### Fixed
 - When passing 'false' to query params, throw an exception to halt query execution [#13](https://github.com/flipboxfactory/organizations/issues/13)

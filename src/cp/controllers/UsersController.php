@@ -167,6 +167,7 @@ class UsersController extends AbstractController
         $user = $userAssociation->getUser();
 
         if (null !== ($types = Craft::$app->getRequest()->getBodyParam('types'))) {
+            $types = array_filter($types);
             $query = UserType::find()->id(empty($types) ? ':empty:' : $types);
 
             $query->setCachedResult(
