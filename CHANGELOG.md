@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 1.0.9 - 2019-05-13
 ### Fixed
 - Removing all user types would result in a Postgres query error [#17](https://github.com/flipboxfactory/organizations/issues/17)
 
