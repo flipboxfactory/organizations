@@ -244,7 +244,6 @@ Craft.OrganizationTypeSwitcher = Garnish.Base.extend({
                 function (response, textStatus, jqXHR) {
                     this.$spinner.addClass('hidden');
                     if (jqXHR.status === 200) {
-
                         // Fields (except user tab content)
                         this.$fields.children(':not(#user-index)').remove();
                         this.$fields.prepend(response.fieldsHtml);

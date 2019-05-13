@@ -37,7 +37,6 @@ trait OrganizationTabsTrait
         if (null !== $organization->getId() &&
             true === $includeUsers
         ) {
-
             if (($tab = Organizations::getInstance()->getSettings()->getUsersTabOrder()) > 0) {
                 array_splice($tabs, $tab - 1, 0, [[
                     'label' => Organizations::t(Organizations::getInstance()->getSettings()->getUsersTabLabel()),
