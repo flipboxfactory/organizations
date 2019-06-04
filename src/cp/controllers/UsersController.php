@@ -13,7 +13,7 @@ use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\organizations\actions\users\AssociateUserToOrganization;
 use flipbox\organizations\actions\users\DissociateUserFromOrganization;
-use flipbox\organizations\behaviors\UserTypesBehavior;
+use flipbox\organizations\behaviors\UserTypesAssociatedToUserBehavior;
 use flipbox\organizations\events\handlers\RegisterOrganizationUserElementDefaultTableAttributes;
 use flipbox\organizations\events\handlers\RegisterOrganizationUserElementTableAttributes;
 use flipbox\organizations\events\handlers\SetOrganizationUserElementTableAttributeHtml;
@@ -170,14 +170,12 @@ class UsersController extends AbstractController
             $types = array_filter($types);
             $query = UserType::find()->id(empty($types) ? ':empty:' : $types);
 
-            $query->setCachedResult(
-                $query->all()
-            );
-
-            /** @var UserTypesBehavior|User $user */
-            if (!$user->saveUserTypes($query, $userAssociation->getOrganization())) {
+            /** @var UserTypesAssociatedToUserBehavior|User $user */
+            if (!$user->getUserTypeManager($userAssociation->getOrganization())
+                ->setMany($query)
+                ->save()
+            ) {
                 $success = false;
-
                 $userAssociation->addError('types', 'Unable to save types.');
             }
         }

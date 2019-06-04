@@ -8,7 +8,7 @@ use craft\events\ModelEvent;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\managers\OrganizationsAssociatedToUserManager;
+use flipbox\organizations\managers\OrganizationsToUserAssociatedManager;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\validators\OrganizationsValidator;
@@ -25,7 +25,7 @@ use yii\base\Exception;
 class OrganizationsAssociatedToUserBehavior extends Behavior
 {
     /**
-     * @var OrganizationsAssociatedToUserManager
+     * @var OrganizationsToUserAssociatedManager
      */
     private $manager;
 
@@ -71,12 +71,12 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
     }
 
     /**
-     * @return OrganizationsAssociatedToUserManager
+     * @return OrganizationsToUserAssociatedManager
      */
-    public function getOrganizationManager(): OrganizationsAssociatedToUserManager
+    public function getOrganizationManager(): OrganizationsToUserAssociatedManager
     {
         if (null === $this->manager) {
-            $this->manager = new OrganizationsAssociatedToUserManager($this->owner);
+            $this->manager = new OrganizationsToUserAssociatedManager($this->owner);
         }
 
         return $this->manager;
@@ -243,7 +243,7 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
      */
     public function associateOrganization(Organization $organization, int $sortOrder = null): bool
     {
-        return $this->getOrganizationManager()->associateOne($organization, $sortOrder);
+        return $this->getOrganizationManager()->associateOne($organization, ['organizationOrder' => $sortOrder]);
     }
 
     /**

@@ -16,15 +16,23 @@ use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
-use yii\db\QueryInterface;
 
 /**
+ * Manages Users associated to Organizations
+ *
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.1.0
+ *
+ * @property UserAssociation[] $associations
+ *
+ * @method UserAssociation findOrCreate($object)
+ * @method UserAssociation[] findAll()
+ * @method UserAssociation findOne()
+ * @method UserAssociation findOrFail()
  */
-class UsersAssociatedToOrganizationManager
+class UsersToOrganizationAssociatedManager
 {
-    use UserAssociationManagerTrait;
+    use AssociationManagerTrait;
 
     /**
      * @var Organization
@@ -73,29 +81,22 @@ class UsersAssociatedToOrganizationManager
             ->setUser($this->resolveUser($object));
     }
 
+
     /*******************************************
-     * ASSOCIATE and/or DISASSOCIATE
+     * SAVE
      *******************************************/
 
     /**
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @inheritDoc
      */
-    public function save(): bool
+    protected function associationDelta(): array
     {
-        // No changes?
-        if (!$this->isMutated()) {
-            return true;
-        }
-
-        $success = true;
-
         $existingAssociations = $this->query()
             ->indexBy('userId')
             ->all();
 
         $associations = [];
+        $order = 1;
         foreach ($this->findAll() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
@@ -104,131 +105,21 @@ class UsersAssociatedToOrganizationManager
                 $association = $newAssociation;
             }
 
-            $association->userOrder = $newAssociation->userOrder;
+            $association->userOrder = $order++;
             $association->organizationOrder = $newAssociation->organizationOrder;
 
             $associations[] = $association;
         }
 
-        // Delete those removed
-        foreach ($existingAssociations as $existingAssociation) {
-            if (!$existingAssociation->delete()) {
-                $success = false;
-            }
-        }
-
-        $order = 1;
-        foreach ($associations as $association) {
-            $association->userOrder = $order++;
-
-            if (!$association->save()) {
-                $success = false;
-            }
-        }
-
-        $this->associations = $associations;
-
-        if (!$success) {
-            $this->organization->addError('users', 'Unable to save user organizations.');
-        }
-
-        return $success;
-    }
-
-    /*******************************************
-     * ASSOCIATE
-     *******************************************/
-
-    /**
-     * @param $object
-     * @param int|null $sortOrder
-     * @return bool
-     */
-    public function associateOne($object, int $sortOrder = null): bool
-    {
-        $association = $this->findOrCreate($object);
-
-        if (null !== $sortOrder) {
-            $association->userOrder = $sortOrder;
-        }
-
-        if (!$association->save()) {
-            $this->organization->addError('users', 'Unable to associate organization.');
-
-            return false;
-        }
-
-        $this->reset();
-
-        return true;
+        return [$associations, $existingAssociations];
     }
 
     /**
-     * @param QueryInterface|User[] $objects
-     * @return bool
-     * @throws \Throwable
+     * @inheritDoc
      */
-    public function associateMany($objects): bool
+    protected function handleAssociationError()
     {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (empty($objects)) {
-            return true;
-        }
-
-        $this->addMany($objects);
-
-        return $this->save();
-    }
-
-
-    /*******************************************
-     * DISSOCIATE
-     *******************************************/
-
-    /**
-     * @param $object
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function dissociateOne($object): bool
-    {
-        if (null === ($association = $this->findOne($object))) {
-            return true;
-        }
-
-        if (!$association->delete()) {
-            $this->organization->addError('users', 'Unable to dissociate organization.');
-
-            return false;
-        }
-
-        $this->removeOne($association);
-
-        return true;
-    }
-
-    /**
-     * @param QueryInterface|User[] $objects
-     * @return bool
-     * @throws \Throwable
-     */
-    public function dissociateMany($objects): bool
-    {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (empty($objects)) {
-            return true;
-        }
-
-        $this->removeMany($objects);
-
-        return $this->save();
+        $this->organization->addError('users', 'Unable to save user organizations.');
     }
 
 

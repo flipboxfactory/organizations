@@ -14,7 +14,7 @@ use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\managers\UsersAssociatedToOrganizationManager;
+use flipbox\organizations\managers\UsersToOrganizationAssociatedManager;
 use flipbox\organizations\records\UserAssociation;
 
 /**
@@ -26,17 +26,17 @@ use flipbox\organizations\records\UserAssociation;
 trait UsersAttributeTrait
 {
     /**
-     * @var UsersAssociatedToOrganizationManager
+     * @var UsersToOrganizationAssociatedManager
      */
     private $userManager;
 
     /**
-     * @return UsersAssociatedToOrganizationManager
+     * @return UsersToOrganizationAssociatedManager
      */
-    public function getUserManager(): UsersAssociatedToOrganizationManager
+    public function getUserManager(): UsersToOrganizationAssociatedManager
     {
         if (null === $this->userManager) {
-            $this->userManager = new UsersAssociatedToOrganizationManager($this);
+            $this->userManager = new UsersToOrganizationAssociatedManager($this);
         }
 
         return $this->userManager;
@@ -231,7 +231,7 @@ trait UsersAttributeTrait
      */
     public function associateUser(User $user, int $sortOrder = null): bool
     {
-        return $this->getUserManager()->associateOne($user, $sortOrder);
+        return $this->getUserManager()->associateOne($user, ['userOrder' => $sortOrder]);
     }
 
     /**

@@ -16,27 +16,33 @@ use flipbox\organizations\queries\UserTypeAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
 use flipbox\organizations\records\UserTypeAssociation;
-use yii\db\QueryInterface;
 
 /**
- * This class provides an interface to manage user type associations.
+ * Manages User Types associated to Organization/User associations
  *
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.1.0
+ *
+ * @property UserTypeAssociation[] $associations
+ *
+ * @method UserTypeAssociation findOrCreate($object)
+ * @method UserTypeAssociation[] findAll()
+ * @method UserTypeAssociation findOne()
+ * @method UserTypeAssociation findOrFail()
  */
 class UserTypeAssociationManager
 {
-    use MutatedTrait;
+    use AssociationManagerTrait {
+        reset as parentRest;
+        setCache as parentSetCache;
+        addToCache as parentAddToCache;
+        removeFromCache as parentRemoveFromCache;
+    }
 
     /**
      * @var UserAssociation
      */
     private $association;
-
-    /**
-     * @var UserTypeAssociation[]|null
-     */
-    protected $associations;
 
     /**
      * @param UserAssociation $association
@@ -81,180 +87,100 @@ class UserTypeAssociationManager
         return $association;
     }
 
-    /**
-     * @param UserTypeAssociation|UserType|int|string $object
-     * @return UserTypeAssociation
-     */
-    public function findOrCreate($object): UserTypeAssociation
-    {
-        if (null === ($association = $this->findOne($object))) {
-            $association = $this->create($object);
-        }
-
-        return $association;
-    }
 
     /**
-     * @return UserTypeAssociation[]
+     * Reset associations
      */
-    public function findAll(): array
+    public function reset()
     {
-        if (null === $this->associations) {
-            $this->associations = $this->query()->all();
-            $this->syncToRelations();
-        }
-
-        return $this->associations;
-    }
-
-    /**
-     * @param UserTypeAssociation|UserType|int|string|null $object
-     * @return UserTypeAssociation|null
-     */
-    public function findOne($object = null)
-    {
-        if (null === ($key = $this->findKey($object))) {
-            return null;
-        }
-
-        return $this->associations[$key];
-    }
-
-    /**
-     * @param UserTypeAssociation|UserType|int|string $object
-     * @return bool
-     */
-    public function exists($object): bool
-    {
-        return null !== $this->findKey($object);
+        unset($this->association->types);
+        return $this->parentRest();
     }
 
 
-
-    /************************************************************
-     * SET
-     ************************************************************/
+    /*******************************************
+     * SAVE
+     *******************************************/
 
     /**
-     * @param QueryInterface|UserType[] $objects
-     * @return $this
+     * @inheritDoc
      */
-    public function setMany($objects)
+    protected function associationDelta(): array
     {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
+        $existingAssociations = $this->query()
+            ->indexBy('typeId')
+            ->all();
 
-        // Reset results
-        $this->associations = [];
-        $this->syncToRelations();
-        $this->mutated = true;
-
-        if (!empty($objects)) {
-            if (!is_array($objects)) {
-                $objects = [$objects];
+        $associations = [];
+        $order = 1;
+        foreach ($this->findAll() as $newAssociation) {
+            if (null === ($association = ArrayHelper::remove(
+                $existingAssociations,
+                $newAssociation->typeId
+            ))) {
+                $association = $newAssociation;
             }
 
-            $this->addMany($objects);
+            $association->sortOrder = $order++;
+
+            $associations[] = $association;
         }
 
-        return $this;
+        return [$associations, $existingAssociations];
     }
 
-    /************************************************************
-     * ADD
-     ************************************************************/
+    /**
+     * @inheritDoc
+     */
+    protected function handleAssociationError()
+    {
+        $this->association->addError('types', 'Unable to save organization types.');
+    }
+
+
+    /*******************************************
+     * CACHE
+     *******************************************/
 
     /**
-     * @param QueryInterface|UserType[] $objects
-     * @return $this
+     * @param array $associations
+     * @return static
      */
-    public function addMany($objects)
+    protected function setCache(array $associations): self
     {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (!is_array($objects)) {
-            $objects = [$objects];
-        }
-
-        // In case a config is directly passed
-        if (ArrayHelper::isAssociative($objects)) {
-            $objects = [$objects];
-        }
-
-        foreach ($objects as $object) {
-            $this->addOne($object);
-        }
+        $this->parentSetCache($associations);
+        $this->syncToRelations();
 
         return $this;
     }
 
     /**
-     * Associate an organization type to an organization
-     *
-     * @param UserTypeAssociation|UserType|int|array $object
-     * @return $this
+     * @param $association
+     * @return static
      */
-    public function addOne($object)
+    protected function addToCache($association): self
     {
-        if (null === ($association = $this->findOne($object))) {
-            $this->associations[] = $this->create($object);
-            $this->syncToRelations();
-            $this->mutated = true;
-        }
-
-        return $this;
-    }
-
-    /************************************************************
-     * REMOVE
-     ************************************************************/
-
-    /**
-     * Dissociate an array of organization types from an organization
-     *
-     * @param QueryInterface|UserType[] $objects
-     * @return $this
-     */
-    public function removeMany($objects)
-    {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (!is_array($objects)) {
-            $objects = [$objects];
-        }
-
-        // In case a config is directly passed
-        if (ArrayHelper::isAssociative($objects)) {
-            $objects = [$objects];
-        }
-
-        foreach ($objects as $object) {
-            $this->removeOne($object);
-        }
+        $this->parentAddToCache($association);
+        $this->syncToRelations();
 
         return $this;
     }
 
     /**
-     * Dissociate a organization type from an organization
-     *
-     * @param UserTypeAssociation|UserType|int|array
-     * @return $this
+     * @param int $key
+     * @return static
      */
-    public function removeOne($object)
+    protected function removeFromCache(int $key): self
     {
-        if (null !== ($key = $this->findKey($object))) {
-            unset($this->associations[$key]);
-            $this->mutated = true;
-        }
+        $this->parentRemoveFromCache($key);
+        $this->syncToRelations();
 
         return $this;
     }
+
+    /*******************************************
+     * UTILS
+     *******************************************/
 
     /**
      * @return $this
@@ -267,179 +193,6 @@ class UserTypeAssociationManager
         ));
         return $this;
     }
-
-    /**
-     * Reset associations
-     */
-    public function reset()
-    {
-        unset($this->association->types);
-        $this->associations = null;
-        $this->mutated = false;
-        return $this;
-    }
-
-    /*******************************************
-     * ASSOCIATE and/or DISASSOCIATE
-     *******************************************/
-
-    /**
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function save(): bool
-    {
-        // No changes?
-        if (!$this->isMutated()) {
-            return true;
-        }
-
-        $success = true;
-
-        $existingAssociations = $this->query()
-            ->indexBy('userId')
-            ->all();
-
-        $associations = [];
-        foreach ($this->findAll() as $newAssociation) {
-            if (null === ($association = ArrayHelper::remove(
-                $existingAssociations,
-                $newAssociation->userId
-            ))) {
-                $association = $newAssociation;
-            }
-
-            $association->sortOrder = $newAssociation->sortOrder;
-
-            $associations[] = $association;
-        }
-
-        // Delete those removed
-        foreach ($existingAssociations as $existingAssociation) {
-            if (!$existingAssociation->delete()) {
-                $success = false;
-            }
-        }
-
-        $order = 1;
-        foreach ($associations as $association) {
-            $association->sortOrder = $order++;
-
-            if (!$association->save()) {
-                $success = false;
-            }
-        }
-
-        $this->associations = $associations;
-        $this->syncToRelations();
-
-        if (!$success) {
-            $this->association->addError('types', 'Unable to save organization types.');
-        }
-
-        return $success;
-    }
-
-    /*******************************************
-     * ASSOCIATE
-     *******************************************/
-
-    /**
-     * @param UserTypeAssociation|UserType|int|array $object
-     * @param int|null $sortOrder
-     * @return bool
-     */
-    public function associateOne($object, int $sortOrder = null): bool
-    {
-        $association = $this->findOrCreate($object);
-
-        if (null !== $sortOrder) {
-            $association->sortOrder = $sortOrder;
-        }
-
-        if (!$association->save()) {
-            $this->association->addError('types', 'Unable to associate user type.');
-
-            return false;
-        }
-
-        $this->reset();
-
-        return true;
-    }
-
-    /**
-     * @param QueryInterface|UserType[] $objects
-     * @return bool
-     * @throws \Throwable
-     */
-    public function associateMany($objects): bool
-    {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (empty($objects)) {
-            return true;
-        }
-
-        $this->addMany($objects);
-
-        return $this->save();
-    }
-
-
-    /*******************************************
-     * DISSOCIATE
-     *******************************************/
-
-    /**
-     * @param UserTypeAssociation|UserType|int|array $object
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function dissociateOne($object): bool
-    {
-        if (null === ($association = $this->findOne($object))) {
-            return true;
-        }
-
-        if (!$association->delete()) {
-            $this->association->addError('types', 'Unable to dissociate organization type.');
-
-            return false;
-        }
-
-        $this->removeOne($association);
-
-        return true;
-    }
-
-    /**
-     * @param QueryInterface|UserType[] $objects
-     * @return bool
-     * @throws \Throwable
-     */
-    public function dissociateMany($objects): bool
-    {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (empty($objects)) {
-            return true;
-        }
-
-        $this->removeMany($objects);
-
-        return $this->save();
-    }
-
-    /*******************************************
-     * UTILS
-     *******************************************/
 
     /**
      * @param UserTypeAssociation|UserType|int|array|null $type

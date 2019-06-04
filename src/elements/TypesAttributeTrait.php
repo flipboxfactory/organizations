@@ -343,7 +343,7 @@ trait TypesAttributeTrait
      */
     public function associateType(OrganizationType $type, int $sortOrder = null): bool
     {
-        return $this->getTypeManager()->associateOne($type, $sortOrder);
+        return $this->getTypeManager()->associateOne($type, ['sortOrder' => $sortOrder]);
     }
 
     /**

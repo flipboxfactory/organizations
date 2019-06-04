@@ -52,17 +52,12 @@ trait OrganizationTypeMutatorTrait
     /**
      * @param $type
      * @return static
-     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
-    public function setType($type)
+    public function setType($type = null)
     {
         $this->type = null;
 
-        if (!$type instanceof OrganizationType && $type !== null) {
-            $type = OrganizationType::getOne($type);
-        }
-
-        if (null === $type) {
+        if (!$type = $this->internalResolveType($type)) {
             $this->type = $this->typeId = null;
         } else {
             $this->typeId = $type->id;
@@ -74,7 +69,6 @@ trait OrganizationTypeMutatorTrait
 
     /**
      * @return OrganizationType|null
-     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
     public function getType()
     {
@@ -117,5 +111,22 @@ trait OrganizationTypeMutatorTrait
         }
 
         return OrganizationType::findOne($this->typeId);
+    }
+
+    /**
+     * @param $type
+     * @return OrganizationType|null
+     */
+    protected function internalResolveType($type = null)
+    {
+        if ($type === null) {
+            return null;
+        }
+
+        if ($type instanceof OrganizationType) {
+            return $type;
+        }
+
+        return OrganizationType::findOne($type);
     }
 }

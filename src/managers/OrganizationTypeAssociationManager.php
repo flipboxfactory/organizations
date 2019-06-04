@@ -16,25 +16,28 @@ use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\OrganizationTypeAssociationQuery;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationTypeAssociation;
-use yii\db\QueryInterface;
 
 /**
+ * Manages Organization Types associated to Organizations
+ *
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.1.0
+ *
+ * @property OrganizationTypeAssociation[] $associations
+ *
+ * @method OrganizationTypeAssociation findOrCreate($object)
+ * @method OrganizationTypeAssociation[] findAll()
+ * @method OrganizationTypeAssociation findOne()
+ * @method OrganizationTypeAssociation findOrFail()
  */
 class OrganizationTypeAssociationManager
 {
-    use MutatedTrait;
+    use AssociationManagerTrait;
 
     /**
      * @var Organization
      */
     private $organization;
-
-    /**
-     * @var OrganizationTypeAssociation[]|null
-     */
-    protected $associations;
 
     /**
      * @param Organization $organization
@@ -78,179 +81,6 @@ class OrganizationTypeAssociationManager
             ->setType($this->resolveType($type));
     }
 
-    /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|string $object
-     * @return OrganizationTypeAssociation
-     */
-    public function findOrCreate($object): OrganizationTypeAssociation
-    {
-        if (null === ($association = $this->findOne($object))) {
-            $association = $this->create($object);
-        }
-
-        return $association;
-    }
-
-    /**
-     * @return OrganizationTypeAssociation[]
-     */
-    public function findAll(): array
-    {
-        if (null === $this->associations) {
-            $this->associations = $this->query()->all();
-        }
-
-        return $this->associations;
-    }
-
-    /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|string|null $object
-     * @return OrganizationTypeAssociation|null
-     */
-    public function findOne($object = null)
-    {
-        if (null === ($key = $this->findKey($object))) {
-            return null;
-        }
-
-        return $this->associations[$key];
-    }
-
-    /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|string $object
-     * @return bool
-     */
-    public function exists($object): bool
-    {
-        return null !== $this->findKey($object);
-    }
-
-
-    /************************************************************
-     * SET
-     ************************************************************/
-
-    /**
-     * @param QueryInterface|OrganizationType[] $objects
-     * @return $this
-     */
-    public function setMany($objects)
-    {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        // Reset results
-        $this->associations = [];
-        $this->mutated = true;
-
-        if (!empty($objects)) {
-            if (!is_array($objects)) {
-                $objects = [$objects];
-            }
-
-            $this->addMany($objects);
-        }
-
-        return $this;
-    }
-
-
-    /************************************************************
-     * ADD
-     ************************************************************/
-
-    /**
-     * @param QueryInterface|OrganizationType[] $objects
-     * @return $this
-     */
-    public function addMany($objects)
-    {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (!is_array($objects)) {
-            $objects = [$objects];
-        }
-
-        // In case a config is directly passed
-        if (ArrayHelper::isAssociative($objects)) {
-            $objects = [$objects];
-        }
-
-        foreach ($objects as $object) {
-            $this->addOne($object);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Associate an organization type to an organization
-     *
-     * @param OrganizationTypeAssociation|OrganizationType|int|array $object
-     * @return $this
-     */
-    public function addOne($object)
-    {
-        if (null === ($association = $this->findOne($object))) {
-            $this->associations[] = $this->create($object);
-
-            $this->mutated = true;
-        }
-
-        return $this;
-    }
-
-
-    /************************************************************
-     * REMOVE
-     ************************************************************/
-
-    /**
-     * Dissociate an array of organization types from an organization
-     *
-     * @param QueryInterface|OrganizationType[] $objects
-     * @return $this
-     */
-    public function removeMany($objects)
-    {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (!is_array($objects)) {
-            $objects = [$objects];
-        }
-
-        // In case a config is directly passed
-        if (ArrayHelper::isAssociative($objects)) {
-            $objects = [$objects];
-        }
-
-        foreach ($objects as $object) {
-            $this->removeOne($object);
-        }
-
-        return $this;
-    }
-
-    /**
-     * Dissociate a organization type from an organization
-     *
-     * @param OrganizationTypeAssociation|OrganizationType|int|array $object
-     * @return $this
-     */
-    public function removeOne($object)
-    {
-        if (null !== ($key = $this->findKey($object))) {
-            unset($this->associations[$key]);
-            $this->mutated = true;
-        }
-
-        return $this;
-    }
 
     /**
      * Reset associations
@@ -264,28 +94,20 @@ class OrganizationTypeAssociationManager
 
 
     /*******************************************
-     * ASSOCIATE and/or DISASSOCIATE
+     * SAVE
      *******************************************/
 
     /**
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @inheritDoc
      */
-    public function save(): bool
+    protected function associationDelta(): array
     {
-        // No changes?
-        if (!$this->isMutated()) {
-            return true;
-        }
-
-        $success = true;
-
         $existingAssociations = $this->query()
             ->indexBy('typeId')
             ->all();
 
         $associations = [];
+        $order = 1;
         foreach ($this->findAll() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
@@ -294,130 +116,20 @@ class OrganizationTypeAssociationManager
                 $association = $newAssociation;
             }
 
-            $association->sortOrder = $newAssociation->sortOrder;
+            $association->sortOrder = $order++;
 
             $associations[] = $association;
         }
 
-        // Delete those removed
-        foreach ($existingAssociations as $existingAssociation) {
-            if (!$existingAssociation->delete()) {
-                $success = false;
-            }
-        }
-
-        $order = 1;
-        foreach ($associations as $association) {
-            $association->sortOrder = $order++;
-
-            if (!$association->save()) {
-                $success = false;
-            }
-        }
-
-        $this->associations = $associations;
-
-        if (!$success) {
-            $this->organization->addError('types', 'Unable to save organization types.');
-        }
-
-        return $success;
-    }
-
-    /*******************************************
-     * ASSOCIATE
-     *******************************************/
-
-    /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|array $object
-     * @param int|null $sortOrder
-     * @return bool
-     */
-    public function associateOne($object, int $sortOrder = null): bool
-    {
-        $association = $this->findOrCreate($object);
-
-        if (null !== $sortOrder) {
-            $association->sortOrder = $sortOrder;
-        }
-
-        if (!$association->save()) {
-            $this->organization->addError('types', 'Unable to associate organization type.');
-
-            return false;
-        }
-
-        $this->reset();
-
-        return true;
+        return [$associations, $existingAssociations];
     }
 
     /**
-     * @param QueryInterface|OrganizationType[] $objects
-     * @return bool
-     * @throws \Throwable
+     * @inheritDoc
      */
-    public function associateMany($objects): bool
+    protected function handleAssociationError()
     {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (empty($objects)) {
-            return true;
-        }
-
-        $this->addMany($objects);
-
-        return $this->save();
-    }
-
-
-    /*******************************************
-     * DISSOCIATE
-     *******************************************/
-
-    /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|array $object
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     */
-    public function dissociateOne($object): bool
-    {
-        if (null === ($association = $this->findOne($object))) {
-            return true;
-        }
-
-        if (!$association->delete()) {
-            $this->organization->addError('types', 'Unable to dissociate organization type.');
-
-            return false;
-        }
-
-        $this->removeOne($association);
-
-        return true;
-    }
-
-    /**
-     * @param QueryInterface|OrganizationType[] $objects
-     * @return bool
-     * @throws \Throwable
-     */
-    public function dissociateMany($objects): bool
-    {
-        if ($objects instanceof QueryInterface) {
-            $objects = $objects->all();
-        }
-
-        if (empty($objects)) {
-            return true;
-        }
-
-        $this->removeMany($objects);
-
-        return $this->save();
+        $this->organization->addError('types', 'Unable to save organization types.');
     }
 
 
