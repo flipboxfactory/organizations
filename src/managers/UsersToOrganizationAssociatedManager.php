@@ -22,7 +22,7 @@ use flipbox\organizations\records\UserAssociation;
  * Manages Users associated to Organizations
  *
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 1.1.0
+ * @since 2.00
  *
  * @property UserAssociation[] $associations
  *

@@ -91,28 +91,6 @@ class UserAssociation extends ActiveRecord
     }
 
     /**
-     * @inheritdoc
-     *
-     * @deprecated
-     */
-    public function associate(): bool
-    {
-        return $this->save();
-    }
-
-    /**
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     *
-     * @deprecated
-     */
-    public function dissociate(): bool
-    {
-        return $this->delete();
-    }
-
-    /**
      * @return array
      */
     public function rules()

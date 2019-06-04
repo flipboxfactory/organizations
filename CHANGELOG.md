@@ -3,6 +3,12 @@ Changelog
 ## Unreleased
 ### Added
 - Many-to-many relationships have a 'manager' class attached to the object where 'relational' logic resides
+
+### Removed
+- Legacy methods of managing relationships directly from the object.
+- `Organization::getUsers()`, `Organization::getTypes()`, `User::getOrganizations()` and `User::getUserTypes()` now return an array (not a query).
+- It is no longer recommended to `Query::setCachedResults()` in order to set new relations, use the relationship manager
+
 ## 1.0.9 - 2019-05-13
 ### Fixed
 - Removing all user types would result in a Postgres query error [#17](https://github.com/flipboxfactory/organizations/issues/17)

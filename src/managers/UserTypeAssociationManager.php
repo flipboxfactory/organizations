@@ -21,7 +21,7 @@ use flipbox\organizations\records\UserTypeAssociation;
  * Manages User Types associated to Organization/User associations
  *
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 1.1.0
+ * @since 2.00
  *
  * @property UserTypeAssociation[] $associations
  *

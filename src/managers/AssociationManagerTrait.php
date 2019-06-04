@@ -17,7 +17,7 @@ use yii\db\QueryInterface;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 1.1.0
+ * @since 2.00
  */
 trait AssociationManagerTrait
 {

@@ -140,42 +140,6 @@ trait TypesAttributeTrait
         );
     }
 
-    /**
-     * Get an associated type by identifier (id/handle)
-     *
-     * @param $identifier
-     * @return null|TypeModel
-     */
-    public function getType($identifier)
-    {
-        // Determine index type
-        $indexBy = (is_numeric($identifier)) ? 'id' : 'handle';
-
-        // Find all types
-        $allTypes = ArrayHelper::index(
-            $this->getTypes(),
-            $indexBy
-        );
-
-        return array_key_exists($identifier, $allTypes) ? $allTypes[$identifier] : null;
-    }
-
-    /**
-     * Identify whether a type is associated to the element
-     *
-     * @param TypeModel|null $type
-     * @return bool
-     */
-    public function hasType(TypeModel $type = null): bool
-    {
-        if (null === $type) {
-            return !empty($this->getTypes());
-        }
-
-        return null !== $this->getType($type->id);
-    }
-
-
     /************************************************************
      * PRIMARY TYPE
      ************************************************************/

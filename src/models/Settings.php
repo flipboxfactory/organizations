@@ -186,30 +186,6 @@ class Settings extends Model
         );
     }
 
-
-    /*******************************************
-     * STATES
-     *******************************************/
-
-    /**
-     * @return $this
-     * @deprecated
-     */
-    public function setStates()
-    {
-        return $this;
-    }
-
-    /**
-     * @return $this
-     * @deprecated
-     */
-    public function setDefaultStates()
-    {
-        return $this;
-    }
-
-
     /*******************************************
      * SITE SETTINGS
      *******************************************/
