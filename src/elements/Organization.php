@@ -389,7 +389,7 @@ class Organization extends Element
         switch ($handle) {
             case 'users':
                 $users = $elements ?? [];
-                $this->setUsers($users);
+                $this->getUserManager()->setMany($users);
                 break;
 
             default:
@@ -541,12 +541,12 @@ class Organization extends Element
         }
 
         // Types
-        if (false === $this->saveTypes()) {
+        if (false === $this->getTypeManager()->save()) {
             throw new Exception("Unable to save types.");
         }
 
         // Users
-        if (false === $this->saveUsers()) {
+        if (false === $this->getUserManager()->save()) {
             throw new Exception("Unable to save users.");
         }
 

@@ -27,8 +27,8 @@ use flipbox\organizations\records\OrganizationTypeAssociation;
  *
  * @method OrganizationTypeAssociation findOrCreate($object)
  * @method OrganizationTypeAssociation[] findAll()
- * @method OrganizationTypeAssociation findOne()
- * @method OrganizationTypeAssociation findOrFail()
+ * @method OrganizationTypeAssociation findOne($object = null)
+ * @method OrganizationTypeAssociation findOrFail($object)
  */
 class OrganizationTypeAssociationManager
 {

@@ -27,8 +27,8 @@ use flipbox\organizations\records\UserTypeAssociation;
  *
  * @method UserTypeAssociation findOrCreate($object)
  * @method UserTypeAssociation[] findAll()
- * @method UserTypeAssociation findOne()
- * @method UserTypeAssociation findOrFail()
+ * @method UserTypeAssociation findOne($object = null)
+ * @method UserTypeAssociation findOrFail($object)
  */
 class UserTypeAssociationManager
 {

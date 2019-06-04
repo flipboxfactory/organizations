@@ -125,7 +125,7 @@ trait AssociationManagerTrait
 
     /**
      * @param QueryInterface|ElementInterface[] $objects
-     * @return $this
+     * @return static
      */
     public function setMany($objects)
     {
@@ -154,7 +154,7 @@ trait AssociationManagerTrait
 
     /**
      * @param QueryInterface|ElementInterface[] $objects
-     * @return $this
+     * @return static
      */
     public function addMany($objects)
     {
@@ -183,7 +183,7 @@ trait AssociationManagerTrait
      *
      * @param ActiveRecord|ElementInterface|int|array $object
      * @param array $attributes
-     * @return $this
+     * @return static
      */
     public function addOne($object, array $attributes = [])
     {
@@ -211,7 +211,7 @@ trait AssociationManagerTrait
      * Dissociate an array of user associations from an organization
      *
      * @param QueryInterface|ElementInterface[] $objects
-     * @return $this
+     * @return static
      */
     public function removeMany($objects)
     {
@@ -239,7 +239,7 @@ trait AssociationManagerTrait
      * Dissociate a user from an organization
      *
      * @param ActiveRecord|ElementInterface|int|array
-     * @return $this
+     * @return static
      */
     public function removeOne($object)
     {

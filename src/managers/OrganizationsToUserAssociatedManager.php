@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\managers;
 
+use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
@@ -27,8 +28,8 @@ use flipbox\organizations\records\UserAssociation;
  *
  * @method UserAssociation findOrCreate($object)
  * @method UserAssociation[] findAll()
- * @method UserAssociation findOne()
- * @method UserAssociation findOrFail()
+ * @method UserAssociation findOne($object = null)
+ * @method UserAssociation findOrFail($object)
  */
 class OrganizationsToUserAssociatedManager
 {
@@ -81,6 +82,32 @@ class OrganizationsToUserAssociatedManager
             ->setUser($this->user);
     }
 
+    /**
+     * @inheritDoc
+     *
+     * @param bool $addToOrganization
+     */
+    public function addOne($object, array $attributes = [], bool $addToOrganization = false)
+    {
+        if (null === ($association = $this->findOne($object))) {
+            $association = $this->create($object);
+            $this->addToCache($association);
+        }
+
+        if (!empty($attributes)) {
+            Craft::configure(
+                $association,
+                $attributes
+            );
+        }
+
+        // Add user to organization as well?
+        if ($addToOrganization && $association->getOrganization()->getId() !== null) {
+            $association->getOrganization()->getUserManager()->addOne($this->user, [], false);
+        }
+
+        return $this;
+    }
 
     /*******************************************
      * SAVE

@@ -141,88 +141,6 @@ trait TypesAttributeTrait
     }
 
     /**
-     * Associate types to an organization
-     *
-     * @param $types
-     * @return $this
-     *
-     * @deprecated
-     */
-    public function setTypes($types)
-    {
-        $this->getTypeManager()->setMany($types);
-        return $this;
-    }
-
-    /**
-     * Associate an array of types to an organization
-     *
-     * @param $types
-     * @return $this
-     *
-     * @deprecated
-     */
-    public function addTypes(array $types)
-    {
-        $this->getTypeManager()->addMany($types);
-        return $this;
-    }
-
-    /**
-     * Associate a type to an organization
-     *
-     * @param OrganizationType $type
-     * @return $this
-     *
-     * @deprecated
-     */
-    public function addType(OrganizationType $type)
-    {
-        $this->getTypeManager()->addOne($type);
-        return $this;
-    }
-
-    /**
-     * Dissociate an array of types from an organization
-     *
-     * @param array $types
-     * @return $this
-     *
-     * @deprecated
-     */
-    public function removeTypes(array $types)
-    {
-        $this->getTypeManager()->removeMany($types);
-        return $this;
-    }
-
-    /**
-     * Dissociate a type from an organization
-     *
-     * @param OrganizationType $type
-     * @return $this
-     *
-     * @deprecated
-     */
-    public function removeType(OrganizationType $type)
-    {
-        $this->getTypeManager()->removeOne($type);
-        return $this;
-    }
-
-    /**
-     * @return $this
-     *
-     * @deprecated
-     */
-    public function resetTypes()
-    {
-        $this->getTypeManager()->reset();
-        return $this;
-    }
-
-
-    /**
      * Get an associated type by identifier (id/handle)
      *
      * @param $identifier
@@ -297,7 +215,7 @@ trait TypesAttributeTrait
             return $this;
         }
 
-        return $this->setTypes(
+        $this->getTypeManager()->setMany(
             array_merge(
                 [
                     $type
@@ -305,6 +223,8 @@ trait TypesAttributeTrait
                 $this->getTypes()
             )
         );
+
+        return $this;
     }
 
     /**
@@ -321,65 +241,5 @@ trait TypesAttributeTrait
         $types = $this->getTypes();
 
         return reset($types);
-    }
-
-    /**
-     * @return bool
-     * @throws \Throwable
-     *
-     * @deprecated
-     */
-    public function saveTypes(): bool
-    {
-        return $this->getTypeManager()->save();
-    }
-
-    /**
-     * @param OrganizationType $type
-     * @param int|null $sortOrder
-     * @return bool
-     *
-     * @deprecated
-     */
-    public function associateType(OrganizationType $type, int $sortOrder = null): bool
-    {
-        return $this->getTypeManager()->associateOne($type, ['sortOrder' => $sortOrder]);
-    }
-
-    /**
-     * @param OrganizationTypeQuery|OrganizationType[] $types
-     * @return bool
-     * @return bool
-     * @throws \Throwable
-     *
-     * @deprecated
-     */
-    public function associateTypes($types): bool
-    {
-        return $this->getTypeManager()->associateMany($types);
-    }
-
-    /**
-     * @param OrganizationType $type
-     * @return bool
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     *
-     * @deprecated
-     */
-    public function dissociateType(OrganizationType $type): bool
-    {
-        return $this->getTypeManager()->dissociateOne($type);
-    }
-
-    /**
-     * @param OrganizationTypeQuery|OrganizationType[] $types
-     * @return bool
-     *
-     * @deprecated
-     */
-    public function dissociateTypes($types): bool
-    {
-        return $this->getTypeManager()->dissociateMany($types);
     }
 }
