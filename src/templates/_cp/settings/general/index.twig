@@ -23,6 +23,24 @@
     {{ redirectInput(baseCpPath) }}
 
     <div id="general">
+        {% set stateOptions = [] %}
+        {% for state, name in craft.organizations.settings.getUserStates() %}
+            {% set stateOptions = stateOptions|merge([{
+                label: name,
+                value: state
+            }]) %}
+        {% endfor %}
+
+        {{ forms.selectField({
+            label: 'Default User State',
+            instructions: 'The state to be applied when user/organization association is established',
+            id: 'defaultUserState',
+            name: 'defaultUserState',
+            options: stateOptions,
+            value: settings.defaultUserState,
+            errors: settings.getErrors('defaultUserState'),
+        }) }}
+
         {{ uriSettings(settings, true) }}
     </div>
     <div id="layout" class="hidden">

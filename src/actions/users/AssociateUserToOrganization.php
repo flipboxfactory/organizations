@@ -9,6 +9,7 @@
 namespace flipbox\organizations\actions\users;
 
 use craft\elements\User;
+use flipbox\organizations\behaviors\OrganizationsAssociatedToUserBehavior;
 use flipbox\organizations\elements\Organization;
 
 /**
@@ -26,7 +27,7 @@ class AssociateUserToOrganization extends AbstractUserAssociation
         $query = Organization::find();
         $query->setCachedResult([$organization]);
 
-        /** @noinspection PhpUndefinedMethodInspection */
-        return $user->associateOrganizations($query);
+        /** @var OrganizationsAssociatedToUserBehavior $user */
+        return $user->getOrganizationManager()->associateMany($query);
     }
 }

@@ -9,12 +9,12 @@
 namespace flipbox\organizations\models;
 
 use craft\base\Model;
-use flipbox\craft\ember\helpers\ModelHelper;
 use flipbox\craft\ember\helpers\SiteHelper;
 use flipbox\craft\ember\models\FieldLayoutAttributeTrait;
 use flipbox\craft\ember\validators\ModelValidator;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
+use flipbox\organizations\records\UserAssociation;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -41,6 +41,11 @@ class Settings extends Model
     private $usersTabLabel = 'Users';
 
     /**
+     * @var string
+     */
+    private $defaultUserState = UserAssociation::STATE_ACTIVE;
+
+    /**
      * @return string
      */
     public static function siteSettingsClass(): string
@@ -62,9 +67,9 @@ class Settings extends Model
     public function getUserStates(): array
     {
         return [
-            'active' => Organizations::t('Active'),
-            'pending' => Organizations::t('Pending'),
-            'inactive' => Organizations::t('InActive')
+            UserAssociation::STATE_ACTIVE => Organizations::t('Active'),
+            UserAssociation::STATE_PENDING => Organizations::t('Pending'),
+            UserAssociation::STATE_INACTIVE => Organizations::t('Inactive')
         ];
     }
 
@@ -109,11 +114,25 @@ class Settings extends Model
     }
 
     /**
+     * Get the default user state to be applied to a user/organization association
+     *
      * @return string
      */
     public function getDefaultUserState(): string
     {
-        return 'active';
+        return $this->defaultUserState;
+    }
+
+    /**
+     * Set the default user state to be applied to a user/organization association
+     *
+     * @param string $state
+     * @return $this
+     */
+    public function setDefaultUserState(string $state)
+    {
+        $this->defaultUserState = $state;
+        return $this;
     }
 
     /**
@@ -142,11 +161,12 @@ class Settings extends Model
                     [
                         'siteSettings',
                         'usersTabOrder',
-                        'usersTabLabel'
+                        'usersTabLabel',
+                        'defaultUserState'
                     ],
                     'safe',
                     'on' => [
-                        ModelHelper::SCENARIO_DEFAULT
+                        static::SCENARIO_DEFAULT
                     ]
                 ]
             ]
@@ -165,6 +185,7 @@ class Settings extends Model
                 'siteSettings',
                 'usersTabOrder',
                 'usersTabLabel',
+                'defaultUserState'
 
             ]
         );
@@ -181,7 +202,8 @@ class Settings extends Model
             [
                 'siteSettings' => Organizations::t('Site Settings'),
                 'usersTabOrder' => Organizations::t('User\'s Tab Order'),
-                'usersTabLabel' => Organizations::t('User\'s Tab Label')
+                'usersTabLabel' => Organizations::t('User\'s Tab Label'),
+                'defaultUserState' => Organizations::t('Default User State')
             ]
         );
     }

@@ -32,6 +32,10 @@ use yii\db\ActiveQueryInterface;
  */
 class UserAssociation extends ActiveRecord
 {
+    const STATE_ACTIVE = 'active';
+    const STATE_PENDING = 'pending';
+    const STATE_INACTIVE = 'inactive';
+
     use SortableTrait,
         UserAttributeTrait,
         IdAttributeTrait,

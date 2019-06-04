@@ -35,8 +35,7 @@ class Update extends CreateModel
      * @return array
      */
     public $validBodyParams = [
-        'requireOwner',
-        'uniqueOwner'
+        'defaultUserState'
     ];
 
     /**
