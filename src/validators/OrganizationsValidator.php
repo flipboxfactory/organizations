@@ -8,11 +8,10 @@
 
 namespace flipbox\organizations\validators;
 
-use Craft;
 use craft\helpers\Json;
+use flipbox\organizations\behaviors\UserOrganizationsBehavior;
 use flipbox\organizations\Organizations as OrganizationPlugin;
-use flipbox\organizations\queries\OrganizationQuery;
-use yii\base\InvalidArgumentException;
+use yii\base\Model;
 use yii\validators\Validator;
 
 /**
@@ -32,34 +31,34 @@ class OrganizationsValidator extends Validator
         parent::init();
 
         if ($this->message === null) {
-            $this->message = Craft::t('organizations', static::DEFAULT_MESSAGE);
+            $this->message = OrganizationPlugin::t(static::DEFAULT_MESSAGE);
         }
     }
 
     /**
-     * @param mixed $value
+     * Validates a single attribute.
+     * Child classes must implement this method to provide the actual validation logic.
+     * @param Model|UserOrganizationsBehavior $model the data model to be validated
+     * @param string $attribute the name of the attribute to be validated.
+     */
+    public function validateAttribute($model, $attribute)
+    {
+        if (!$model->getOrganizationManager()->isMutated()) {
+            return;
+        }
+
+        $result = $this->validateOrganizations($model->getOrganizations());
+        if (!empty($result)) {
+            $this->addError($model, $attribute, $result[0], $result[1]);
+        }
+    }
+
+    /**
+     * @param array $organizations
      * @return array|null
-     * @throws InvalidArgumentException
      */
-    protected function validateValue($value)
+    private function validateOrganizations(array $organizations)
     {
-        if (!$value instanceof OrganizationQuery) {
-            throw new InvalidArgumentException("Validation value must be an 'OrganizationQuery'.");
-        }
-
-        return $this->validateOrganizationQuery($value);
-    }
-
-    /**
-     * @inheritdoc
-     * @param OrganizationQuery $query
-     */
-    private function validateOrganizationQuery(OrganizationQuery $query)
-    {
-        if (null === ($organizations = $query->getCachedResult())) {
-            return null;
-        }
-
         $hasError = false;
 
         foreach ($organizations as $organization) {

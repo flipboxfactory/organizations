@@ -9,7 +9,7 @@
 namespace flipbox\organizations\events\handlers;
 
 use craft\events\DefineBehaviorsEvent;
-use flipbox\organizations\behaviors\UserOrganizationsBehavior;
+use flipbox\organizations\behaviors\OrganizationsAssociatedToUserBehavior;
 use flipbox\organizations\behaviors\UserTypesBehavior;
 
 /**
@@ -23,7 +23,7 @@ class AttachUserBehaviors
      */
     public static function handle(DefineBehaviorsEvent $event)
     {
-        $event->behaviors['organizations'] = UserOrganizationsBehavior::class;
+        $event->behaviors['organizations'] = OrganizationsAssociatedToUserBehavior::class;
         $event->behaviors['types'] = UserTypesBehavior::class;
     }
 }
