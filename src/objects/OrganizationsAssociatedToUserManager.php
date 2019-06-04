@@ -247,7 +247,7 @@ class OrganizationsAssociatedToUserManager
         }
 
         foreach ($this->findAll() as $key => $association) {
-            if ($association->getOrganizationId() === $element->getId()) {
+            if ($association->getOrganizationId() == $element->getId()) {
                 return $key;
             }
         }

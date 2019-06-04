@@ -440,7 +440,7 @@ class TypesAssociatedToOrganizationManager
         }
 
         foreach ($this->findAll() as $key => $association) {
-            if ($association->getTypeId() === $record->id) {
+            if ($association->getTypeId() == $record->id) {
                 return $key;
             }
         }

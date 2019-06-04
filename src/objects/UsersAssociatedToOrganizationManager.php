@@ -164,7 +164,7 @@ class UsersAssociatedToOrganizationManager
     }
 
     /**
-     * @param QueryInterface|Organization[] $objects
+     * @param QueryInterface|User[] $objects
      * @return bool
      * @throws \Throwable
      */
@@ -212,7 +212,7 @@ class UsersAssociatedToOrganizationManager
     }
 
     /**
-     * @param QueryInterface|Organization[] $objects
+     * @param QueryInterface|User[] $objects
      * @return bool
      * @throws \Throwable
      */
@@ -237,7 +237,7 @@ class UsersAssociatedToOrganizationManager
      *******************************************/
 
     /**
-     * @param UserAssociation|Organization|int|array|null $object
+     * @param UserAssociation|User|int|array|null $object
      * @return int|null
      */
     protected function findKey($object = null)
@@ -251,7 +251,7 @@ class UsersAssociatedToOrganizationManager
         }
 
         foreach ($this->findAll() as $key => $association) {
-            if ($association->getUserId() === $element->getId()) {
+            if (null !== $association->getUser() && $association->getUser()->email == $element->email) {
                 return $key;
             }
         }

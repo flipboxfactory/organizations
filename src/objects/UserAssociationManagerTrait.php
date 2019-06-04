@@ -75,9 +75,9 @@ trait UserAssociationManagerTrait
 
     /**
      * @param UserAssociation|ElementInterface|int|string|null $object
-     * @return UserAssociation
+     * @return UserAssociation|null
      */
-    public function findOne($object = null): UserAssociation
+    public function findOne($object = null)
     {
         if (null === ($key = $this->findKey($object))) {
             return null;
