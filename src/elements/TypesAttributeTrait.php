@@ -11,7 +11,7 @@ namespace flipbox\organizations\elements;
 use Craft;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\objects\UsersAssociatedToOrganizationManager;
+use flipbox\organizations\managers\OrganizationTypeAssociationManager;
 use flipbox\organizations\queries\OrganizationTypeQuery;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationType as TypeModel;
@@ -19,24 +19,26 @@ use flipbox\organizations\records\OrganizationType as TypeModel;
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
+ *
+ * @mixin Organization
  */
 trait TypesAttributeTrait
 {
     /**
-     * @var UsersAssociatedToOrganizationManager
+     * @var OrganizationTypeAssociationManager
      */
-    private $manager;
+    private $typeManager;
 
     /**
-     * @return UsersAssociatedToOrganizationManager
+     * @return OrganizationTypeAssociationManager
      */
-    public function getTypeManager(): UsersAssociatedToOrganizationManager
+    public function getTypeManager(): OrganizationTypeAssociationManager
     {
-        if (null === $this->manager) {
-            $this->manager = new UsersAssociatedToOrganizationManager($this);
+        if (null === $this->typeManager) {
+            $this->typeManager = new OrganizationTypeAssociationManager($this);
         }
 
-        return $this->manager;
+        return $this->typeManager;
     }
 
     /**

@@ -6,53 +6,53 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\objects;
+namespace flipbox\organizations\managers;
 
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
-use flipbox\organizations\queries\OrganizationTypeAssociationQuery;
-use flipbox\organizations\records\OrganizationType;
-use flipbox\organizations\records\OrganizationTypeAssociation;
+use flipbox\organizations\queries\UserTypeAssociationQuery;
+use flipbox\organizations\records\UserAssociation;
+use flipbox\organizations\records\UserType;
+use flipbox\organizations\records\UserTypeAssociation;
 use yii\db\QueryInterface;
 
 /**
+ * This class provides an interface to manage user type associations.
+ *
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 1.0.0
+ * @since 1.1.0
  */
-class TypesAssociatedToOrganizationManager
+class UserTypeAssociationManager
 {
-    use MutateableTrait;
+    use MutatedTrait;
 
     /**
-     * @var Organization
+     * @var UserAssociation
      */
-    private $organization;
+    private $association;
 
     /**
-     * @var OrganizationTypeAssociation[]|null
+     * @var UserTypeAssociation[]|null
      */
     protected $associations;
 
     /**
-     * @param Organization $organization
+     * @param UserAssociation $association
      */
-    public function __construct(Organization $organization)
+    public function __construct(UserAssociation $association)
     {
-        $this->organization = $organization;
+        $this->association = $association;
     }
 
     /**
-     * @param array $criteria
-     * @return OrganizationTypeAssociationQuery
+     * @return UserTypeAssociationQuery
      */
-    public function query(array $criteria = []): OrganizationTypeAssociationQuery
+    public function query(): UserTypeAssociationQuery
     {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $query = OrganizationTypeAssociation::find()
-            ->setOrganizationId($this->organization->getId() ?: false)
+        $query = UserTypeAssociation::find()
+            ->setUserId($this->association->getId() ?: false)
             ->orderBy([
                 'sortOrder' => SORT_ASC
             ]);
@@ -68,21 +68,24 @@ class TypesAssociatedToOrganizationManager
     }
 
     /**
-     * @param $type
-     * @return OrganizationTypeAssociation
+     * @param UserTypeAssociation|UserType|int|string $type
+     * @return UserTypeAssociation
      */
-    public function create($type): OrganizationTypeAssociation
+    public function create($type): UserTypeAssociation
     {
-        return (new OrganizationTypeAssociation())
-            ->setOrganization($this->organization)
+        $association = (new UserTypeAssociation())
             ->setType($this->resolveType($type));
+
+        $association->userId = $this->association->id;
+
+        return $association;
     }
 
     /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|string $object
-     * @return OrganizationTypeAssociation
+     * @param UserTypeAssociation|UserType|int|string $object
+     * @return UserTypeAssociation
      */
-    public function findOrCreate($object): OrganizationTypeAssociation
+    public function findOrCreate($object): UserTypeAssociation
     {
         if (null === ($association = $this->findOne($object))) {
             $association = $this->create($object);
@@ -92,22 +95,23 @@ class TypesAssociatedToOrganizationManager
     }
 
     /**
-     * @return OrganizationTypeAssociation[]
+     * @return UserTypeAssociation[]
      */
     public function findAll(): array
     {
         if (null === $this->associations) {
             $this->associations = $this->query()->all();
+            $this->syncToRelations();
         }
 
         return $this->associations;
     }
 
     /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|string|null $object
-     * @return OrganizationTypeAssociation
+     * @param UserTypeAssociation|UserType|int|string|null $object
+     * @return UserTypeAssociation|null
      */
-    public function findOne($object = null): OrganizationTypeAssociation
+    public function findOne($object = null)
     {
         if (null === ($key = $this->findKey($object))) {
             return null;
@@ -117,7 +121,7 @@ class TypesAssociatedToOrganizationManager
     }
 
     /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|string $object
+     * @param UserTypeAssociation|UserType|int|string $object
      * @return bool
      */
     public function exists($object): bool
@@ -126,23 +130,25 @@ class TypesAssociatedToOrganizationManager
     }
 
 
+
     /************************************************************
      * SET
      ************************************************************/
 
     /**
-     * @param $objects
+     * @param QueryInterface|UserType[] $objects
      * @return $this
      */
     public function setMany($objects)
     {
-        if ($objects instanceof OrganizationTypeAssociationQuery) {
-            $this->associations = $objects->all();
-            return $this;
+        if ($objects instanceof QueryInterface) {
+            $objects = $objects->all();
         }
 
         // Reset results
         $this->associations = [];
+        $this->syncToRelations();
+        $this->mutated = true;
 
         if (!empty($objects)) {
             if (!is_array($objects)) {
@@ -155,13 +161,12 @@ class TypesAssociatedToOrganizationManager
         return $this;
     }
 
-
     /************************************************************
      * ADD
      ************************************************************/
 
     /**
-     * @param QueryInterface|OrganizationType[] $objects
+     * @param QueryInterface|UserType[] $objects
      * @return $this
      */
     public function addMany($objects)
@@ -189,20 +194,19 @@ class TypesAssociatedToOrganizationManager
     /**
      * Associate an organization type to an organization
      *
-     * @param OrganizationTypeAssociation|OrganizationType|int|array $object
+     * @param UserTypeAssociation|UserType|int|array $object
      * @return $this
      */
     public function addOne($object)
     {
         if (null === ($association = $this->findOne($object))) {
             $this->associations[] = $this->create($object);
-
+            $this->syncToRelations();
             $this->mutated = true;
         }
 
         return $this;
     }
-
 
     /************************************************************
      * REMOVE
@@ -211,7 +215,7 @@ class TypesAssociatedToOrganizationManager
     /**
      * Dissociate an array of organization types from an organization
      *
-     * @param QueryInterface|OrganizationType[] $objects
+     * @param QueryInterface|UserType[] $objects
      * @return $this
      */
     public function removeMany($objects)
@@ -239,7 +243,7 @@ class TypesAssociatedToOrganizationManager
     /**
      * Dissociate a organization type from an organization
      *
-     * @param OrganizationTypeAssociation|OrganizationType|int|array
+     * @param UserTypeAssociation|UserType|int|array
      * @return $this
      */
     public function removeOne($object)
@@ -253,15 +257,27 @@ class TypesAssociatedToOrganizationManager
     }
 
     /**
+     * @return $this
+     */
+    protected function syncToRelations()
+    {
+        $this->association->populateRelation('types', ArrayHelper::getColumn(
+            $this->findAll(),
+            'type'
+        ));
+        return $this;
+    }
+
+    /**
      * Reset associations
      */
     public function reset()
     {
+        unset($this->association->types);
         $this->associations = null;
         $this->mutated = false;
         return $this;
     }
-
 
     /*******************************************
      * ASSOCIATE and/or DISASSOCIATE
@@ -282,14 +298,14 @@ class TypesAssociatedToOrganizationManager
         $success = true;
 
         $existingAssociations = $this->query()
-            ->indexBy('typeId')
+            ->indexBy('userId')
             ->all();
 
         $associations = [];
         foreach ($this->findAll() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
-                $newAssociation->getTypeId()
+                $newAssociation->userId
             ))) {
                 $association = $newAssociation;
             }
@@ -316,9 +332,10 @@ class TypesAssociatedToOrganizationManager
         }
 
         $this->associations = $associations;
+        $this->syncToRelations();
 
         if (!$success) {
-            $this->organization->addError('types', 'Unable to save organization types.');
+            $this->association->addError('types', 'Unable to save organization types.');
         }
 
         return $success;
@@ -329,7 +346,7 @@ class TypesAssociatedToOrganizationManager
      *******************************************/
 
     /**
-     * @param $object
+     * @param UserTypeAssociation|UserType|int|array $object
      * @param int|null $sortOrder
      * @return bool
      */
@@ -342,7 +359,7 @@ class TypesAssociatedToOrganizationManager
         }
 
         if (!$association->save()) {
-            $this->organization->addError('types', 'Unable to associate organization type.');
+            $this->association->addError('types', 'Unable to associate user type.');
 
             return false;
         }
@@ -353,7 +370,7 @@ class TypesAssociatedToOrganizationManager
     }
 
     /**
-     * @param QueryInterface|Organization[] $objects
+     * @param QueryInterface|UserType[] $objects
      * @return bool
      * @throws \Throwable
      */
@@ -378,7 +395,7 @@ class TypesAssociatedToOrganizationManager
      *******************************************/
 
     /**
-     * @param $object
+     * @param UserTypeAssociation|UserType|int|array $object
      * @return bool
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
@@ -390,7 +407,7 @@ class TypesAssociatedToOrganizationManager
         }
 
         if (!$association->delete()) {
-            $this->organization->addError('types', 'Unable to dissociate organization type.');
+            $this->association->addError('types', 'Unable to dissociate organization type.');
 
             return false;
         }
@@ -401,7 +418,7 @@ class TypesAssociatedToOrganizationManager
     }
 
     /**
-     * @param QueryInterface|Organization[] $objects
+     * @param QueryInterface|UserType[] $objects
      * @return bool
      * @throws \Throwable
      */
@@ -420,20 +437,19 @@ class TypesAssociatedToOrganizationManager
         return $this->save();
     }
 
-
     /*******************************************
      * UTILS
      *******************************************/
 
     /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|array|null $type
+     * @param UserTypeAssociation|UserType|int|array|null $type
      * @return int|null
      */
     protected function findKey($type = null)
     {
         if (null === ($record = $this->resolveType($type))) {
             Organizations::info(sprintf(
-                "Unable to resolve organization type: %s",
+                "Unable to resolve user association type: %s",
                 (string)Json::encode($type)
             ));
             return null;
@@ -449,8 +465,8 @@ class TypesAssociatedToOrganizationManager
     }
 
     /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|array|null $type
-     * @return array|OrganizationType|null
+     * @param UserTypeAssociation|UserType|int|array|null $type
+     * @return UserType|null
      */
     protected function resolveType($type = null)
     {
@@ -458,11 +474,11 @@ class TypesAssociatedToOrganizationManager
             return null;
         }
 
-        if ($type instanceof OrganizationTypeAssociation) {
+        if ($type instanceof UserTypeAssociation) {
             return $type->getType();
         }
 
-        if ($type instanceof OrganizationType) {
+        if ($type instanceof UserType) {
             return $type;
         }
 
@@ -472,6 +488,6 @@ class TypesAssociatedToOrganizationManager
             $type = ['id' => $id];
         }
 
-        return OrganizationType::findOne($type);
+        return UserType::findOne($type);
     }
 }

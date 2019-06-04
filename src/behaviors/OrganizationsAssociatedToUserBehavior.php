@@ -8,7 +8,7 @@ use craft\events\ModelEvent;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\objects\OrganizationsAssociatedToUserManager;
+use flipbox\organizations\managers\OrganizationsAssociatedToUserManager;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\validators\OrganizationsValidator;

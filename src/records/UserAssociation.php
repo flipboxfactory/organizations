@@ -14,6 +14,7 @@ use flipbox\craft\ember\records\ActiveRecord;
 use flipbox\craft\ember\records\IdAttributeTrait;
 use flipbox\craft\ember\records\SortableTrait;
 use flipbox\craft\ember\records\UserAttributeTrait;
+use flipbox\organizations\managers\UserTypeAssociationManager;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
 use yii\db\ActiveQueryInterface;
@@ -45,6 +46,23 @@ class UserAssociation extends ActiveRecord
      * @inheritdoc
      */
     protected $getterPriorityAttributes = ['userId', 'organizationId'];
+
+    /**
+     * @var UserTypeAssociationManager
+     */
+    private $manager;
+
+    /**
+     * @return UserTypeAssociationManager
+     */
+    public function getTypeManager(): UserTypeAssociationManager
+    {
+        if (null === $this->manager) {
+            $this->manager = new UserTypeAssociationManager($this);
+        }
+
+        return $this->manager;
+    }
 
     /**
      * @inheritdoc

@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\objects;
+namespace flipbox\organizations\managers;
 
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
@@ -20,23 +20,23 @@ use yii\db\QueryInterface;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 1.0.0
+ * @since 1.1.0
  */
-class OrganizationsAssociatedToUserManager
+class UsersAssociatedToOrganizationManager
 {
     use UserAssociationManagerTrait;
 
     /**
-     * @var User
+     * @var Organization
      */
-    private $user;
+    private $organization;
 
     /**
-     * @param User $user
+     * @param Organization $organization
      */
-    public function __construct(User $user)
+    public function __construct(Organization $organization)
     {
-        $this->user = $user;
+        $this->organization = $organization;
     }
 
     /**
@@ -47,9 +47,9 @@ class OrganizationsAssociatedToUserManager
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $query = UserAssociation::find()
-            ->setUserId($this->user->getId() ?: false)
+            ->setOrganizationId($this->organization->getId() ?: false)
             ->orderBy([
-                'organizationOrder' => SORT_ASC
+                'userOrder' => SORT_ASC
             ]);
 
         if (!empty($criteria)) {
@@ -69,10 +69,9 @@ class OrganizationsAssociatedToUserManager
     public function create($object): UserAssociation
     {
         return (new UserAssociation())
-            ->setOrganization($this->resolveOrganization($object))
-            ->setUser($this->user);
+            ->setOrganization($this->organization)
+            ->setUser($this->resolveUser($object));
     }
-
 
     /*******************************************
      * ASSOCIATE and/or DISASSOCIATE
@@ -93,14 +92,14 @@ class OrganizationsAssociatedToUserManager
         $success = true;
 
         $existingAssociations = $this->query()
-            ->indexBy('organizationId')
+            ->indexBy('userId')
             ->all();
 
         $associations = [];
         foreach ($this->findAll() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
-                $newAssociation->getOrganizationId()
+                $newAssociation->getUserId()
             ))) {
                 $association = $newAssociation;
             }
@@ -120,7 +119,7 @@ class OrganizationsAssociatedToUserManager
 
         $order = 1;
         foreach ($associations as $association) {
-            $association->organizationOrder = $order++;
+            $association->userOrder = $order++;
 
             if (!$association->save()) {
                 $success = false;
@@ -130,7 +129,7 @@ class OrganizationsAssociatedToUserManager
         $this->associations = $associations;
 
         if (!$success) {
-            $this->user->addError('organizations', 'Unable to save user organizations.');
+            $this->organization->addError('users', 'Unable to save user organizations.');
         }
 
         return $success;
@@ -150,11 +149,11 @@ class OrganizationsAssociatedToUserManager
         $association = $this->findOrCreate($object);
 
         if (null !== $sortOrder) {
-            $association->organizationOrder = $sortOrder;
+            $association->userOrder = $sortOrder;
         }
 
         if (!$association->save()) {
-            $this->user->addError('organizations', 'Unable to associate organization.');
+            $this->organization->addError('users', 'Unable to associate organization.');
 
             return false;
         }
@@ -165,7 +164,7 @@ class OrganizationsAssociatedToUserManager
     }
 
     /**
-     * @param QueryInterface|Organization[] $objects
+     * @param QueryInterface|User[] $objects
      * @return bool
      * @throws \Throwable
      */
@@ -202,7 +201,7 @@ class OrganizationsAssociatedToUserManager
         }
 
         if (!$association->delete()) {
-            $this->user->addError('organizations', 'Unable to dissociate organization.');
+            $this->organization->addError('users', 'Unable to dissociate organization.');
 
             return false;
         }
@@ -213,7 +212,7 @@ class OrganizationsAssociatedToUserManager
     }
 
     /**
-     * @param QueryInterface|Organization[] $objects
+     * @param QueryInterface|User[] $objects
      * @return bool
      * @throws \Throwable
      */
@@ -232,22 +231,27 @@ class OrganizationsAssociatedToUserManager
         return $this->save();
     }
 
+
+    /*******************************************
+     * UTILS
+     *******************************************/
+
     /**
-     * @param UserAssociation|Organization|int|array|null $object
+     * @param UserAssociation|User|int|array|null $object
      * @return int|null
      */
     protected function findKey($object = null)
     {
-        if (null === ($element = $this->resolveOrganization($object))) {
+        if (null === ($element = $this->resolveUser($object))) {
             Organizations::info(sprintf(
-                "Unable to resolve organization: %s",
+                "Unable to resolve user: %s",
                 (string)Json::encode($object)
             ));
             return null;
         }
 
         foreach ($this->findAll() as $key => $association) {
-            if ($association->getOrganizationId() == $element->getId()) {
+            if (null !== $association->getUser() && $association->getUser()->email == $element->email) {
                 return $key;
             }
         }
@@ -256,29 +260,29 @@ class OrganizationsAssociatedToUserManager
     }
 
     /**
-     * @param UserAssociation|Organization|int|array|null $organization
-     * @return Organization|null
+     * @param UserAssociation|User|int|array|null $user
+     * @return User|null
      */
-    protected function resolveOrganization($organization = null)
+    protected function resolveUser($user = null)
     {
-        if (null === $organization) {
+        if (null === $user) {
             return null;
         }
 
-        if ($organization instanceof UserAssociation) {
-            return $organization->getOrganization();
+        if ($user instanceof UserAssociation) {
+            return $user->getUser();
         }
 
-        if ($organization instanceof Organization) {
-            return $organization;
+        if ($user instanceof User) {
+            return $user;
         }
 
-        if (is_array($organization) &&
-            null !== ($id = ArrayHelper::getValue($organization, 'id'))
+        if (is_array($user) &&
+            null !== ($id = ArrayHelper::getValue($user, 'id'))
         ) {
-            $organization = ['id' => $id];
+            $user = ['id' => $id];
         }
 
-        return Organization::findOne($organization);
+        return User::findOne($user);
     }
 }

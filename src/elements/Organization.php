@@ -426,7 +426,7 @@ class Organization extends Element
         switch ($attribute) {
             case 'types':
                 $typeHtmlParts = [];
-                foreach ($this->getTypes()->all() as $type) {
+                foreach ($this->getTypes() as $type) {
                     $typeHtmlParts[] = '<a href="' .
                         UrlHelper::cpUrl('organizations/' . $this->id . '/' . $type->handle) .
                         '">' .

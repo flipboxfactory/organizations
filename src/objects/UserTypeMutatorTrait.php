@@ -52,17 +52,12 @@ trait UserTypeMutatorTrait
     /**
      * @param $type
      * @return $this
-     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
-    public function setType($type)
+    public function setType($type = null)
     {
         $this->type = null;
 
-        if (!$type instanceof UserType && $type !== null) {
-            $type = UserType::getOne($type);
-        }
-
-        if (null === $type) {
+        if (!$type = $this->internalResolveType($type)) {
             $this->type = $this->typeId = null;
         } else {
             $this->typeId = $type->id;
@@ -74,7 +69,6 @@ trait UserTypeMutatorTrait
 
     /**
      * @return UserType|null
-     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      */
     public function getType()
     {
@@ -117,5 +111,22 @@ trait UserTypeMutatorTrait
         }
 
         return UserType::findOne($this->typeId);
+    }
+
+    /**
+     * @param $type
+     * @return UserType|null
+     */
+    protected function internalResolveType($type = null)
+    {
+        if ($type === null) {
+            return null;
+        }
+
+        if ($type instanceof UserType) {
+            return $type;
+        }
+
+        return UserType::findOne($type);
     }
 }

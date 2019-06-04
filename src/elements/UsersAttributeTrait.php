@@ -14,7 +14,7 @@ use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\objects\UsersAssociatedToOrganizationManager;
+use flipbox\organizations\managers\UsersAssociatedToOrganizationManager;
 use flipbox\organizations\records\UserAssociation;
 
 /**
@@ -28,18 +28,18 @@ trait UsersAttributeTrait
     /**
      * @var UsersAssociatedToOrganizationManager
      */
-    private $manager;
+    private $userManager;
 
     /**
      * @return UsersAssociatedToOrganizationManager
      */
     public function getUserManager(): UsersAssociatedToOrganizationManager
     {
-        if (null === $this->manager) {
-            $this->manager = new UsersAssociatedToOrganizationManager($this);
+        if (null === $this->userManager) {
+            $this->userManager = new UsersAssociatedToOrganizationManager($this);
         }
 
-        return $this->manager;
+        return $this->userManager;
     }
 
     /**

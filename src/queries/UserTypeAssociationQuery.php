@@ -34,8 +34,8 @@ class UserTypeAssociationQuery extends ActiveQuery
     public $typeId;
 
     /**
-     * @inheritdoc
-     * return static
+     * @param $value
+     * @return $this
      */
     public function type($value)
     {
@@ -43,8 +43,8 @@ class UserTypeAssociationQuery extends ActiveQuery
     }
 
     /**
-     * @inheritdoc
-     * return static
+     * @param $value
+     * @return $this
      */
     public function typeId($value)
     {
@@ -53,8 +53,17 @@ class UserTypeAssociationQuery extends ActiveQuery
     }
 
     /**
-     * @inheritdoc
-     * return static
+     * @param $value
+     * @return $this
+     */
+    public function setTypeId($value)
+    {
+        return $this->typeId($value);
+    }
+
+    /**
+     * @param $value
+     * @return $this
      */
     public function user($value)
     {
@@ -62,8 +71,8 @@ class UserTypeAssociationQuery extends ActiveQuery
     }
 
     /**
-     * @inheritdoc
-     * return static
+     * @param $value
+     * @return $this
      */
     public function userId($value)
     {
@@ -72,16 +81,20 @@ class UserTypeAssociationQuery extends ActiveQuery
     }
 
     /**
+     * @param $value
+     * @return $this
+     */
+    public function setUserId($value)
+    {
+        return $this->userId($value);
+    }
+
+    /**
      * @inheritdoc
      * @throws QueryAbortedException
      */
     public function prepare($builder)
     {
-        // Is the query already doomed?
-        if ($this->userId !== null && empty($this->userId)) {
-            throw new QueryAbortedException();
-        }
-
         $this->applyUserParam();
         $this->applyTypeParam();
 

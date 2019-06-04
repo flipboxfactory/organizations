@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\objects;
+namespace flipbox\organizations\managers;
 
 use craft\base\ElementInterface;
 use craft\helpers\ArrayHelper;
@@ -23,7 +23,7 @@ use yii\db\QueryInterface;
  */
 trait UserAssociationManagerTrait
 {
-    use MutateableTrait;
+    use MutatedTrait;
 
     /**
      * @var UserAssociation[]|null
@@ -101,18 +101,18 @@ trait UserAssociationManagerTrait
      ************************************************************/
 
     /**
-     * @param $objects
+     * @param QueryInterface|ElementInterface[] $objects
      * @return $this
      */
     public function setMany($objects)
     {
-        if ($objects instanceof UserAssociationQuery) {
-            $this->associations = $objects->all();
-            return $this;
+        if ($objects instanceof QueryInterface) {
+            $objects = $objects->all();
         }
 
         // Reset results
         $this->associations = [];
+        $this->mutated = true;
 
         if (!empty($objects)) {
             if (!is_array($objects)) {

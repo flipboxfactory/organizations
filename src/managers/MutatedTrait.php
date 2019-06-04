@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\objects;
+namespace flipbox\organizations\managers;
 
 use DateTime;
 
@@ -16,7 +16,7 @@ use DateTime;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.1.0
  */
-trait MutateableTrait
+trait MutatedTrait
 {
     /**
      * @var bool
