@@ -26,7 +26,7 @@
 		"craftcms/cms": "^3.1.20",
 		"flipboxfactory/craft-ember": "^2.3.1",
 		"flipboxfactory/craft-elements-nested-index": "^2.3.1",
-		"tightenco/collect": "^5.0"
+		"tightenco/collect": "^5.5"
 	},
 	"require-dev": {
 		"squizlabs/php_codesniffer": "^3.2",

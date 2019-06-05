@@ -435,7 +435,7 @@ trait AssociationManagerTrait
             return $this->setCache([$association], true);
         }
 
-        $this->associations->add($association);
+        $this->associations->push($association);
         $this->mutated = true;
 
         return $this;
