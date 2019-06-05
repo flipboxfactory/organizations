@@ -75,8 +75,10 @@ class SetOrganizationUserElementTableAttributeHtml
                 }
 
                 $event->html = Html::encodeParams(
-                    '<span class="user-types-icons" data-label="' . implode(', ', $label) . '">' . implode('',
-                        $html) . '</span>',
+                    '<span class="user-types-icons" data-label="' . implode(', ', $label) . '">' . implode(
+                        '',
+                        $html
+                    ) . '</span>',
                     []
                 );
 
@@ -87,10 +89,10 @@ class SetOrganizationUserElementTableAttributeHtml
     private static function icon(UserType $type)
     {
         return '<span class="foo" data-label="' . $type->name . '">' . Craft::$app->getView()->renderTemplate(
-                "organizations/_includes/icon.svg",
-                [
-                    'label' => $type->name
-                ]
-            ) . '</span>';
+            "organizations/_includes/icon.svg",
+            [
+                'label' => $type->name
+            ]
+        ) . '</span>';
     }
 }
