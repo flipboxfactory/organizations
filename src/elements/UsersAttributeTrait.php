@@ -14,7 +14,8 @@ use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\managers\UsersToOrganizationAssociatedManager;
+use flipbox\organizations\managers\RelationshipManagerInterface;
+use flipbox\organizations\managers\UserRelationshipManager;
 use flipbox\organizations\records\UserAssociation;
 use Tightenco\Collect\Support\Collection;
 
@@ -27,17 +28,17 @@ use Tightenco\Collect\Support\Collection;
 trait UsersAttributeTrait
 {
     /**
-     * @var UsersToOrganizationAssociatedManager
+     * @var RelationshipManagerInterface
      */
     private $userManager;
 
     /**
-     * @return UsersToOrganizationAssociatedManager
+     * @return RelationshipManagerInterface
      */
-    public function getUserManager(): UsersToOrganizationAssociatedManager
+    public function getUserManager(): RelationshipManagerInterface
     {
         if (null === $this->userManager) {
-            $this->userManager = new UsersToOrganizationAssociatedManager($this);
+            $this->userManager = new UserRelationshipManager($this);
         }
 
         return $this->userManager;

@@ -5,7 +5,7 @@ namespace flipbox\organizations\behaviors;
 use craft\elements\User;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\managers\UserTypeAssociationManager;
+use flipbox\organizations\managers\RelationshipManagerInterface;
 use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\records\UserType;
 use Tightenco\Collect\Support\Collection;
@@ -19,10 +19,10 @@ class UserTypesAssociatedToUserBehavior extends Behavior
 {
     /**
      * @param Organization|int $organization
-     * @return UserTypeAssociationManager
+     * @return RelationshipManagerInterface
      * @throws Exception
      */
-    public function getUserTypeManager($organization): UserTypeAssociationManager
+    public function getUserTypeManager($organization): RelationshipManagerInterface
     {
         return $this->owner->getOrganizationManager()
             ->findOrFail($organization)

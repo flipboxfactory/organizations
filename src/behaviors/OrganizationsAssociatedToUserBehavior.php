@@ -7,10 +7,10 @@ use craft\elements\User;
 use craft\events\ModelEvent;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\managers\OrganizationsToUserAssociatedManager;
+use flipbox\organizations\managers\RelationshipManagerInterface;
+use flipbox\organizations\managers\OrganizationRelationshipManager;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\queries\OrganizationQuery;
-use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\validators\OrganizationsValidator;
 use Tightenco\Collect\Support\Collection;
 use yii\base\Behavior;
@@ -26,7 +26,7 @@ use yii\base\Exception;
 class OrganizationsAssociatedToUserBehavior extends Behavior
 {
     /**
-     * @var OrganizationsToUserAssociatedManager
+     * @var RelationshipManagerInterface
      */
     private $manager;
 
@@ -72,12 +72,12 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
     }
 
     /**
-     * @return OrganizationsToUserAssociatedManager
+     * @return RelationshipManagerInterface
      */
-    public function getOrganizationManager(): OrganizationsToUserAssociatedManager
+    public function getOrganizationManager(): RelationshipManagerInterface
     {
         if (null === $this->manager) {
-            $this->manager = new OrganizationsToUserAssociatedManager($this->owner);
+            $this->manager = new OrganizationRelationshipManager($this->owner);
         }
 
         return $this->manager;

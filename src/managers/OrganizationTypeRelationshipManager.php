@@ -29,9 +29,9 @@ use flipbox\organizations\records\OrganizationTypeAssociation;
  * @method OrganizationTypeAssociation findOne($object = null)
  * @method OrganizationTypeAssociation findOrFail($object)
  */
-class OrganizationTypeAssociationManager
+class OrganizationTypeRelationshipManager implements RelationshipManagerInterface
 {
-    use AssociationManagerTrait;
+    use RelationshipManagerTrait;
 
     /**
      * @var Organization
@@ -50,7 +50,7 @@ class OrganizationTypeAssociationManager
      * @param array $criteria
      * @return OrganizationTypeAssociationQuery
      */
-    public function query(array $criteria = []): OrganizationTypeAssociationQuery
+    protected function query(array $criteria = []): OrganizationTypeAssociationQuery
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $query = OrganizationTypeAssociation::find()
@@ -73,7 +73,7 @@ class OrganizationTypeAssociationManager
      * @param OrganizationTypeAssociation|OrganizationType|int|string $type
      * @return OrganizationTypeAssociation
      */
-    public function create($type): OrganizationTypeAssociation
+    protected function create($type): OrganizationTypeAssociation
     {
         return (new OrganizationTypeAssociation())
             ->setOrganization($this->organization)

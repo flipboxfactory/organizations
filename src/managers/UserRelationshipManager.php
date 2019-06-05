@@ -31,9 +31,9 @@ use flipbox\organizations\records\UserAssociation;
  * @method UserAssociation findOne($object = null)
  * @method UserAssociation findOrFail($object)
  */
-class UsersToOrganizationAssociatedManager
+class UserRelationshipManager implements RelationshipManagerInterface
 {
-    use AssociationManagerTrait;
+    use RelationshipManagerTrait;
 
     /**
      * @var Organization
@@ -52,7 +52,7 @@ class UsersToOrganizationAssociatedManager
      * @param array $criteria
      * @return UserAssociationQuery
      */
-    public function query(array $criteria = []): UserAssociationQuery
+    protected function query(array $criteria = []): UserAssociationQuery
     {
         /** @noinspection PhpUndefinedMethodInspection */
         $query = UserAssociation::find()
@@ -75,7 +75,7 @@ class UsersToOrganizationAssociatedManager
      * @param $object
      * @return UserAssociation
      */
-    public function create($object): UserAssociation
+    protected function create($object): UserAssociation
     {
         return (new UserAssociation())
             ->setOrganization($this->organization)

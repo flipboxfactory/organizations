@@ -26,13 +26,12 @@ use flipbox\organizations\records\UserTypeAssociation;
  * @property UserTypeAssociation[] $associations
  *
  * @method UserTypeAssociation findOrCreate($object)
- * @method UserTypeAssociation[] findAll()
  * @method UserTypeAssociation findOne($object = null)
  * @method UserTypeAssociation findOrFail($object)
  */
-class UserTypeAssociationManager
+class UserTypeRelationshipManager implements RelationshipManagerInterface
 {
-    use AssociationManagerTrait {
+    use RelationshipManagerTrait {
         reset as parentRest;
         setCache as parentSetCache;
         addToCache as parentAddToCache;
@@ -55,7 +54,7 @@ class UserTypeAssociationManager
     /**
      * @return UserTypeAssociationQuery
      */
-    public function query(): UserTypeAssociationQuery
+    protected function query(): UserTypeAssociationQuery
     {
         $query = UserTypeAssociation::find()
             ->setUserId($this->association->getId() ?: false)
@@ -77,7 +76,7 @@ class UserTypeAssociationManager
      * @param UserTypeAssociation|UserType|int|string $type
      * @return UserTypeAssociation
      */
-    public function create($type): UserTypeAssociation
+    protected function create($type): UserTypeAssociation
     {
         $association = (new UserTypeAssociation())
             ->setType($this->resolveType($type));
@@ -187,10 +186,10 @@ class UserTypeAssociationManager
      */
     protected function syncToRelations()
     {
-        $this->association->populateRelation('types', ArrayHelper::getColumn(
-            $this->findAll(),
-            'type'
-        ));
+        $this->association->populateRelation(
+            'types',
+            $this->findAll()->pluck('type')->all()
+        );
         return $this;
     }
 

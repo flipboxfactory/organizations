@@ -20,7 +20,7 @@ use yii\db\QueryInterface;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 2.00
  */
-trait AssociationManagerTrait
+trait RelationshipManagerTrait
 {
     use MutatedTrait;
 
@@ -39,13 +39,13 @@ trait AssociationManagerTrait
      * @param array $criteria
      * @return QueryInterface
      */
-    abstract public function query(array $criteria = []): QueryInterface;
+    abstract protected function query(array $criteria = []): QueryInterface;
 
     /**
      * @param $object
      * @return ActiveRecord
      */
-    abstract public function create($object): ActiveRecord;
+    abstract protected function create($object): ActiveRecord;
 
     /**
      *
@@ -427,7 +427,7 @@ trait AssociationManagerTrait
 
     /**
      * @param $association
-     * @return AssociationManagerTrait
+     * @return RelationshipManagerTrait
      */
     protected function addToCache($association): self
     {
@@ -443,7 +443,7 @@ trait AssociationManagerTrait
 
     /**
      * @param int $key
-     * @return AssociationManagerTrait
+     * @return RelationshipManagerTrait
      */
     protected function removeFromCache(int $key): self
     {

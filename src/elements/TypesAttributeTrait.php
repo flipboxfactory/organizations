@@ -10,10 +10,10 @@ namespace flipbox\organizations\elements;
 
 use Craft;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\managers\OrganizationTypeAssociationManager;
+use flipbox\organizations\managers\RelationshipManagerInterface;
+use flipbox\organizations\managers\OrganizationTypeRelationshipManager;
 use flipbox\organizations\queries\OrganizationTypeQuery;
 use flipbox\organizations\records\OrganizationType;
-use flipbox\organizations\records\OrganizationTypeAssociation;
 use Tightenco\Collect\Support\Collection;
 
 /**
@@ -25,17 +25,17 @@ use Tightenco\Collect\Support\Collection;
 trait TypesAttributeTrait
 {
     /**
-     * @var OrganizationTypeAssociationManager
+     * @var RelationshipManagerInterface
      */
     private $typeManager;
 
     /**
-     * @return OrganizationTypeAssociationManager
+     * @return RelationshipManagerInterface
      */
-    public function getTypeManager(): OrganizationTypeAssociationManager
+    public function getTypeManager(): RelationshipManagerInterface
     {
         if (null === $this->typeManager) {
-            $this->typeManager = new OrganizationTypeAssociationManager($this);
+            $this->typeManager = new OrganizationTypeRelationshipManager($this);
         }
 
         return $this->typeManager;
