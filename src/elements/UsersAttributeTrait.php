@@ -120,7 +120,10 @@ trait UsersAttributeTrait
     public function getUsers(): Collection
     {
         return $this->getUserManager()->findAll()
-            ->pluck('user');
+            ->filter(function (UserAssociation $association) {
+                return null !== $association->getUser();
+            })
+            ->pluck('user')->filter();
     }
 
     /**

@@ -124,6 +124,10 @@ trait OrganizationMutatorTrait
      */
     protected function internalResolveOrganization($organization = null)
     {
+        if (null === $organization) {
+            return null;
+        }
+
         if ($organization instanceof Organization) {
             return $organization;
         }

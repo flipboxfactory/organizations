@@ -10,6 +10,7 @@ use flipbox\organizations\elements\Organization;
 use flipbox\organizations\managers\OrganizationsToUserAssociatedManager;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\queries\OrganizationQuery;
+use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\validators\OrganizationsValidator;
 use Tightenco\Collect\Support\Collection;
 use yii\base\Behavior;
@@ -164,7 +165,10 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
     public function getOrganizations(): Collection
     {
         return $this->getOrganizationManager()->findAll()
-            ->pluck('organization');
+            ->filter(function (UserAssociation $association) {
+                return null !== $association->getOrganization();
+            })
+            ->pluck('organization')->filter();
     }
 
     /**

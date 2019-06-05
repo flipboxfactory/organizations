@@ -13,6 +13,7 @@ use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\managers\OrganizationTypeAssociationManager;
 use flipbox\organizations\queries\OrganizationTypeQuery;
 use flipbox\organizations\records\OrganizationType;
+use flipbox\organizations\records\OrganizationTypeAssociation;
 use Tightenco\Collect\Support\Collection;
 
 /**
@@ -134,7 +135,10 @@ trait TypesAttributeTrait
     public function getTypes(): Collection
     {
         return $this->getTypeManager()->findAll()
-            ->pluck('type');
+            ->filter(function (OrganizationTypeAssociation $association) {
+                return null !== $association->getType();
+            })
+            ->pluck('type')->filter();
     }
 
     /**
