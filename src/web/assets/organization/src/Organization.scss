@@ -1,5 +1,5 @@
 @charset "UTF-8";
-@import "../../../../../vendor/craftcms/cms/lib/craftcms-sass/mixins";
+@import "../../../../../../../vendor/craftcms/cms/lib/craftcms-sass/mixins";
 
 /* ----------------------------------------
 /* Organization
@@ -12,6 +12,65 @@
 
       &.users {
         float: right;
+
+      }
+
+    }
+
+  }
+
+}
+
+.edit-association {
+  cursor: pointer;
+  opacity: .1;
+
+}
+
+.user-types-icons {
+  display: inline-block;
+  height: 22px;
+  vertical-align: middle;
+  cursor: pointer;
+
+  span {
+    display: inline-block;
+
+    + * {
+      margin-left: -5px;
+
+    }
+
+  }
+
+  &:hover,
+  &:focus {
+
+    svg {
+      circle {
+        stroke: $blue;
+        opacity: 1;
+      }
+    }
+
+  }
+  
+}
+
+#user-index {
+  tr {
+    &:hover,
+    &:focus {
+
+      .edit-association {
+        opacity: .5;
+        color: $blue;
+
+        &:hover,
+        &:focus {
+          opacity: 1;
+
+        }
 
       }
 

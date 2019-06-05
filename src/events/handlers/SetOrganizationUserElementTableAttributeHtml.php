@@ -12,8 +12,9 @@ use Craft;
 use craft\elements\User;
 use craft\events\SetElementTableAttributeHtmlEvent;
 use craft\helpers\Html;
+use flipbox\organizations\behaviors\OrganizationsAssociatedToUserBehavior;
 use flipbox\organizations\Organizations;
-use flipbox\organizations\records\UserAssociation;
+use flipbox\organizations\records\UserType;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -26,32 +27,70 @@ class SetOrganizationUserElementTableAttributeHtml
      */
     public static function handle(SetElementTableAttributeHtmlEvent $event)
     {
-        if ($event->attribute === 'state') {
-            /** @var User $element */
-            $element = $event->sender;
-
-            $params = [
-                'indicator' => '',
-                'label' => 'N/A'
-            ];
-
-            $organizaiton = Craft::$app->getRequest()->getParam('organization');
-            $state = Organizations::getInstance()->getSettings()->getUserStates();
-
-            if ($association = UserAssociation::findOne([
-                'user' => $element,
-                'organization' => $organizaiton
-            ])) {
-                $params = [
-                    'indicator' => $association->state,
-                    'label' => $state[$association->state] ?? 'N/A'
-                ];
-            }
-
-            $event->html = Html::encodeParams(
-                '<span class="user-state status {indicator}"></span>{label}',
-                $params
-            );
+        if (!in_array($event->attribute, ['state', 'types', 'edit'], true)) {
+            return;
         }
+
+        if ($event->attribute === 'edit') {
+            $event->html = '<span class="edit-association icon settings"></span>';
+            return;
+        }
+
+        /** @var User|OrganizationsAssociatedToUserBehavior $element */
+        $element = $event->sender;
+
+        $association = $element->getOrganizationManager()->findOne(
+            Craft::$app->getRequest()->getParam('organization')
+        );
+
+        switch ($event->attribute) {
+            case 'state':
+                $params = [
+                    'indicator' => '',
+                    'label' => 'N/A'
+                ];
+
+                $state = Organizations::getInstance()->getSettings()->getUserStates();
+
+                if ($association) {
+                    $params = [
+                        'indicator' => $association->state,
+                        'label' => $state[$association->state] ?? 'N/A'
+                    ];
+                }
+
+                $event->html = Html::encodeParams(
+                    '<span class="user-state status {indicator}"></span>{label}',
+                    $params
+                );
+                break;
+
+            case 'types':
+                $types = $association ? $association->types : [];
+
+                $html = $label = [];
+                foreach ($types as $type) {
+                    $label[] = $type->name;
+                    $html[] = self::icon($type);
+                }
+
+                $event->html = Html::encodeParams(
+                    '<span class="user-types-icons" data-label="' . implode(', ', $label) . '">' . implode('',
+                        $html) . '</span>',
+                    []
+                );
+
+                break;
+        }
+    }
+
+    private static function icon(UserType $type)
+    {
+        return '<span class="foo" data-label="' . $type->name . '">' . Craft::$app->getView()->renderTemplate(
+                "organizations/_includes/icon.svg",
+                [
+                    'label' => $type->name
+                ]
+            ) . '</span>';
     }
 }

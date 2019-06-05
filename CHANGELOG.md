@@ -3,6 +3,7 @@ Changelog
 ## Unreleased
 ### Added
 - Many-to-many relationships have a 'manager' class attached to the object where 'relational' logic resides
+- CP user list enhancements
 
 ### Removed
 - Legacy methods of managing relationships directly from the object.

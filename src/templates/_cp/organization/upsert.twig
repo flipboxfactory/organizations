@@ -68,7 +68,7 @@
         {% if organization.id %}
             <div id="user-index"{% if tabs|length > 1 %} class="hidden"{% endif %}>
                 {% set sources = craft.app.elementIndexes.getSources(elementType, 'organizations') %}
-                {% include "nested-element-index/_elements/index" with {
+                {% include "organizations/_elements/index" with {
                     element: organization,
                     sources: sources,
                     customizableSources: false,

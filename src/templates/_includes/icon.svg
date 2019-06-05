@@ -1,0 +1,4 @@
+<svg version="1.1" baseProfile="full" width="22" height="22" viewBox="-1 -1 22 22" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="10" cy="10" r="10" stroke="#cacaca" stroke-opacity="0.75" stroke-width="1.25" fill="#FFF" fill-opacity="1"/>
+    <text x="10" y="15" font-size="15" font-family="sans-serif" font-weight="bold" text-anchor="middle" fill="#000" fill-opacity=".5">{{ label[0:1]|upper }}</text>
+</svg>

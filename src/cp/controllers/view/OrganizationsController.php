@@ -209,10 +209,11 @@ class OrganizationsController extends AbstractController
                 'organization' => $element->getId()
             ],
             'viewParams' => [
-                'organization' => $element->getId()
+                'organization' => $element->getId(),
             ],
             'viewSettings' => [
-                'loadMoreElementsAction' => 'organizations/cp/user-indexes/get-more-elements'
+                'loadMoreElementsAction' => 'organizations/cp/user-indexes/get-more-elements',
+                'context' => 'index'
             ]
         ];
     }

@@ -27,5 +27,7 @@ class RegisterOrganizationUserElementTableAttributes
         ArrayHelper::remove($event->tableAttributes, 'fullName');
 
         $event->tableAttributes['state'] = ['label' => Craft::t('organizations', 'State')];
+        $event->tableAttributes['types'] = ['label' => Craft::t('organizations', 'User Types')];
+        $event->tableAttributes['edit'] = ['label' => ''];
     }
 }

@@ -2,46 +2,98 @@
 /* Organization
 /* ----------------------------------------*/
 .tabs > ul > li.users {
-  float: right; }
+  float: right;
+}
+
+.edit-association {
+  cursor: pointer;
+  opacity: 0.1;
+}
+
+.user-types-icons {
+  display: inline-block;
+  height: 22px;
+  vertical-align: middle;
+  cursor: pointer;
+}
+.user-types-icons span {
+  display: inline-block;
+}
+.user-types-icons span + * {
+  margin-left: -5px;
+}
+.user-types-icons:hover svg circle, .user-types-icons:focus svg circle {
+  stroke: #0D99F2;
+  opacity: 1;
+}
+
+#user-index tr:hover .edit-association, #user-index tr:focus .edit-association {
+  opacity: 0.5;
+  color: #0D99F2;
+}
+#user-index tr:hover .edit-association:hover, #user-index tr:hover .edit-association:focus, #user-index tr:focus .edit-association:hover, #user-index tr:focus .edit-association:focus {
+  opacity: 1;
+}
 
 .user-types-hud .group-heading {
   margin-bottom: 0;
   text-transform: uppercase;
-  font-size: 12px; }
+  font-size: 12px;
+}
 .user-types-hud .field {
-  padding-right: 36px; }
+  padding-right: 36px;
+}
 
 /* delete organization modal */
 .deleteorganizationmodal .options label,
 .changeorganizationstatusmodal .options label {
   display: inline-block;
-  line-height: 30px; }
-.deleteorganizationmodal .elementselect, .changeorganizationstatusmodal .elementselect {
+  line-height: 30px;
+}
+.deleteorganizationmodal .elementselect,
+.changeorganizationstatusmodal .elementselect {
   display: inline-block;
-  vertical-align: middle; }
-  body.ltr .deleteorganizationmodal .elementselect,
-  body.ltr .changeorganizationstatusmodal .elementselect {
-    margin-left: 10px; }
-  body.rtl .deleteorganizationmodal .elementselect, body.rtl .changeorganizationstatusmodal .elementselect {
-    margin-right: 10px; }
+  vertical-align: middle;
+}
+body.ltr .deleteorganizationmodal .elementselect,
+body.ltr .changeorganizationstatusmodal .elementselect {
+  margin-left: 10px;
+}
+body.rtl .deleteorganizationmodal .elementselect,
+body.rtl .changeorganizationstatusmodal .elementselect {
+  margin-right: 10px;
+}
 body.ltr .deleteorganizationmodal .buttons .spinner,
 body.ltr .changeorganizationstatusmodal .buttons .spinner {
-  float: right; }
-body.rtl .deleteorganizationmodal .buttons .spinner, body.rtl .changeorganizationstatusmodal .buttons .spinner {
-  float: left; }
-body.ltr .deleteorganizationmodal .buttons .spinner, body.ltr .changeorganizationstatusmodal .buttons .spinner {
-  margin-right: -20px; }
-body.rtl .deleteorganizationmodal .buttons .spinner, body.rtl .changeorganizationstatusmodal .buttons .spinner {
-  margin-left: -20px; }
-body.ltr .deleteorganizationmodal .buttons .spinner, body.ltr .changeorganizationstatusmodal .buttons .spinner {
-  margin-left: -4px; }
-body.rtl .deleteorganizationmodal .buttons .spinner, body.rtl .changeorganizationstatusmodal .buttons .spinner {
-  margin-right: -4px; }
+  float: right;
+}
+body.rtl .deleteorganizationmodal .buttons .spinner,
+body.rtl .changeorganizationstatusmodal .buttons .spinner {
+  float: left;
+}
+body.ltr .deleteorganizationmodal .buttons .spinner,
+body.ltr .changeorganizationstatusmodal .buttons .spinner {
+  margin-right: -20px;
+}
+body.rtl .deleteorganizationmodal .buttons .spinner,
+body.rtl .changeorganizationstatusmodal .buttons .spinner {
+  margin-left: -20px;
+}
+body.ltr .deleteorganizationmodal .buttons .spinner,
+body.ltr .changeorganizationstatusmodal .buttons .spinner {
+  margin-left: -4px;
+}
+body.rtl .deleteorganizationmodal .buttons .spinner,
+body.rtl .changeorganizationstatusmodal .buttons .spinner {
+  margin-right: -4px;
+}
 
 #main-container #main #main-content #details .meta + .meta {
   padding-top: 0;
-  margin-top: -16px; }
-  #main-container #main #main-content #details .meta + .meta > .field {
-    border-top: 1px solid rgba(0, 0, 20, 0.1); }
+  margin-top: -16px;
+}
+#main-container #main #main-content #details .meta + .meta > .field {
+  border-top: 1px solid rgba(0, 0, 20, 0.1);
+}
 
 /*# sourceMappingURL=Organization.css.map */

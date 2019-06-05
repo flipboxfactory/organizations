@@ -1,0 +1,60 @@
+{% embed "nested-element-index/_elements/index" %}
+    {% block js %}
+        {{ parent() }}
+
+        {% set indexVar = ('index-'~container)|namespaceInputId|replace({'-': '_'}) %}
+        {% js %}
+{#            <script>#}
+            {{ indexVar }}.on('updateElements', function(event) {
+                iconHandler(event.target.$elements);
+                editHandler(event.target.$elements);
+
+                {{ indexVar }}.view.on('appendElements', function(event) {
+
+                    iconHandler(event.newElements);
+                    editHandler(event.newElements);
+                });
+            });
+
+            function iconHandler($elements) {
+                $elements.find('.user-types-icons').on('click',function(){
+                    new Garnish.HUD($(this), $(this).data('label'), {
+                        orientations: ['top', 'bottom', 'right', 'left']
+                    });
+                });
+            }
+
+            function editHandler($elements) {
+                $elements.find('.edit-association').on('click',function(){
+                    $element = $(this).parents('tr').find('.element:first');
+
+                    new Craft.UserAssociationEditor($element, {
+                        params: {
+                            organization: $element.data('organization'),
+                            includeTableAttributesForSource: 'organizations:' + {{ indexVar }}.sourceKey
+                        },
+                        hudTrigger: $(this),
+                        onSaveElement: $.proxy(function(response) {
+                            if (response.tableAttributes) {
+                                new Promise(function(resolve, reject) {
+                                    {{ indexVar }}.view._updateTableAttributes(
+                                        $element,
+                                        response.tableAttributes
+                                    );
+
+                                    resolve();
+                                }).then(function() {
+                                    iconHandler($element.closest('tr'));
+                                    editHandler($element.closest('tr'));
+                                });
+                            }
+                        }, this)
+                    });
+                });
+            }
+{#            </script>#}
+        {% endjs %}
+    {% endblock %}
+{% endembed %}
+
+

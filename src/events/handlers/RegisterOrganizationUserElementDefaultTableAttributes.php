@@ -22,5 +22,7 @@ class RegisterOrganizationUserElementDefaultTableAttributes
     public static function handle(RegisterElementDefaultTableAttributesEvent $event)
     {
         $event->tableAttributes[] = 'state';
+        $event->tableAttributes[] = 'types';
+        $event->tableAttributes[] = 'edit';
     }
 }
