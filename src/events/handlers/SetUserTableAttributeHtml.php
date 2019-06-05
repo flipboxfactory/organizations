@@ -27,7 +27,7 @@ class SetUserTableAttributeHtml
             $event->html = \Craft::$app->getView()->renderTemplate(
                 'organizations/_components/tableAttributes/organizations',
                 [
-                    'organizations' => $event->sender->getOrganizations(['status' => null])->all()
+                    'organizations' => $event->sender->getOrganizations()
                 ]
             );
         }

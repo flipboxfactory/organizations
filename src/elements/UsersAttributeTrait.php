@@ -16,6 +16,7 @@ use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\managers\UsersToOrganizationAssociatedManager;
 use flipbox\organizations\records\UserAssociation;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -114,14 +115,12 @@ trait UsersAttributeTrait
     /**
      * Get an array of users associated to an organization
      *
-     * @return User[]
+     * @return User[]|Collection
      */
-    public function getUsers(): array
+    public function getUsers(): Collection
     {
-        return ArrayHelper::getColumn(
-            $this->getUserManager()->findAll(),
-            'user'
-        );
+        return $this->getUserManager()->findAll()
+            ->pluck('user');
     }
 
     /**

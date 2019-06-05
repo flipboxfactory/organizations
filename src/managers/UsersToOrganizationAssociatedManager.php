@@ -27,7 +27,6 @@ use flipbox\organizations\records\UserAssociation;
  * @property UserAssociation[] $associations
  *
  * @method UserAssociation findOrCreate($object)
- * @method UserAssociation[] findAll()
  * @method UserAssociation findOne($object = null)
  * @method UserAssociation findOrFail($object)
  */

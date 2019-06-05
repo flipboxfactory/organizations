@@ -5,13 +5,13 @@ namespace flipbox\organizations\behaviors;
 use Craft;
 use craft\elements\User;
 use craft\events\ModelEvent;
-use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\managers\OrganizationsToUserAssociatedManager;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\validators\OrganizationsValidator;
+use Tightenco\Collect\Support\Collection;
 use yii\base\Behavior;
 use yii\base\Event;
 use yii\base\Exception;
@@ -159,30 +159,12 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
     /**
      * Get an array of associated organizations
      *
-     * @return Organization[]
+     * @return Organization[]|Collection
      */
-    public function getOrganizations(): array
+    public function getOrganizations(): Collection
     {
-        return ArrayHelper::getColumn(
-            $this->getOrganizationManager()->findAll(),
-            'organization'
-        );
-    }
-
-    /**
-     * Get the first enabled organization assigned to the user
-     *
-     * @return Organization|null
-     */
-    public function getPrimaryOrganization()
-    {
-        foreach ($this->getOrganizations() as $organization) {
-            if ($organization->getStatus() === $organization::STATUS_ENABLED) {
-                return $organization;
-            }
-        }
-
-        return null;
+        return $this->getOrganizationManager()->findAll()
+            ->pluck('organization');
     }
 
     /**

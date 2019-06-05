@@ -11,6 +11,7 @@ namespace flipbox\organizations\managers;
 use Craft;
 use craft\base\ElementInterface;
 use craft\helpers\ArrayHelper;
+use Tightenco\Collect\Support\Collection;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
 use yii\db\QueryInterface;
@@ -24,7 +25,7 @@ trait AssociationManagerTrait
     use MutatedTrait;
 
     /**
-     * @var ActiveRecord[]|null
+     * @var Collection|null
      */
     protected $associations;
 
@@ -85,9 +86,9 @@ trait AssociationManagerTrait
     }
 
     /**
-     * @return ActiveRecord[]
+     * @return Collection
      */
-    public function findAll(): array
+    public function findAll(): Collection
     {
         if (null === $this->associations) {
             $this->setCache($this->query()->all(), false);
@@ -129,7 +130,7 @@ trait AssociationManagerTrait
      */
     public function setMany($objects)
     {
-        if ($objects instanceof QueryInterface) {
+        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
             $objects = $objects->all();
         }
 
@@ -158,7 +159,7 @@ trait AssociationManagerTrait
      */
     public function addMany($objects)
     {
-        if ($objects instanceof QueryInterface) {
+        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
             $objects = $objects->all();
         }
 
@@ -187,6 +188,10 @@ trait AssociationManagerTrait
      */
     public function addOne($object, array $attributes = [])
     {
+        if (empty($object)) {
+            return $this;
+        }
+
         if (null === ($association = $this->findOne($object))) {
             $association = $this->create($object);
             $this->addToCache($association);
@@ -215,7 +220,7 @@ trait AssociationManagerTrait
      */
     public function removeMany($objects)
     {
-        if ($objects instanceof QueryInterface) {
+        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
             $objects = $objects->all();
         }
 
@@ -243,6 +248,10 @@ trait AssociationManagerTrait
      */
     public function removeOne($object)
     {
+        if (empty($object)) {
+            return $this;
+        }
+
         if (null !== ($key = $this->findKey($object))) {
             $this->removeFromCache($key);
         }
@@ -338,7 +347,7 @@ trait AssociationManagerTrait
      */
     public function associateMany($objects): bool
     {
-        if ($objects instanceof QueryInterface) {
+        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
             $objects = $objects->all();
         }
 
@@ -385,7 +394,7 @@ trait AssociationManagerTrait
      */
     public function dissociateMany($objects): bool
     {
-        if ($objects instanceof QueryInterface) {
+        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
             $objects = $objects->all();
         }
 
@@ -410,7 +419,7 @@ trait AssociationManagerTrait
      */
     protected function setCache(array $associations, bool $mutated = true): self
     {
-        $this->associations = $associations;
+        $this->associations = Collection::make($associations);
         $this->mutated = $mutated;
 
         return $this;
@@ -422,7 +431,11 @@ trait AssociationManagerTrait
      */
     protected function addToCache($association): self
     {
-        $this->associations[] = $association;
+        if (null === $this->associations) {
+            return $this->setCache([$association], true);
+        }
+
+        $this->associations->add($association);
         $this->mutated = true;
 
         return $this;
@@ -434,7 +447,7 @@ trait AssociationManagerTrait
      */
     protected function removeFromCache(int $key): self
     {
-        unset($this->associations[$key]);
+        $this->associations->forget($key);
         $this->mutated = true;
 
         return $this;

@@ -8,6 +8,7 @@ use flipbox\organizations\elements\Organization;
 use flipbox\organizations\managers\UserTypeAssociationManager;
 use flipbox\organizations\queries\UserTypeQuery;
 use flipbox\organizations\records\UserType;
+use Tightenco\Collect\Support\Collection;
 use yii\base\Behavior;
 use yii\base\Exception;
 
@@ -16,11 +17,6 @@ use yii\base\Exception;
  */
 class UserTypesAssociatedToUserBehavior extends Behavior
 {
-    /**
-     * @var UserTypeQuery|null
-     */
-    private $userTypes;
-
     /**
      * @param Organization|int $organization
      * @return UserTypeAssociationManager
@@ -55,14 +51,10 @@ class UserTypesAssociatedToUserBehavior extends Behavior
     /**
      * Get a query with associated user types
      *
-     * @return UserType[]
+     * @return UserType[]|Collection
      */
-    public function getUserTypes(): array
+    public function getUserTypes(): Collection
     {
-        if (null === $this->userTypes) {
-            $this->userTypes = $this->userTypeQuery()->all();
-        }
-
-        return $this->userTypes;
+        return Collection::make($this->userTypeQuery()->all());
     }
 }

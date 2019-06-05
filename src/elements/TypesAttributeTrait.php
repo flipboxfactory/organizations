@@ -9,12 +9,11 @@
 namespace flipbox\organizations\elements;
 
 use Craft;
-use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\managers\OrganizationTypeAssociationManager;
 use flipbox\organizations\queries\OrganizationTypeQuery;
 use flipbox\organizations\records\OrganizationType;
-use flipbox\organizations\records\OrganizationType as TypeModel;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -42,7 +41,7 @@ trait TypesAttributeTrait
     }
 
     /**
-     * @var TypeModel|false
+     * @var OrganizationType|false
      */
     private $activeType;
 
@@ -70,10 +69,10 @@ trait TypesAttributeTrait
      ************************************************************/
 
     /**
-     * @param TypeModel|null $type
+     * @param OrganizationType|null $type
      * @return $this
      */
-    public function setActiveType(TypeModel $type = null)
+    public function setActiveType(OrganizationType $type = null)
     {
         if ($type) {
             $this->getTypeManager()->addOne($type);
@@ -84,7 +83,7 @@ trait TypesAttributeTrait
     }
 
     /**
-     * @return TypeModel|null
+     * @return OrganizationType|null
      */
     public function getActiveType()
     {
@@ -130,14 +129,12 @@ trait TypesAttributeTrait
     /**
      * Get an array of types associated to an organization
      *
-     * @return OrganizationType[]
+     * @return OrganizationType[]|Collection
      */
-    public function getTypes(): array
+    public function getTypes(): Collection
     {
-        return ArrayHelper::getColumn(
-            $this->getTypeManager()->findAll(),
-            'type'
-        );
+        return $this->getTypeManager()->findAll()
+            ->pluck('type');
     }
 
     /**
@@ -163,7 +160,7 @@ trait TypesAttributeTrait
      */
     public function hasPrimaryType()
     {
-        return count($this->getTypes()) > 0;
+        return $this->getTypes()->isNotEmpty();
     }
 
     /**
@@ -172,7 +169,7 @@ trait TypesAttributeTrait
      * @param $type
      * @return bool
      */
-    public function isPrimaryType(TypeModel $type)
+    public function isPrimaryType(OrganizationType $type)
     {
         if ($primaryType = $this->getPrimaryType()) {
             return $primaryType->id === $type->id;
@@ -182,10 +179,10 @@ trait TypesAttributeTrait
     }
 
     /**
-     * @param TypeModel $type
+     * @param OrganizationType $type
      * @return $this
      */
-    public function setPrimaryType(TypeModel $type = null)
+    public function setPrimaryType(OrganizationType $type = null)
     {
         if (null === $type) {
             return $this;
@@ -206,16 +203,10 @@ trait TypesAttributeTrait
     /**
      * Get the primary type
      *
-     * @return TypeModel|null
+     * @return OrganizationType|null
      */
     public function getPrimaryType()
     {
-        if (!$this->hasPrimaryType()) {
-            return null;
-        }
-
-        $types = $this->getTypes();
-
-        return reset($types);
+        return $this->getTypes()->first();
     }
 }
