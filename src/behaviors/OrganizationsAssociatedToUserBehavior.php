@@ -170,6 +170,22 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
     }
 
     /**
+     * Get the first enabled organization assigned to the user
+     *
+     * @return Organization|null
+     */
+    public function getPrimaryOrganization()
+    {
+        foreach ($this->getOrganizations() as $organization) {
+            if ($organization->getStatus() === $organization::STATUS_ENABLED) {
+                return $organization;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Set an array or query of organizations to a user
      *
      * @param $organizations
