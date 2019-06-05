@@ -22,6 +22,18 @@ class UserTypesAssociatedToUserBehavior extends Behavior
     private $userTypes;
 
     /**
+     * @param Organization|int $organization
+     * @return UserTypeAssociationManager
+     * @throws Exception
+     */
+    public function getUserTypeManager($organization): UserTypeAssociationManager
+    {
+        return $this->owner->getOrganizationManager()
+            ->findOrFail($organization)
+            ->getTypeManager();
+    }
+
+    /**
      * @param array $criteria
      * @return UserTypeQuery
      */
@@ -52,17 +64,5 @@ class UserTypesAssociatedToUserBehavior extends Behavior
         }
 
         return $this->userTypes;
-    }
-
-    /**
-     * @param Organization|int $organization
-     * @return UserTypeAssociationManager
-     * @throws Exception
-     */
-    public function getUserTypeManager($organization): UserTypeAssociationManager
-    {
-        return $this->owner->getOrganizationManager()
-            ->findOrFail($organization)
-            ->getTypeManager();
     }
 }

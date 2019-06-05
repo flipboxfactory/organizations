@@ -168,4 +168,16 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
             'organization'
         );
     }
+
+    /**
+     * Set an array or query of organizations to a user
+     *
+     * @param $organizations
+     * @return $this
+     */
+    public function setOrganizations($organizations)
+    {
+        $this->getOrganizationManager()->setMany($organizations);
+        return $this;
+    }
 }

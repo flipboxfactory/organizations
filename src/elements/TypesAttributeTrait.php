@@ -140,6 +140,18 @@ trait TypesAttributeTrait
         );
     }
 
+    /**
+     * Set an array or query of users to an organization
+     *
+     * @param $types
+     * @return $this
+     */
+    public function setTypes($types)
+    {
+        $this->getTypeManager()->setMany($types);
+        return $this;
+    }
+
     /************************************************************
      * PRIMARY TYPE
      ************************************************************/

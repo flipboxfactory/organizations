@@ -123,4 +123,16 @@ trait UsersAttributeTrait
             'user'
         );
     }
+
+    /**
+     * Set an array or query of users to an organization
+     *
+     * @param $users
+     * @return $this
+     */
+    public function setUsers($users)
+    {
+        $this->getUserManager()->setMany($users);
+        return $this;
+    }
 }
