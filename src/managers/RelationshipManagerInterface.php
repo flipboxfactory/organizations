@@ -118,8 +118,8 @@ interface RelationshipManagerInterface
      *******************************************/
 
     /**
-     * Save the current collection of relationships.  This should update existing relationships, create new relationships and delete
-     * delete abandoned relationships.
+     * Save the current collection of relationships.  This should update existing relationships, create
+     * new relationships and delete abandoned relationships.
      *
      * @return bool
      */
