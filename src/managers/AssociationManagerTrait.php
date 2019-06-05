@@ -90,7 +90,7 @@ trait AssociationManagerTrait
     public function findAll(): array
     {
         if (null === $this->associations) {
-            $this->setCache($this->query()->all());
+            $this->setCache($this->query()->all(), false);
         }
 
         return $this->associations;
@@ -405,12 +405,13 @@ trait AssociationManagerTrait
 
     /**
      * @param array $associations
+     * @param bool $mutated
      * @return static
      */
-    protected function setCache(array $associations): self
+    protected function setCache(array $associations, bool $mutated = true): self
     {
         $this->associations = $associations;
-        $this->mutated = true;
+        $this->mutated = $mutated;
 
         return $this;
     }

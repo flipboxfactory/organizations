@@ -82,17 +82,6 @@ class OrganizationTypeAssociationManager
     }
 
 
-    /**
-     * Reset associations
-     */
-    public function reset()
-    {
-        $this->associations = null;
-        $this->mutated = false;
-        return $this;
-    }
-
-
     /*******************************************
      * SAVE
      *******************************************/
