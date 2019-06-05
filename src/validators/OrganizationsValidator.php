@@ -9,7 +9,7 @@
 namespace flipbox\organizations\validators;
 
 use craft\helpers\Json;
-use flipbox\organizations\behaviors\UserOrganizationsBehavior;
+use flipbox\organizations\behaviors\OrganizationsAssociatedToUserBehavior;
 use flipbox\organizations\Organizations as OrganizationPlugin;
 use yii\base\Model;
 use yii\validators\Validator;
@@ -38,7 +38,7 @@ class OrganizationsValidator extends Validator
     /**
      * Validates a single attribute.
      * Child classes must implement this method to provide the actual validation logic.
-     * @param Model|UserOrganizationsBehavior $model the data model to be validated
+     * @param Model|OrganizationsAssociatedToUserBehavior $model the data model to be validated
      * @param string $attribute the name of the attribute to be validated.
      */
     public function validateAttribute($model, $attribute)

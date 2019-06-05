@@ -31,6 +31,7 @@ class OrganizationAttributesToUserQueryBehavior extends Behavior
 
     /**
      * @param UserQuery $query
+     * @throws \craft\db\QueryAbortedException
      */
     public function applyOrganizationParams(UserQuery $query)
     {

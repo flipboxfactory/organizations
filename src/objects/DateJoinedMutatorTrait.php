@@ -20,12 +20,15 @@ use DateTime;
 trait DateJoinedMutatorTrait
 {
     /**
+     * @noinspection PhpDocMissingThrowsInspection
+     *
      * @param $value
      * @return $this
      */
     public function setDateJoined($value)
     {
         if ($value) {
+            /** @noinspection PhpUnhandledExceptionInspection */
             $value = DateTimehelper::toDateTime($value);
         }
 

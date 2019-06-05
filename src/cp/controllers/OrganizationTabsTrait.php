@@ -8,7 +8,6 @@
 
 namespace flipbox\organizations\cp\controllers;
 
-use Craft;
 use craft\base\Field;
 use craft\models\FieldLayoutTab;
 use flipbox\organizations\elements\Organization as OrganizationElement;

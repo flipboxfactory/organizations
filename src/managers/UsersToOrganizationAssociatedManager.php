@@ -13,6 +13,7 @@ use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use flipbox\craft\ember\helpers\QueryHelper;
+use flipbox\organizations\behaviors\OrganizationsAssociatedToUserBehavior;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
@@ -101,8 +102,9 @@ class UsersToOrganizationAssociatedManager
         }
 
         // Add user to user as well?
-        if ($addToUser && $association->getUser()->getId() !== null) {
-            $association->getUser()->getOrganizationManager()->addOne($this->organization, [], false);
+        if ($addToUser && null !== ($use = $association->getUser())) {
+            /** @var OrganizationsAssociatedToUserBehavior $use */
+            $use->getOrganizationManager()->addOne($this->organization, [], false);
         }
 
         return $this;

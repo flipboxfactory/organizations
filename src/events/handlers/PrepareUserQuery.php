@@ -20,6 +20,7 @@ class PrepareUserQuery
 {
     /**
      * @param CancelableEvent $event
+     * @throws \craft\db\QueryAbortedException
      */
     public static function handle(CancelableEvent $event)
     {

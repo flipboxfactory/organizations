@@ -560,6 +560,7 @@ class Organization extends Element
     /**
      * @param bool $isNew
      * @return bool
+     * @throws \Exception
      */
     protected function saveRecord(bool $isNew): bool
     {

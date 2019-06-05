@@ -59,9 +59,8 @@ class Organization extends ActiveRecordWithId
     }
 
     /**
-     * Returns the organization's types.
-     *
      * @return ActiveQueryInterface
+     * @throws \yii\base\InvalidConfigException
      */
     public function getTypes(): ActiveQueryInterface
     {

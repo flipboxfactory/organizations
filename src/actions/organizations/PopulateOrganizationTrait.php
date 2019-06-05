@@ -36,7 +36,7 @@ trait PopulateOrganizationTrait
 
     /**
      * @param OrganizationElement $organization
-     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
+     * @throws \Exception
      */
     protected function populateFromRequest(OrganizationElement $organization)
     {
@@ -111,6 +111,7 @@ trait PopulateOrganizationTrait
     /**
      * @param OrganizationElement $organization
      * @param string $dateProperty
+     * @throws \Exception
      */
     private function populateDateFromRequest(OrganizationElement $organization, string $dateProperty)
     {

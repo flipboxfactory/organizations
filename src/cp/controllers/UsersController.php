@@ -135,8 +135,7 @@ class UsersController extends AbstractController
      * @param null $user
      * @param null $organization
      * @return \yii\web\Response
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
+     * @throws \yii\base\Exception
      */
     public function actionSaveAssociation($user = null, $organization = null)
     {
@@ -266,8 +265,9 @@ class UsersController extends AbstractController
      * @param null $user
      * @param null $organization
      * @return \yii\web\Response
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function actionAssociationEditorHtml($user = null, $organization = null)
     {

@@ -52,6 +52,7 @@ class OrganizationQuery extends ElementQuery
 
     /**
      * @inheritdoc
+     * @throws QueryAbortedException
      */
     protected function beforePrepare(): bool
     {
@@ -85,7 +86,7 @@ class OrganizationQuery extends ElementQuery
     }
 
     /**
-     * Prepares relation params
+     * @throws QueryAbortedException
      */
     protected function prepareRelationsParams()
     {

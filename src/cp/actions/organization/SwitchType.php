@@ -37,8 +37,11 @@ class SwitchType extends Action
     /**
      * @param null $organization
      * @return array|mixed
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \craft\errors\SiteNotFoundException
+     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
      * @throws \yii\web\UnauthorizedHttpException
      */
     public function run($organization = null)
@@ -73,9 +76,12 @@ class SwitchType extends Action
     }
 
     /**
-     * @inheritdoc
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
+     * @param OrganizationElement $element
+     * @return array|mixed
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \craft\errors\SiteNotFoundException
      * @throws \yii\web\UnauthorizedHttpException
      */
     protected function runInternal(OrganizationElement $element)
@@ -93,8 +99,10 @@ class SwitchType extends Action
     /**
      * @param OrganizationElement $element
      * @return array
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     * @throws \craft\errors\SiteNotFoundException
      */
     protected function data(OrganizationElement $element): array
     {
@@ -136,8 +144,9 @@ class SwitchType extends Action
     }
 
     /**
-     * @inheritdoc
-     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
+     * @param OrganizationElement $element
+     * @return OrganizationElement
+     * @throws \Exception
      */
     public function populate(OrganizationElement $element): OrganizationElement
     {

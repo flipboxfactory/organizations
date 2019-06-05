@@ -18,8 +18,9 @@ class SetUserTableAttributeHtml
 {
     /**
      * @param SetElementTableAttributeHtmlEvent $event
-     * @throws \Twig_Error_Loader
-     * @throws \yii\base\Exception
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public static function handle(SetElementTableAttributeHtmlEvent $event)
     {

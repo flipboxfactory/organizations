@@ -24,6 +24,9 @@ class SetOrganizationUserElementTableAttributeHtml
 {
     /**
      * @param SetElementTableAttributeHtmlEvent $event
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public static function handle(SetElementTableAttributeHtmlEvent $event)
     {
@@ -86,6 +89,13 @@ class SetOrganizationUserElementTableAttributeHtml
         }
     }
 
+    /**
+     * @param UserType $type
+     * @return string
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
+     */
     private static function icon(UserType $type)
     {
         return '<span class="foo" data-label="' . $type->name . '">' . Craft::$app->getView()->renderTemplate(

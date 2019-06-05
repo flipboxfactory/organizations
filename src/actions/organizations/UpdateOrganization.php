@@ -49,7 +49,7 @@ class UpdateOrganization extends UpdateElement
      * @inheritdoc
      * @param Organization $object
      * @return Organization
-     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
+     * @throws \Exception
      */
     protected function populate(BaseObject $object): BaseObject
     {

@@ -39,7 +39,7 @@ class CreateOrganization extends CreateElement
      * @inheritdoc
      * @param Organization $object
      * @return Organization
-     * @throws \flipbox\craft\ember\exceptions\RecordNotFoundException
+     * @throws \Exception
      */
     public function populate(BaseObject $object): BaseObject
     {

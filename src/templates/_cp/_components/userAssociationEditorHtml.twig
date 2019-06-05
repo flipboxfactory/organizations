@@ -3,8 +3,6 @@
 {% set selectedTypes = association.getTypes().select(['id']).column() %}
 {% set types = craft.organizations.userTypes.all() %}
 
-<div class="meta">
-
     <div style="padding-left: 24px; padding-right: 24px; padding-top:24px;">
         <div class="flex">
             <h6 class="group-heading">{{ "State"|t('organizations') }}</h6>
@@ -28,13 +26,13 @@
             </div>
         </div>
     </div>
-</div>
+
     {% if types|length %}
         <hr />
         <div class="meta">
-        <div style="padding-left: 24px; padding-right: 24px; padding-top:12px;">
-            <h6 class="group-heading">{{ "User Types"|t('organizations') }}</h6>
-        </div>
+            <div style="padding-left: 24px; padding-right: 24px; padding-top:12px;">
+                <h6 class="group-heading">{{ "User Types"|t('organizations') }}</h6>
+            </div>
 
             {% set selectedTypes = craft.organizations.userTypes({
                 organization: association.organizationId,
@@ -56,4 +54,4 @@
             {% endnamespace %}
         </div>
     {% endif %}
-</div>
+
