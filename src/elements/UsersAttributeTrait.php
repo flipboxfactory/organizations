@@ -115,15 +115,21 @@ trait UsersAttributeTrait
     /**
      * Get an array of users associated to an organization
      *
+     * @param array $criteria
      * @return User[]|Collection
      */
-    public function getUsers(): Collection
+    public function getUsers(array $criteria = []): Collection
     {
-        return $this->getUserManager()->findAll()
-            ->filter(function (UserAssociation $association) {
-                return null !== $association->getUser();
-            })
-            ->pluck('user')->filter();
+        return Collection::make(QueryHelper::configure(
+            $this->userQuery($criteria)
+                ->id(
+                    $this->getUserManager()->findAll()
+                        ->pluck('userId')
+                )
+                ->fixedOrder(true)
+                ->limit(null),
+            $criteria
+        )->all());
     }
 
     /**

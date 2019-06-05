@@ -123,6 +123,7 @@ trait TypesAttributeTrait
         return $query;
     }
 
+
     /************************************************************
      * TYPES
      ************************************************************/
@@ -130,15 +131,20 @@ trait TypesAttributeTrait
     /**
      * Get an array of types associated to an organization
      *
+     * @param array $criteria
      * @return OrganizationType[]|Collection
      */
-    public function getTypes(): Collection
+    public function getTypes(array $criteria = []): Collection
     {
-        return $this->getTypeManager()->findAll()
-            ->filter(function (OrganizationTypeAssociation $association) {
-                return null !== $association->getType();
-            })
-            ->pluck('type')->filter();
+        return Collection::make(QueryHelper::configure(
+            $this->userTypeQuery($criteria)
+                ->id(
+                    $this->getTypeManager()->findAll()
+                        ->pluck('typeId')
+                )
+                ->limit(null),
+            $criteria
+        )->all());
     }
 
     /**

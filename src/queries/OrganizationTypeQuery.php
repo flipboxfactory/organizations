@@ -61,14 +61,44 @@ class OrganizationTypeQuery extends CacheableActiveQuery
     public $id;
 
     /**
+     * @param $value
+     * @return $this
+     */
+    public function id($value)
+    {
+        $this->id = $value;
+        return $this;
+    }
+
+    /**
      * @var string|string[]|null
      */
     public $name;
 
     /**
+     * @param $value
+     * @return $this
+     */
+    public function name($value)
+    {
+        $this->name = $value;
+        return $this;
+    }
+
+    /**
      * @var string|string[]|null
      */
     public $handle;
+
+    /**
+     * @param $value
+     * @return $this
+     */
+    public function handle($value)
+    {
+        $this->handle = $value;
+        return $this;
+    }
 
     /**
      * @var int|int[]|null

@@ -124,6 +124,14 @@ class Organization extends Element
             return $criteria;
         }
 
+        // If we're asking by PK, ignore status
+        if (is_numeric($criteria)) {
+            $criteria = [
+                'id' => $criteria,
+                'status' => null
+            ];
+        }
+
         return parent::findOne($criteria);
     }
 

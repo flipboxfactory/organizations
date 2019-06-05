@@ -160,15 +160,21 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
     /**
      * Get an array of associated organizations
      *
+     * @param array $criteria
      * @return Organization[]|Collection
      */
-    public function getOrganizations(): Collection
+    public function getOrganizations(array $criteria = []): Collection
     {
-        return $this->getOrganizationManager()->findAll()
-            ->filter(function (UserAssociation $association) {
-                return null !== $association->getOrganization();
-            })
-            ->pluck('organization')->filter();
+        return Collection::make(QueryHelper::configure(
+            $this->organizationQuery($criteria)
+                ->id(
+                    $this->getOrganizationManager()->findAll()
+                        ->pluck('organizationId')
+                )
+                ->fixedOrder(true)
+                ->limit(null),
+            $criteria
+        )->all());
     }
 
     /**
