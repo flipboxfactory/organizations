@@ -14,7 +14,7 @@ use DateTime;
  * @property DateTime|null $dateJoined
  *
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 2.00
+ * @since 2.0.0
  */
 trait MutatedTrait
 {

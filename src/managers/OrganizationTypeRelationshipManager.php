@@ -21,7 +21,7 @@ use flipbox\organizations\records\OrganizationTypeAssociation;
  * Manages Organization Types associated to Organizations
  *
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 2.00
+ * @since 2.0.0
  *
  * @property OrganizationTypeAssociation[] $associations
  *

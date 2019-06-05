@@ -16,7 +16,7 @@ use yii\db\QueryInterface;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
- * @since 2.00
+ * @since 2.0.0
  */
 interface RelationshipManagerInterface
 {

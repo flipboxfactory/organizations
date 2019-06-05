@@ -1,13 +1,13 @@
 Changelog
 =========
-## Unreleased
+## 2.0.0 - 2019-06-05
 ### Added
 - Many-to-many relationships have a 'manager' class attached to the object where 'relational' logic resides
-- CP user list enhancements
+- CP organization user list management enhancements
 
 ### Removed
-- Legacy methods of managing relationships directly from the object.
-- `Organization::getUsers()`, `Organization::getTypes()`, `User::getOrganizations()` and `User::getUserTypes()` now return an array (not a query).
+- Various methods used to access/manage relationships directly from `Organization` and `User` elements. 
+- `Organization::getUsers()`, `Organization::getTypes()`, `User::getOrganizations()` and `User::getUserTypes()` now return a `Collection` (not a query).
 - It is no longer recommended to `Query::setCachedResults()` in order to set new relations, use the relationship manager
 
 ## 1.0.9 - 2019-05-13
