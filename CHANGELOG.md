@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 2.0.1 - 2019-06-10
 ### Added
 - Ability to disable sort order enforcement for organization/user associations.
 
