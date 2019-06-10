@@ -155,19 +155,23 @@ class UserAssociation extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        $this->ensureSortOrder(
-            [
-                'userId' => $this->userId
-            ],
-            'organizationOrder'
-        );
+        if (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder()) {
+            $this->ensureSortOrder(
+                [
+                    'userId' => $this->userId
+                ],
+                'organizationOrder'
+            );
+        }
 
-        $this->ensureSortOrder(
-            [
-                'organizationId' => $this->organizationId
-            ],
-            'userOrder'
-        );
+        if (Organizations::getInstance()->getSettings()->getEnforceOrganizationSortOrder()) {
+            $this->ensureSortOrder(
+                [
+                    'organizationId' => $this->organizationId
+                ],
+                'userOrder'
+            );
+        }
 
         return parent::beforeSave($insert);
     }
@@ -178,21 +182,25 @@ class UserAssociation extends ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-        $this->autoReOrder(
-            'organizationId',
-            [
-                'userId' => $this->userId
-            ],
-            'organizationOrder'
-        );
+        if (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder()) {
+            $this->autoReOrder(
+                'userId',
+                [
+                    'organizationId' => $this->organizationId
+                ],
+                'userOrder'
+            );
+        }
 
-        $this->autoReOrder(
-            'userId',
-            [
-                'organizationId' => $this->organizationId
-            ],
-            'userOrder'
-        );
+        if (Organizations::getInstance()->getSettings()->getEnforceOrganizationSortOrder()) {
+            $this->autoReOrder(
+                'organizationId',
+                [
+                    'userId' => $this->userId
+                ],
+                'organizationOrder'
+            );
+        }
 
         parent::afterSave($insert, $changedAttributes);
     }
@@ -203,21 +211,25 @@ class UserAssociation extends ActiveRecord
      */
     public function afterDelete()
     {
-        $this->sequentialOrder(
-            'organizationId',
-            [
-                'userId' => $this->userId
-            ],
-            'organizationOrder'
-        );
+        if (Organizations::getInstance()->getSettings()->getEnforceOrganizationSortOrder()) {
+            $this->sequentialOrder(
+                'organizationId',
+                [
+                    'userId' => $this->userId
+                ],
+                'organizationOrder'
+            );
+        }
 
-        $this->sequentialOrder(
-            'userId',
-            [
-                'organizationId' => $this->organizationId
-            ],
-            'userOrder'
-        );
+        if (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder()) {
+            $this->sequentialOrder(
+                'userId',
+                [
+                    'organizationId' => $this->organizationId
+                ],
+                'userOrder'
+            );
+        }
 
         parent::afterDelete();
     }

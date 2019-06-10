@@ -46,6 +46,16 @@ class Settings extends Model
     private $defaultUserState = UserAssociation::STATE_ACTIVE;
 
     /**
+     * @var bool
+     */
+    private $enforceUserSortOrder = false;
+
+    /**
+     * @var bool
+     */
+    private $enforceOrganizationSortOrder = false;
+
+    /**
      * @return string
      */
     public static function siteSettingsClass(): string
@@ -136,6 +146,52 @@ class Settings extends Model
     }
 
     /**
+     * Identify whether users should be sortable and in a sequential order.
+     *
+     * Note: When enabled, each association save will check to ensure an association has a proper, sequential
+     * order.  For large association lists, this may result in excessive processing resources.
+     *
+     * @return bool
+     */
+    public function getEnforceUserSortOrder(): bool
+    {
+        return $this->enforceUserSortOrder;
+    }
+
+    /**
+     * @param bool $enforce
+     * @return Settings
+     */
+    public function setEnforceUserSortOrder(bool $enforce): self
+    {
+        $this->enforceUserSortOrder = $enforce;
+        return $this;
+    }
+
+    /**
+     * Identify whether organizations should be sortable and in a sequential order.
+     *
+     * Note: When enabled, each association save will check to ensure an association has a proper, sequential
+     * order.  For large association lists, this may result in excessive processing resources.
+     *
+     * @return bool
+     */
+    public function getEnforceOrganizationSortOrder(): bool
+    {
+        return $this->enforceOrganizationSortOrder;
+    }
+
+    /**
+     * @param bool $enforce
+     * @return Settings
+     */
+    public function setEnforceOrganizationSortOrder(bool $enforce): self
+    {
+        $this->enforceOrganizationSortOrder = $enforce;
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     public function rules()
@@ -159,10 +215,19 @@ class Settings extends Model
                 ],
                 [
                     [
+                        'enforceUserSortOrder',
+                        'enforceOrganizationSortOrder'
+                    ],
+                    'boolean'
+                ],
+                [
+                    [
                         'siteSettings',
                         'usersTabOrder',
                         'usersTabLabel',
-                        'defaultUserState'
+                        'defaultUserState',
+                        'enforceUserSortOrder',
+                        'enforceOrganizationSortOrder'
                     ],
                     'safe',
                     'on' => [
@@ -185,7 +250,9 @@ class Settings extends Model
                 'siteSettings',
                 'usersTabOrder',
                 'usersTabLabel',
-                'defaultUserState'
+                'defaultUserState',
+                'enforceUserSortOrder',
+                'enforceOrganizationSortOrder'
 
             ]
         );
@@ -203,7 +270,9 @@ class Settings extends Model
                 'siteSettings' => Organizations::t('Site Settings'),
                 'usersTabOrder' => Organizations::t('User\'s Tab Order'),
                 'usersTabLabel' => Organizations::t('User\'s Tab Label'),
-                'defaultUserState' => Organizations::t('Default User State')
+                'defaultUserState' => Organizations::t('Default User State'),
+                'enforceUserSortOrder' => Organizations::t('Enforce User sort order'),
+                'enforceOrganizationSortOrder' => Organizations::t('Enforce Organization sort order')
             ]
         );
     }

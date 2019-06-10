@@ -1,5 +1,9 @@
 Changelog
 =========
+## Unreleased
+### Added
+- Ability to disable sort order enforcement for organization/user associations.
+
 ## 2.0.0 - 2019-06-05
 ### Added
 - Many-to-many relationships have a 'manager' class attached to the object where 'relational' logic resides
