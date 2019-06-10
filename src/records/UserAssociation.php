@@ -19,6 +19,7 @@ use flipbox\organizations\managers\UserTypeRelationshipManager;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
 use yii\db\ActiveQueryInterface;
+use yii\helpers\Json;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -182,23 +183,40 @@ class UserAssociation extends ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-        if (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder()) {
-            $this->autoReOrder(
-                'userId',
-                [
-                    'organizationId' => $this->organizationId
-                ],
-                'userOrder'
-            );
-        }
+        try {
+            if (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder()) {
+                $this->autoReOrder(
+                    'userId',
+                    [
+                        'organizationId' => $this->organizationId
+                    ],
+                    'userOrder'
+                );
+            }
 
-        if (Organizations::getInstance()->getSettings()->getEnforceOrganizationSortOrder()) {
-            $this->autoReOrder(
-                'organizationId',
-                [
-                    'userId' => $this->userId
-                ],
-                'organizationOrder'
+            if (Organizations::getInstance()->getSettings()->getEnforceOrganizationSortOrder()) {
+                $this->autoReOrder(
+                    'organizationId',
+                    [
+                        'userId' => $this->userId
+                    ],
+                    'organizationOrder'
+                );
+            }
+        } catch (\Exception $e) {
+            Organizations::error(
+                sprintf(
+                    "Exception caught while trying to reorder '%s'. Exception: [%s].",
+                    (string)get_class($this),
+                    (string)Json::encode([
+                        'Trace' => $e->getTraceAsString(),
+                        'File' => $e->getFile(),
+                        'Line' => $e->getLine(),
+                        'Code' => $e->getCode(),
+                        'Message' => $e->getMessage()
+                    ])
+                ),
+                __METHOD__
             );
         }
 

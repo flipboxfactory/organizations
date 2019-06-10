@@ -12,8 +12,10 @@ use Craft;
 use flipbox\craft\ember\helpers\ModelHelper;
 use flipbox\craft\ember\records\ActiveRecord;
 use flipbox\craft\ember\records\SortableTrait;
+use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserTypeAssociationQuery;
 use yii\db\ActiveQueryInterface;
+use yii\helpers\Json;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -103,12 +105,29 @@ class UserTypeAssociation extends ActiveRecord
      */
     public function afterSave($insert, $changedAttributes)
     {
-        $this->autoReOrder(
-            'typeId',
-            [
-                'userId' => $this->userId
-            ]
-        );
+        try {
+            $this->autoReOrder(
+                'typeId',
+                [
+                    'userId' => $this->userId
+                ]
+            );
+        } catch (\Exception $e) {
+            Organizations::error(
+                sprintf(
+                    "Exception caught while trying to reorder '%s'. Exception: [%s].",
+                    (string)get_class($this),
+                    (string)Json::encode([
+                        'Trace' => $e->getTraceAsString(),
+                        'File' => $e->getFile(),
+                        'Line' => $e->getLine(),
+                        'Code' => $e->getCode(),
+                        'Message' => $e->getMessage()
+                    ])
+                ),
+                __METHOD__
+            );
+        }
 
         parent::afterSave($insert, $changedAttributes);
     }
