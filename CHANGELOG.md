@@ -1,5 +1,12 @@
 Changelog
 =========
+## Unreleased
+### Added
+- Associations can bypass child association saving
+
+### Fixed
+- Validation issue when checking a newly created organization that has been associated to a user
+
 ## 2.0.1 - 2019-06-10
 ### Added
 - Ability to disable sort order enforcement for organization/user associations.

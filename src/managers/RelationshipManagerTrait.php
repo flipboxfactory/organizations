@@ -126,9 +126,10 @@ trait RelationshipManagerTrait
 
     /**
      * @param QueryInterface|ElementInterface[] $objects
-     * @return static
+     * @param array $attributes
+     * : @return RelationshipManagerInterface
      */
-    public function setMany($objects)
+    public function setMany($objects, array $attributes = []): RelationshipManagerInterface
     {
         if ($objects instanceof QueryInterface || $objects instanceof Collection) {
             $objects = $objects->all();
@@ -142,7 +143,7 @@ trait RelationshipManagerTrait
                 $objects = [$objects];
             }
 
-            $this->addMany($objects);
+            $this->addMany($objects, $attributes);
         }
 
         return $this;
@@ -155,9 +156,10 @@ trait RelationshipManagerTrait
 
     /**
      * @param QueryInterface|ElementInterface[] $objects
-     * @return static
+     * @param array $attributes
+     * : @return RelationshipManagerInterface
      */
-    public function addMany($objects)
+    public function addMany($objects, array $attributes = []): RelationshipManagerInterface
     {
         if ($objects instanceof QueryInterface || $objects instanceof Collection) {
             $objects = $objects->all();
@@ -173,7 +175,7 @@ trait RelationshipManagerTrait
         }
 
         foreach ($objects as $object) {
-            $this->addOne($object);
+            $this->addOne($object, $attributes);
         }
 
         return $this;
@@ -184,9 +186,9 @@ trait RelationshipManagerTrait
      *
      * @param ActiveRecord|ElementInterface|int|array $object
      * @param array $attributes
-     * @return static
+     * : @return RelationshipManagerInterface
      */
-    public function addOne($object, array $attributes = [])
+    public function addOne($object, array $attributes = []): RelationshipManagerInterface
     {
         if (empty($object)) {
             return $this;
@@ -216,9 +218,9 @@ trait RelationshipManagerTrait
      * Dissociate an array of user associations from an organization
      *
      * @param QueryInterface|ElementInterface[] $objects
-     * @return static
+     * : @return RelationshipManagerInterface
      */
-    public function removeMany($objects)
+    public function removeMany($objects): RelationshipManagerInterface
     {
         if ($objects instanceof QueryInterface || $objects instanceof Collection) {
             $objects = $objects->all();
@@ -244,9 +246,9 @@ trait RelationshipManagerTrait
      * Dissociate a user from an organization
      *
      * @param ActiveRecord|ElementInterface|int|array
-     * @return static
+     * : @return RelationshipManagerInterface
      */
-    public function removeOne($object)
+    public function removeOne($object): RelationshipManagerInterface
     {
         if (empty($object)) {
             return $this;
@@ -261,8 +263,9 @@ trait RelationshipManagerTrait
 
     /**
      * Reset associations
+     * : @return RelationshipManagerInterface
      */
-    public function reset()
+    public function reset(): RelationshipManagerInterface
     {
         $this->associations = null;
         $this->mutated = false;

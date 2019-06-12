@@ -86,8 +86,11 @@ class OrganizationRelationshipManager implements RelationshipManagerInterface
      *
      * @param bool $addToOrganization
      */
-    public function addOne($object, array $attributes = [], bool $addToOrganization = false)
-    {
+    public function addOne(
+        $object,
+        array $attributes = [],
+        bool $addToOrganization = false
+    ): RelationshipManagerInterface {
         if (null === ($association = $this->findOne($object))) {
             $association = $this->create($object);
             $this->addToCache($association);
@@ -123,16 +126,24 @@ class OrganizationRelationshipManager implements RelationshipManagerInterface
 
         $associations = [];
         $order = 1;
+
+        /** @var UserAssociation $newAssociation */
         foreach ($this->findAll() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
                 $newAssociation->getOrganizationId()
             ))) {
                 $association = $newAssociation;
+            } elseif ($newAssociation->getTypeManager()->isMutated()) {
+                /** @var UserAssociation $association */
+                $association->getTypeManager()->setMany(
+                    $newAssociation->getTypeManager()->findAll()
+                );
             }
 
             $association->userOrder = $newAssociation->userOrder;
             $association->organizationOrder = $order++;
+            $association->state = $newAssociation->state;
 
             $associations[] = $association;
         }

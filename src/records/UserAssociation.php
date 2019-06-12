@@ -49,6 +49,13 @@ class UserAssociation extends ActiveRecord
     const TABLE_ALIAS = Organization::TABLE_ALIAS . '_user_associations';
 
     /**
+     * Whether associated types should be saved
+     *
+     * @var bool
+     */
+    private $saveTypes = true;
+
+    /**
      * @inheritdoc
      */
     protected $getterPriorityAttributes = ['userId', 'organizationId'];
@@ -68,6 +75,24 @@ class UserAssociation extends ActiveRecord
         }
 
         return $this->manager;
+    }
+
+    /**
+     * @return static
+     */
+    public function withTypes(): self
+    {
+        $this->saveTypes = false;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function withoutTypes(): self
+    {
+        $this->saveTypes = true;
+        return $this;
     }
 
     /**
@@ -218,6 +243,11 @@ class UserAssociation extends ActiveRecord
                 ),
                 __METHOD__
             );
+        }
+
+        // Save types if they've also been altered
+        if ($this->getTypeManager()->isMutated()) {
+            $this->getTypeManager()->save();
         }
 
         parent::afterSave($insert, $changedAttributes);

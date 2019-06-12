@@ -32,7 +32,7 @@ use flipbox\organizations\records\UserTypeAssociation;
 class UserTypeRelationshipManager implements RelationshipManagerInterface
 {
     use RelationshipManagerTrait {
-        reset as parentRest;
+        reset as parentReset;
         setCache as parentSetCache;
         addToCache as parentAddToCache;
         removeFromCache as parentRemoveFromCache;
@@ -90,10 +90,10 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
     /**
      * Reset associations
      */
-    public function reset()
+    public function reset(): RelationshipManagerInterface
     {
         unset($this->association->types);
-        return $this->parentRest();
+        return $this->parentReset();
     }
 
 

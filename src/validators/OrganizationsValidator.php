@@ -11,6 +11,7 @@ namespace flipbox\organizations\validators;
 use craft\helpers\Json;
 use flipbox\organizations\behaviors\OrganizationsAssociatedToUserBehavior;
 use flipbox\organizations\Organizations as OrganizationPlugin;
+use Tightenco\Collect\Support\Collection;
 use yii\base\Model;
 use yii\validators\Validator;
 
@@ -54,10 +55,10 @@ class OrganizationsValidator extends Validator
     }
 
     /**
-     * @param array $organizations
+     * @param Collection $organizations
      * @return array|null
      */
-    private function validateOrganizations(array $organizations)
+    private function validateOrganizations(Collection $organizations)
     {
         $hasError = false;
 

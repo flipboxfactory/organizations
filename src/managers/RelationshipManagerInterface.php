@@ -64,10 +64,11 @@ interface RelationshipManagerInterface
     /**
      * Clear the current relationships and set new ones.
      *
-     * @param QueryInterface|ElementInterface[] $objects
+     * @param QueryInterface|Collection|ElementInterface[] $objects
+     * @param array $attributes
      * @return static
      */
-    public function setMany($objects);
+    public function setMany($objects, array $attributes = []): RelationshipManagerInterface;
 
 
     /************************************************************
@@ -78,9 +79,10 @@ interface RelationshipManagerInterface
      * Add an array of objects (but do not save)
      *
      * @param QueryInterface|Collection|ElementInterface[] $objects
+     * @param array $attributes
      * @return static
      */
-    public function addMany($objects);
+    public function addMany($objects, array $attributes = []): RelationshipManagerInterface;
 
     /**
      * Add an object (but do not save)
@@ -89,7 +91,7 @@ interface RelationshipManagerInterface
      * @param array $attributes
      * @return static
      */
-    public function addOne($object, array $attributes = []);
+    public function addOne($object, array $attributes = []): RelationshipManagerInterface;
 
 
     /************************************************************
@@ -102,7 +104,7 @@ interface RelationshipManagerInterface
      * @param QueryInterface|Collection|ElementInterface[] $objects
      * @return static
      */
-    public function removeMany($objects);
+    public function removeMany($objects): RelationshipManagerInterface;
 
     /**
      * Remove an object (but do not save)
@@ -110,7 +112,7 @@ interface RelationshipManagerInterface
      * @param ActiveRecord|ElementInterface|int|array
      * @return static
      */
-    public function removeOne($object);
+    public function removeOne($object): RelationshipManagerInterface;
 
 
     /*******************************************
@@ -191,5 +193,5 @@ interface RelationshipManagerInterface
     /**
      * Reset relationships to their original state
      */
-    public function reset();
+    public function reset(): RelationshipManagerInterface;
 }

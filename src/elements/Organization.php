@@ -42,6 +42,20 @@ class Organization extends Element
         UsersAttributeTrait;
 
     /**
+     * Whether associated types should be saved
+     *
+     * @var bool
+     */
+    private $saveTypes = true;
+
+    /**
+     * Whether associated users should be saved
+     *
+     * @var bool
+     */
+    private $saveUsers = true;
+
+    /**
      * @inheritdoc
      */
     public static function displayName(): string
@@ -522,9 +536,18 @@ class Organization extends Element
         return null;
     }
 
+
     /************************************************************
      * EVENTS
      ************************************************************/
+
+    /**
+     * @inheritdoc
+     */
+    public function save(bool $runValidation = true, bool $propagate = true): bool
+    {
+        return Craft::$app->getElements()->saveElement($this, $runValidation, $propagate);
+    }
 
     /**
      * @inheritdoc
@@ -549,16 +572,57 @@ class Organization extends Element
         }
 
         // Types
-        if (false === $this->getTypeManager()->save()) {
+        if (true === $this->saveTypes && false === $this->getTypeManager()->save()) {
             throw new Exception("Unable to save types.");
         }
 
         // Users
-        if (false === $this->getUserManager()->save()) {
+        if (true === $this->saveUsers && false === $this->getUserManager()->save()) {
             throw new Exception("Unable to save users.");
         }
 
         parent::afterSave($isNew);
+    }
+
+
+    /*******************************************
+     * RELATIONSHIP
+     *******************************************/
+
+    /**
+     * @return static
+     */
+    public function withTypes(): self
+    {
+        $this->saveTypes = false;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function withoutTypes(): self
+    {
+        $this->saveTypes = true;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function withUsers(): self
+    {
+        $this->saveUsers = false;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function withoutUsers(): self
+    {
+        $this->saveUsers = true;
+        return $this;
     }
 
     /*******************************************
