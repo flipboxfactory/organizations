@@ -1,6 +1,6 @@
 Changelog
 =========
-## Unreleased
+## 2.0.2 - 2019-06-12
 ### Added
 - Associations can bypass child association saving
 
