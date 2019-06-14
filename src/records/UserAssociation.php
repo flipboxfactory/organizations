@@ -295,6 +295,11 @@ class UserAssociation extends ActiveRecord
         return $this->manager;
     }
 
+
+    /************************************************************
+     * RELATIONS
+     ************************************************************/
+
     /**
      * We're using an alias so 'types' can be used to retrieve relations
      *
@@ -321,20 +326,5 @@ class UserAssociation extends ActiveRecord
         }
 
         parent::populateRelation($name, $records);
-    }
-
-    /**
-     * When getting
-     * @inheritDoc
-     */
-    public function __get($name)
-    {
-        if ($name === 'types') {
-            $value = $this->getTypes();
-            $this->populateRelation($name, $value->getCollection());
-            return $value;
-        }
-
-        return parent::__get($name);
     }
 }
