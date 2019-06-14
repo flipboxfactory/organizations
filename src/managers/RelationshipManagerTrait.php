@@ -127,7 +127,7 @@ trait RelationshipManagerTrait
     /**
      * @param QueryInterface|ElementInterface[] $objects
      * @param array $attributes
-     * : @return RelationshipManagerInterface
+     * @return RelationshipManagerInterface
      */
     public function setMany($objects, array $attributes = []): RelationshipManagerInterface
     {
