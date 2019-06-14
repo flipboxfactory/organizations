@@ -14,6 +14,7 @@ use craft\events\SetElementTableAttributeHtmlEvent;
 use craft\helpers\Html;
 use flipbox\organizations\behaviors\OrganizationsAssociatedToUserBehavior;
 use flipbox\organizations\Organizations;
+use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
 
 /**
@@ -42,7 +43,8 @@ class SetOrganizationUserElementTableAttributeHtml
         /** @var User|OrganizationsAssociatedToUserBehavior $element */
         $element = $event->sender;
 
-        $association = $element->getOrganizationManager()->findOne(
+        /** @var UserAssociation $association */
+        $association = $element->getOrganizations()->findOne(
             Craft::$app->getRequest()->getParam('organization')
         );
 
@@ -69,10 +71,10 @@ class SetOrganizationUserElementTableAttributeHtml
                 break;
 
             case 'types':
-                $types = $association ? $association->types : [];
+                $types = $association ? $association->getTypes() : [];
 
                 $html = $label = [];
-                foreach ($types as $type) {
+                foreach ($types->getCollection() as $type) {
                     $label[] = $type->name;
                     $html[] = self::icon($type);
                 }

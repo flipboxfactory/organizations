@@ -14,8 +14,8 @@ use flipbox\craft\ember\records\ActiveRecord;
 use flipbox\craft\ember\records\IdAttributeTrait;
 use flipbox\craft\ember\records\SortableTrait;
 use flipbox\craft\ember\records\UserAttributeTrait;
-use flipbox\organizations\managers\RelationshipManagerInterface;
-use flipbox\organizations\managers\UserTypeRelationshipManager;
+use flipbox\organizations\relationships\RelationshipInterface;
+use flipbox\organizations\relationships\UserTypeRelationship;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
 use yii\db\ActiveQueryInterface;
@@ -30,7 +30,7 @@ use yii\helpers\Json;
  * @property int $userOrder The order which a user lists its organizations
  * @property string $state The user state
  * @property Organization $organization
- * @property UserType[] $types
+ * @property UserType[] $typeRecords
  */
 class UserAssociation extends ActiveRecord
 {
@@ -61,21 +61,9 @@ class UserAssociation extends ActiveRecord
     protected $getterPriorityAttributes = ['userId', 'organizationId'];
 
     /**
-     * @var RelationshipManagerInterface
+     * @var RelationshipInterface
      */
     private $manager;
-
-    /**
-     * @return RelationshipManagerInterface
-     */
-    public function getTypeManager(): RelationshipManagerInterface
-    {
-        if (null === $this->manager) {
-            $this->manager = new UserTypeRelationshipManager($this);
-        }
-
-        return $this->manager;
-    }
 
     /**
      * @return static
@@ -246,8 +234,8 @@ class UserAssociation extends ActiveRecord
         }
 
         // Save types if they've also been altered
-        if ($this->getTypeManager()->isMutated()) {
-            $this->getTypeManager()->save();
+        if (true === $this->saveTypes && $this->getTypes()->isMutated()) {
+            $this->getTypes()->save();
         }
 
         parent::afterSave($insert, $changedAttributes);
@@ -285,14 +273,68 @@ class UserAssociation extends ActiveRecord
     /**
      * @return ActiveQueryInterface
      */
-    public function getTypes(): ActiveQueryInterface
+    public function getTypeRecords(): ActiveQueryInterface
     {
-        // Todo - order this by the sortOrder
         /** @noinspection PhpUndefinedMethodInspection */
         return $this->hasMany(UserType::class, ['id' => 'typeId'])
             ->viaTable(
                 UserTypeAssociation::tableName(),
                 ['userId' => 'id']
             );
+    }
+
+    /**
+     * @return UserTypeRelationship|RelationshipInterface
+     */
+    public function getTypes(): RelationshipInterface
+    {
+        if (null === $this->manager) {
+            $this->manager = new UserTypeRelationship($this);
+        }
+
+        return $this->manager;
+    }
+
+    /**
+     * We're using an alias so 'types' can be used to retrieve relations
+     *
+     * @inheritDoc
+     */
+    public function getRelation($name, $throwException = true)
+    {
+        if ($name === 'types') {
+            $name = 'typeRecords';
+        }
+
+        return parent::getRelation($name);
+    }
+
+    /**
+     * We're using an alias so 'types' is converted to 'typeRecords'
+     *
+     * @inheritDoc
+     */
+    public function populateRelation($name, $records)
+    {
+        if ($name === 'types') {
+            $name = 'typeRecords';
+        }
+
+        parent::populateRelation($name, $records);
+    }
+
+    /**
+     * When getting
+     * @inheritDoc
+     */
+    public function __get($name)
+    {
+        if ($name === 'types') {
+            $value = $this->getTypes();
+            $this->populateRelation($name, $value->getCollection());
+            return $value;
+        }
+
+        return parent::__get($name);
     }
 }

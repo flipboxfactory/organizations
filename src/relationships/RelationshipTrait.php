@@ -6,11 +6,12 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\managers;
+namespace flipbox\organizations\relationships;
 
 use Craft;
 use craft\base\ElementInterface;
 use craft\helpers\ArrayHelper;
+use flipbox\organizations\records\UserAssociation;
 use Tightenco\Collect\Support\Collection;
 use yii\base\Exception;
 use yii\db\ActiveRecord;
@@ -19,15 +20,17 @@ use yii\db\QueryInterface;
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 2.0.0
+ *
+ * @mixin RelationshipInterface
  */
-trait RelationshipManagerTrait
+trait RelationshipTrait
 {
     use MutatedTrait;
 
     /**
      * @var Collection|null
      */
-    protected $associations;
+    protected $collection;
 
     /**
      * @param null $object
@@ -48,7 +51,6 @@ trait RelationshipManagerTrait
     abstract protected function create($object): ActiveRecord;
 
     /**
-     *
      * @return ActiveRecord[][]
      */
     abstract protected function associationDelta(): array;
@@ -87,14 +89,12 @@ trait RelationshipManagerTrait
 
     /**
      * @return Collection
+     *
+     * @deprecated use `getCollection()`
      */
     public function findAll(): Collection
     {
-        if (null === $this->associations) {
-            $this->setCache($this->query()->all(), false);
-        }
-
-        return $this->associations;
+        return $this->getRelationships();
     }
 
     /**
@@ -107,7 +107,7 @@ trait RelationshipManagerTrait
             return null;
         }
 
-        return $this->associations[$key];
+        return $this->collection->get($key);
     }
 
     /**
@@ -121,32 +121,39 @@ trait RelationshipManagerTrait
 
 
     /************************************************************
+     * COLLECTIONS
+     ************************************************************/
+
+    /**
+     * @inheritDoc
+     */
+    public function getRelationships(): Collection
+    {
+        if (null === $this->collection) {
+            $this->collection = new Collection(
+                $this->query()->all()
+            );
+        }
+
+        return $this->collection;
+    }
+
+
+    /************************************************************
      * SET
      ************************************************************/
 
     /**
      * @param QueryInterface|ElementInterface[] $objects
      * @param array $attributes
-     * @return RelationshipManagerInterface
+     * @return RelationshipInterface
+     *
+     * @deprecated use `reset()->add($objects, $attributes)`
      */
-    public function setMany($objects, array $attributes = []): RelationshipManagerInterface
+    public function setMany($objects, array $attributes = []): RelationshipInterface
     {
-        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
-            $objects = $objects->all();
-        }
-
-        // Reset results
-        $this->setCache([]);
-
-        if (!empty($objects)) {
-            if (!is_array($objects)) {
-                $objects = [$objects];
-            }
-
-            $this->addMany($objects, $attributes);
-        }
-
-        return $this;
+        return $this->clear()
+            ->add($objects, $attributes);
     }
 
 
@@ -157,28 +164,13 @@ trait RelationshipManagerTrait
     /**
      * @param QueryInterface|ElementInterface[] $objects
      * @param array $attributes
-     * : @return RelationshipManagerInterface
+     * @return RelationshipInterface
+     *
+     * @deprecated use `add($objects, $attributes)`
      */
-    public function addMany($objects, array $attributes = []): RelationshipManagerInterface
+    public function addMany($objects, array $attributes = []): RelationshipInterface
     {
-        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
-            $objects = $objects->all();
-        }
-
-        if (!is_array($objects)) {
-            $objects = [$objects];
-        }
-
-        // In case a config is directly passed
-        if (ArrayHelper::isAssociative($objects)) {
-            $objects = [$objects];
-        }
-
-        foreach ($objects as $object) {
-            $this->addOne($object, $attributes);
-        }
-
-        return $this;
+        return $this->add($objects, $attributes);
     }
 
     /**
@@ -186,24 +178,38 @@ trait RelationshipManagerTrait
      *
      * @param ActiveRecord|ElementInterface|int|array $object
      * @param array $attributes
-     * : @return RelationshipManagerInterface
+     * @return RelationshipInterface
+     *
+     * @deprecated use `add($objects, $attributes)`
      */
-    public function addOne($object, array $attributes = []): RelationshipManagerInterface
+    public function addOne($object, array $attributes = []): RelationshipInterface
     {
-        if (empty($object)) {
-            return $this;
-        }
+        return $this->add($object, $attributes);
+    }
 
-        if (null === ($association = $this->findOne($object))) {
-            $association = $this->create($object);
-            $this->addToCache($association);
-        }
+    /**
+     * Add one or many object relations (but do not save)
+     *
+     * @param $objects
+     * @param array $attributes
+     * @return RelationshipInterface
+     */
+    public function add($objects, array $attributes = []): RelationshipInterface
+    {
+        foreach ($this->objectArray($objects) as $object) {
+            if (null === ($association = $this->findOne($object))) {
+                $association = $this->create($object);
+                $this->addToCollection($association);
+            }
 
-        if (!empty($attributes)) {
-            Craft::configure(
-                $association,
-                $attributes
-            );
+            if (!empty($attributes)) {
+                Craft::configure(
+                    $association,
+                    $attributes
+                );
+
+                $this->mutated = true;
+            }
         }
 
         return $this;
@@ -218,57 +224,66 @@ trait RelationshipManagerTrait
      * Dissociate an array of user associations from an organization
      *
      * @param QueryInterface|ElementInterface[] $objects
-     * : @return RelationshipManagerInterface
+     * @return RelationshipInterface
+     *
+     * @deprecated use `remove($objects)`
      */
-    public function removeMany($objects): RelationshipManagerInterface
+    public function removeMany($objects): RelationshipInterface
     {
-        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
-            $objects = $objects->all();
-        }
-
-        if (!is_array($objects)) {
-            $objects = [$objects];
-        }
-
-        // In case a config is directly passed
-        if (ArrayHelper::isAssociative($objects)) {
-            $objects = [$objects];
-        }
-
-        foreach ($objects as $object) {
-            $this->removeOne($object);
-        }
-
-        return $this;
+        return $this->remove($objects);
     }
 
     /**
      * Dissociate a user from an organization
      *
      * @param ActiveRecord|ElementInterface|int|array
-     * : @return RelationshipManagerInterface
+     * @return RelationshipInterface
+     *
+     * @deprecated use `remove($objects)`
      */
-    public function removeOne($object): RelationshipManagerInterface
+    public function removeOne($object): RelationshipInterface
     {
-        if (empty($object)) {
-            return $this;
-        }
+        return $this->remove($object);
+    }
 
-        if (null !== ($key = $this->findKey($object))) {
-            $this->removeFromCache($key);
+    /**
+     * @param $objects
+     * @return RelationshipInterface
+     */
+    public function remove($objects): RelationshipInterface
+    {
+        foreach ($this->objectArray($objects) as $object) {
+            if (null !== ($key = $this->findKey($object))) {
+                $this->removeFromCollection($key);
+            }
         }
 
         return $this;
     }
 
+
+    /************************************************************
+     * RESET
+     ************************************************************/
+
     /**
      * Reset associations
-     * : @return RelationshipManagerInterface
+     * @return RelationshipInterface
      */
-    public function reset(): RelationshipManagerInterface
+    public function reset(): RelationshipInterface
     {
-        $this->associations = null;
+        $this->collection = null;
         $this->mutated = false;
+        return $this;
+    }
+
+    /**
+     * Reset associations
+     * @return RelationshipInterface
+     */
+    public function clear(): RelationshipInterface
+    {
+        $this->newCollection([]);
         return $this;
     }
 
@@ -304,7 +319,7 @@ trait RelationshipManagerTrait
             }
         }
 
-        $this->setCache($newAssociations);
+        $this->newCollection($newAssociations);
         $this->mutated = false;
 
         if (!$success) {
@@ -314,6 +329,7 @@ trait RelationshipManagerTrait
         return $success;
     }
 
+
     /*******************************************
      * ASSOCIATE
      *******************************************/
@@ -322,45 +338,25 @@ trait RelationshipManagerTrait
      * @param $object
      * @param array $attributes
      * @return bool
+     *
+     * @deprecated use `add($object, $attributes)->save()`
      */
     public function associateOne($object, array $attributes = []): bool
     {
-        $association = $this->findOrCreate($object);
-
-        if (!empty($attributes)) {
-            Craft::configure(
-                $association,
-                $attributes
-            );
-        }
-
-        if (!$association->save()) {
-            $this->handleAssociationError();
-            return false;
-        }
-
-        $this->reset();
-
-        return true;
+        return $this->add($object, $attributes)
+            ->save();
     }
 
     /**
      * @param QueryInterface|ElementInterface[] $objects
      * @return bool
+     *
+     * @deprecated use `add($object, $attributes)->save()`
      */
     public function associateMany($objects): bool
     {
-        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
-            $objects = $objects->all();
-        }
-
-        if (empty($objects)) {
-            return true;
-        }
-
-        $this->addMany($objects);
-
-        return $this->save();
+        return $this->add($objects)
+            ->save();
     }
 
 
@@ -373,41 +369,25 @@ trait RelationshipManagerTrait
      *
      * @param ActiveRecord|ElementInterface|int|array $object
      * @return bool
+     *
+     * @deprecated use `remove($object)->save()`
      */
     public function dissociateOne($object): bool
     {
-        if (null === ($association = $this->findOne($object))) {
-            return true;
-        }
-
-        /** @noinspection PhpUnhandledExceptionInspection */
-        if (!$association->delete()) {
-            $this->handleAssociationError();
-            return false;
-        }
-
-        $this->removeOne($association);
-
-        return true;
+        return $this->remove($object)
+            ->save();
     }
 
     /**
      * @param QueryInterface|ElementInterface[] $objects
      * @return bool
+     *
+     * @deprecated use `remove($objects)->save()`
      */
     public function dissociateMany($objects): bool
     {
-        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
-            $objects = $objects->all();
-        }
-
-        if (empty($objects)) {
-            return true;
-        }
-
-        $this->removeMany($objects);
-
-        return $this->save();
+        return $this->remove($objects)
+            ->save();
     }
 
 
@@ -420,9 +400,9 @@ trait RelationshipManagerTrait
      * @param bool $mutated
      * @return static
      */
-    protected function setCache(array $associations, bool $mutated = true): self
+    protected function newCollection(array $associations, bool $mutated = true): self
     {
-        $this->associations = Collection::make($associations);
+        $this->collection = Collection::make($associations);
         $this->mutated = $mutated;
 
         return $this;
@@ -430,15 +410,15 @@ trait RelationshipManagerTrait
 
     /**
      * @param $association
-     * @return RelationshipManagerTrait
+     * @return RelationshipTrait
      */
-    protected function addToCache($association): self
+    protected function addToCollection($association): self
     {
-        if (null === $this->associations) {
-            return $this->setCache([$association], true);
+        if (null === $this->collection) {
+            return $this->newCollection([$association], true);
         }
 
-        $this->associations->push($association);
+        $this->collection->push($association);
         $this->mutated = true;
 
         return $this;
@@ -446,13 +426,38 @@ trait RelationshipManagerTrait
 
     /**
      * @param int $key
-     * @return RelationshipManagerTrait
+     * @return RelationshipTrait
      */
-    protected function removeFromCache(int $key): self
+    protected function removeFromCollection(int $key): self
     {
-        $this->associations->forget($key);
+        $this->collection->forget($key);
         $this->mutated = true;
 
         return $this;
+    }
+
+
+    /*******************************************
+     * UTILITIES
+     *******************************************/
+
+    /**
+     * Ensure we're working with an array of objects, not configs, etc
+     *
+     * @param array|QueryInterface|Collection|ElementInterface|UserAssociation $objects
+     * @return array
+     */
+    protected function objectArray($objects): array
+    {
+        if ($objects instanceof QueryInterface || $objects instanceof Collection) {
+            $objects = $objects->all();
+        }
+
+        // proper array
+        if (!is_array($objects) || ArrayHelper::isAssociative($objects)) {
+            $objects = [$objects];
+        }
+
+        return array_filter($objects);
     }
 }

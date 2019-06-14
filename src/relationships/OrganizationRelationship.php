@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\managers;
+namespace flipbox\organizations\relationships;
 
 use Craft;
 use craft\elements\User;
@@ -17,22 +17,21 @@ use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * Manages Organizations associated to Users
  *
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 2.0.0
- *
- * @property UserAssociation[] $associations
- *
+ * *
  * @method UserAssociation findOrCreate($object)
  * @method UserAssociation findOne($object = null)
  * @method UserAssociation findOrFail($object)
  */
-class OrganizationRelationshipManager implements RelationshipManagerInterface
+class OrganizationRelationship implements RelationshipInterface
 {
-    use RelationshipManagerTrait;
+    use RelationshipTrait;
 
     /**
      * @var User
@@ -46,6 +45,44 @@ class OrganizationRelationshipManager implements RelationshipManagerInterface
     {
         $this->user = $user;
     }
+
+
+    /************************************************************
+     * COLLECTION
+     ************************************************************/
+
+    /**
+     * Get a collection of associated organizations
+     *
+     * @return Organization[]|Collection
+     */
+    public function getCollection(): Collection
+    {
+        $query = Organization::find()
+            ->user($this->user)
+            ->orderBy([
+                'organizationOrder' => SORT_ASC
+            ]);
+
+        if (null === $this->collection) {
+            return Collection::make(
+                $query->all()
+            );
+        };
+
+        return Collection::make(
+            $query
+                ->id($this->collection->sortBy('organizationOrder')->pluck('organizationId'))
+                ->fixedOrder(true)
+                ->limit(null)
+                ->all()
+        );
+    }
+
+
+    /************************************************************
+     * QUERY
+     ************************************************************/
 
     /**
      * @param array $criteria
@@ -90,10 +127,10 @@ class OrganizationRelationshipManager implements RelationshipManagerInterface
         $object,
         array $attributes = [],
         bool $addToOrganization = false
-    ): RelationshipManagerInterface {
+    ): RelationshipInterface {
         if (null === ($association = $this->findOne($object))) {
             $association = $this->create($object);
-            $this->addToCache($association);
+            $this->addToCollection($association);
         }
 
         if (!empty($attributes)) {
@@ -105,7 +142,7 @@ class OrganizationRelationshipManager implements RelationshipManagerInterface
 
         // Add user to organization as well?
         if ($addToOrganization && $association->getOrganization()->getId() !== null) {
-            $association->getOrganization()->getUserManager()->addOne($this->user, [], false);
+            $association->getOrganization()->getUsers()->add($this->user);
         }
 
         return $this;
@@ -128,16 +165,16 @@ class OrganizationRelationshipManager implements RelationshipManagerInterface
         $order = 1;
 
         /** @var UserAssociation $newAssociation */
-        foreach ($this->findAll() as $newAssociation) {
+        foreach ($this->getRelationships()->sortBy('organizationOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
                 $newAssociation->getOrganizationId()
             ))) {
                 $association = $newAssociation;
-            } elseif ($newAssociation->getTypeManager()->isMutated()) {
+            } elseif ($newAssociation->getTypes()->isMutated()) {
                 /** @var UserAssociation $association */
-                $association->getTypeManager()->setMany(
-                    $newAssociation->getTypeManager()->findAll()
+                $association->getTypes()->clear()->add(
+                    $newAssociation->getTypes()->getCollection()
                 );
             }
 

@@ -410,8 +410,7 @@ class Organization extends Element
     {
         switch ($handle) {
             case 'users':
-                $users = $elements ?? [];
-                $this->getUserManager()->setMany($users);
+                $this->getUsers()->clear()->add($elements);
                 break;
 
             default:
@@ -448,7 +447,7 @@ class Organization extends Element
         switch ($attribute) {
             case 'types':
                 $typeHtmlParts = [];
-                foreach ($this->getTypes() as $type) {
+                foreach ($this->getTypes()->getCollection() as $type) {
                     $typeHtmlParts[] = '<a href="' .
                         UrlHelper::cpUrl('organizations/' . $this->id . '/' . $type->handle) .
                         '">' .
@@ -572,12 +571,12 @@ class Organization extends Element
         }
 
         // Types
-        if (true === $this->saveTypes && false === $this->getTypeManager()->save()) {
+        if (true === $this->saveTypes && false === $this->getTypes()->save()) {
             throw new Exception("Unable to save types.");
         }
 
         // Users
-        if (true === $this->saveUsers && false === $this->getUserManager()->save()) {
+        if (true === $this->saveUsers && false === $this->getUsers()->save()) {
             throw new Exception("Unable to save users.");
         }
 

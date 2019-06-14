@@ -28,6 +28,6 @@ class DissociateUserFromOrganization extends AbstractUserAssociation
         $query->setCachedResult([$organization]);
 
         /** @var OrganizationsAssociatedToUserBehavior $user */
-        return $user->getOrganizationManager()->dissociateMany($query);
+        return $user->getOrganizations()->remove($query)->save();
     }
 }

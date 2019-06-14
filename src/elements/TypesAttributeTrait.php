@@ -10,8 +10,8 @@ namespace flipbox\organizations\elements;
 
 use Craft;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\managers\RelationshipManagerInterface;
-use flipbox\organizations\managers\OrganizationTypeRelationshipManager;
+use flipbox\organizations\relationships\RelationshipInterface;
+use flipbox\organizations\relationships\OrganizationTypeRelationship;
 use flipbox\organizations\queries\OrganizationTypeQuery;
 use flipbox\organizations\records\OrganizationType;
 use Tightenco\Collect\Support\Collection;
@@ -25,21 +25,9 @@ use Tightenco\Collect\Support\Collection;
 trait TypesAttributeTrait
 {
     /**
-     * @var RelationshipManagerInterface
+     * @var RelationshipInterface
      */
     private $typeManager;
-
-    /**
-     * @return RelationshipManagerInterface
-     */
-    public function getTypeManager(): RelationshipManagerInterface
-    {
-        if (null === $this->typeManager) {
-            $this->typeManager = new OrganizationTypeRelationshipManager($this);
-        }
-
-        return $this->typeManager;
-    }
 
     /**
      * @var OrganizationType|false
@@ -59,7 +47,7 @@ trait TypesAttributeTrait
     public function setTypesFromRequest(string $identifier = 'types')
     {
         if (null !== ($types = Craft::$app->getRequest()->getBodyParam($identifier))) {
-            $this->getTypeManager()->setMany((array)$types);
+            $this->getTypes()->add($types);
         }
 
         return $this;
@@ -76,7 +64,7 @@ trait TypesAttributeTrait
     public function setActiveType(OrganizationType $type = null)
     {
         if ($type) {
-            $this->getTypeManager()->addOne($type);
+            $this->getTypes()->add($type);
         }
 
         $this->activeType = (null === $type) ? false : $type;
@@ -99,30 +87,6 @@ trait TypesAttributeTrait
         return (false === $this->activeType) ? null : $this->activeType;
     }
 
-    /************************************************************
-     * TYPES QUERY
-     ************************************************************/
-
-    /**
-     * @param array $criteria
-     * @return OrganizationTypeQuery
-     */
-    public function userTypeQuery($criteria = []): OrganizationTypeQuery
-    {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $query = OrganizationType::find()
-            ->organization($this);
-
-        if (!empty($criteria)) {
-            QueryHelper::configure(
-                $query,
-                $criteria
-            );
-        }
-
-        return $query;
-    }
-
 
     /************************************************************
      * TYPES
@@ -131,20 +95,15 @@ trait TypesAttributeTrait
     /**
      * Get an array of types associated to an organization
      *
-     * @param array $criteria
-     * @return OrganizationType[]|Collection
+     * @return OrganizationTypeRelationship|RelationshipInterface
      */
-    public function getTypes(array $criteria = []): Collection
+    public function getTypes(): RelationshipInterface
     {
-        return Collection::make(QueryHelper::configure(
-            $this->userTypeQuery($criteria)
-                ->id(
-                    $this->getTypeManager()->findAll()
-                        ->pluck('typeId')
-                )
-                ->limit(null),
-            $criteria
-        )->all());
+        if (null === $this->typeManager) {
+            $this->typeManager = new OrganizationTypeRelationship($this);
+        }
+
+        return $this->typeManager;
     }
 
     /**
@@ -155,7 +114,7 @@ trait TypesAttributeTrait
      */
     public function setTypes($types)
     {
-        $this->getTypeManager()->setMany($types);
+        $this->getTypes()->clear()->add($types);
         return $this;
     }
 
@@ -170,7 +129,7 @@ trait TypesAttributeTrait
      */
     public function hasPrimaryType()
     {
-        return $this->getTypes()->isNotEmpty();
+        return $this->getTypes()->getCollection()->isNotEmpty();
     }
 
     /**
@@ -198,14 +157,7 @@ trait TypesAttributeTrait
             return $this;
         }
 
-        $this->getTypeManager()->setMany(
-            array_merge(
-                [
-                    $type
-                ],
-                $this->getTypes()
-            )
-        );
+        $this->getTypes()->getCollection()->prepend($type);
 
         return $this;
     }
@@ -217,6 +169,6 @@ trait TypesAttributeTrait
      */
     public function getPrimaryType()
     {
-        return $this->getTypes()->first();
+        return $this->getTypes()->getCollection()->first();
     }
 }

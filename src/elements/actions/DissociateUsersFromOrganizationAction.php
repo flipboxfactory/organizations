@@ -76,7 +76,7 @@ class DissociateUsersFromOrganizationAction extends ElementAction
         // Get the count because it's cleared when dissociated
         $userCount = $query->count();
 
-        if (false === $organization->getUserManager()->dissociateMany($query)) {
+        if (false === $organization->getUsers()->remove($query)->save()) {
             $this->setMessage(
                 Craft::t(
                     'organizations',

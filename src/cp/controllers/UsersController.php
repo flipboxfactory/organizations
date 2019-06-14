@@ -159,25 +159,15 @@ class UsersController extends AbstractController
 
         $userAssociation->state = Craft::$app->getRequest()->getBodyParam('state', $userAssociation->state);
 
-        if (!$userAssociation->save(true, ['state'])) {
+        $userAssociation->getTypes()->clear()->add(
+            Craft::$app->getRequest()->getBodyParam('types')
+        );
+
+        if (!$userAssociation->save()) {
             $success = false;
         }
 
         $user = $userAssociation->getUser();
-
-        if (null !== ($types = Craft::$app->getRequest()->getBodyParam('types'))) {
-            $types = array_filter($types);
-            $query = UserType::find()->id(empty($types) ? ':empty:' : $types);
-
-            /** @var UserTypesAssociatedToUserBehavior|User $user */
-            if (!$user->getUserTypeManager($userAssociation->getOrganization())
-                ->setMany($query)
-                ->save()
-            ) {
-                $success = false;
-                $userAssociation->addError('types', 'Unable to save types.');
-            }
-        }
 
         $response = [
             'success' => $success,

@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\managers;
+namespace flipbox\organizations\relationships;
 
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
@@ -16,6 +16,7 @@ use flipbox\organizations\queries\UserTypeAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
 use flipbox\organizations\records\UserTypeAssociation;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * Manages User Types associated to Organization/User associations
@@ -29,13 +30,13 @@ use flipbox\organizations\records\UserTypeAssociation;
  * @method UserTypeAssociation findOne($object = null)
  * @method UserTypeAssociation findOrFail($object)
  */
-class UserTypeRelationshipManager implements RelationshipManagerInterface
+class UserTypeRelationship implements RelationshipInterface
 {
-    use RelationshipManagerTrait {
+    use RelationshipTrait {
         reset as parentReset;
-        setCache as parentSetCache;
-        addToCache as parentAddToCache;
-        removeFromCache as parentRemoveFromCache;
+        newCollection as parentSetCache;
+        addToCollection as parentAddToCache;
+        removeFromCollection as parentRemoveFromCache;
     }
 
     /**
@@ -51,10 +52,33 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
         $this->association = $association;
     }
 
+
+    /************************************************************
+     * COLLECTION
+     ************************************************************/
+
     /**
+     * Get a collection of associated organizations
+     *
+     * @return Collection
+     */
+    public function getCollection(): Collection
+    {
+        return Collection::make(
+            $this->association->typeRecords
+        );
+    }
+
+
+    /************************************************************
+     * QUERY
+     ************************************************************/
+
+    /**
+     * @inheritDoc
      * @return UserTypeAssociationQuery
      */
-    protected function query(): UserTypeAssociationQuery
+    protected function query(array $criteria = []): UserTypeAssociationQuery
     {
         $query = UserTypeAssociation::find()
             ->setUserId($this->association->getId() ?: false)
@@ -86,13 +110,12 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
         return $association;
     }
 
-
     /**
      * Reset associations
      */
-    public function reset(): RelationshipManagerInterface
+    public function reset(): RelationshipInterface
     {
-        unset($this->association->types);
+        unset($this->association->typeRecords);
         return $this->parentReset();
     }
 
@@ -112,7 +135,7 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
 
         $associations = [];
         $order = 1;
-        foreach ($this->findAll() as $newAssociation) {
+        foreach ($this->getRelationships() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
                 $newAssociation->typeId
@@ -145,7 +168,7 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
      * @param array $associations
      * @return static
      */
-    protected function setCache(array $associations): self
+    protected function newCollection(array $associations): self
     {
         $this->parentSetCache($associations);
         $this->syncToRelations();
@@ -157,7 +180,7 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
      * @param $association
      * @return static
      */
-    protected function addToCache($association): self
+    protected function addToCollection($association): self
     {
         $this->parentAddToCache($association);
         $this->syncToRelations();
@@ -169,7 +192,7 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
      * @param int $key
      * @return static
      */
-    protected function removeFromCache(int $key): self
+    protected function removeFromCollection(int $key): self
     {
         $this->parentRemoveFromCache($key);
         $this->syncToRelations();
@@ -187,8 +210,8 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
     protected function syncToRelations()
     {
         $this->association->populateRelation(
-            'types',
-            $this->findAll()->pluck('type')->all()
+            'typeRecords',
+            $this->getRelationships()->pluck('type')->all()
         );
         return $this;
     }
@@ -207,7 +230,7 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
             return null;
         }
 
-        foreach ($this->findAll() as $key => $association) {
+        foreach ($this->getRelationships() as $key => $association) {
             if ($association->getTypeId() == $record->id) {
                 return $key;
             }
@@ -222,6 +245,7 @@ class UserTypeRelationshipManager implements RelationshipManagerInterface
      */
     protected function resolveType($type = null)
     {
+
         if (null === $type) {
             return null;
         }

@@ -6,9 +6,10 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\managers;
+namespace flipbox\organizations\relationships;
 
 use Craft;
+use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
@@ -18,6 +19,7 @@ use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * Manages Users associated to Organizations
@@ -25,15 +27,13 @@ use flipbox\organizations\records\UserAssociation;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 2.0.0
  *
- * @property UserAssociation[] $associations
- *
  * @method UserAssociation findOrCreate($object)
  * @method UserAssociation findOne($object = null)
  * @method UserAssociation findOrFail($object)
  */
-class UserRelationshipManager implements RelationshipManagerInterface
+class UserRelationship implements RelationshipInterface
 {
-    use RelationshipManagerTrait;
+    use RelationshipTrait;
 
     /**
      * @var Organization
@@ -47,6 +47,47 @@ class UserRelationshipManager implements RelationshipManagerInterface
     {
         $this->organization = $organization;
     }
+
+
+    /************************************************************
+     * COLLECTION
+     ************************************************************/
+
+    /**
+     * Get a collection of associated users
+     *
+     * @return User[]|Collection
+     */
+    public function getCollection(): Collection
+    {
+        /** @var UserQuery $query */
+        /** @noinspection PhpUndefinedMethodInspection */
+        $query = User::find()
+            ->organization($this->organization)
+            ->orderBy([
+                'userOrder' => SORT_ASC,
+                'username' => SORT_ASC,
+            ]);
+
+        if (null === $this->collection) {
+            return Collection::make(
+                $query->all()
+            );
+        };
+
+        return Collection::make(
+            $query
+                ->id($this->collection->sortBy('userOrder')->pluck('userId'))
+                ->fixedOrder(true)
+                ->limit(null)
+                ->all()
+        );
+    }
+
+
+    /************************************************************
+     * QUERY
+     ************************************************************/
 
     /**
      * @param array $criteria
@@ -87,11 +128,11 @@ class UserRelationshipManager implements RelationshipManagerInterface
      *
      * @param bool $addToUser
      */
-    public function addOne($object, array $attributes = [], bool $addToUser = false): RelationshipManagerInterface
+    public function addOne($object, array $attributes = [], bool $addToUser = false): RelationshipInterface
     {
         if (null === ($association = $this->findOne($object))) {
             $association = $this->create($object);
-            $this->addToCache($association);
+            $this->addToCollection($association);
         }
 
         if (!empty($attributes)) {
@@ -104,7 +145,7 @@ class UserRelationshipManager implements RelationshipManagerInterface
         // Add user to user as well?
         if ($addToUser && null !== ($use = $association->getUser())) {
             /** @var OrganizationsAssociatedToUserBehavior $use */
-            $use->getOrganizationManager()->addOne($this->organization, [], false);
+            $use->getOrganizations()->add($this->organization);
         }
 
         return $this;
@@ -127,16 +168,16 @@ class UserRelationshipManager implements RelationshipManagerInterface
         $associations = [];
         $order = 1;
         /** @var UserAssociation $newAssociation */
-        foreach ($this->findAll() as $newAssociation) {
+        foreach ($this->getRelationships()->sortBy('userOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
                 $newAssociation->getUserId()
             ))) {
                 $association = $newAssociation;
-            } elseif ($newAssociation->getTypeManager()->isMutated()) {
+            } elseif ($newAssociation->getTypes()->isMutated()) {
                 /** @var UserAssociation $association */
-                $association->getTypeManager()->setMany(
-                    $newAssociation->getTypeManager()->findAll()
+                $association->getTypes()->clear()->add(
+                    $newAssociation->getTypes()->getCollection()
                 );
             }
 

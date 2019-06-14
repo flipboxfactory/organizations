@@ -28,6 +28,6 @@ class AssociateUserToOrganization extends AbstractUserAssociation
         $query->setCachedResult([$organization]);
 
         /** @var OrganizationsAssociatedToUserBehavior $user */
-        return $user->getOrganizationManager()->associateMany($query);
+        return $user->getOrganizations()->add($query)->save();
     }
 }

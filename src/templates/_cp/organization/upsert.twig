@@ -122,7 +122,7 @@
         {% set activeTypeValue = '' %}
         {% set activeTypeName = "Default"|t('organizations') %}
         {% set activeType = organization.activeType %}
-        {% set types = organization.types %}
+        {% set types = organization.types.collection %}
         {% if activeType %}
             {% set activeTypeValue = organization.activeType.id %}
             {% set activeTypeName = organization.activeType.name %}

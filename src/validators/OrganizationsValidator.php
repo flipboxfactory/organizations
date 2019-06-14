@@ -44,11 +44,11 @@ class OrganizationsValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        if (!$model->getOrganizationManager()->isMutated()) {
+        if (!$model->getOrganizations()->isMutated()) {
             return;
         }
 
-        $result = $this->validateOrganizations($model->getOrganizations());
+        $result = $this->validateOrganizations($model->getOrganizations()->getCollection());
         if (!empty($result)) {
             $this->addError($model, $attribute, $result[0], $result[1]);
         }

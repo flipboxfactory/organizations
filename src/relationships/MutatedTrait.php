@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\managers;
+namespace flipbox\organizations\relationships;
 
 use DateTime;
 

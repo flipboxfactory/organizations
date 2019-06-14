@@ -14,8 +14,9 @@ use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\managers\RelationshipManagerInterface;
-use flipbox\organizations\managers\UserRelationshipManager;
+use flipbox\organizations\relationships\OrganizationTypeRelationship;
+use flipbox\organizations\relationships\RelationshipInterface;
+use flipbox\organizations\relationships\UserRelationship;
 use flipbox\organizations\records\UserAssociation;
 use Tightenco\Collect\Support\Collection;
 
@@ -28,21 +29,9 @@ use Tightenco\Collect\Support\Collection;
 trait UsersAttributeTrait
 {
     /**
-     * @var RelationshipManagerInterface
+     * @var RelationshipInterface
      */
     private $userManager;
-
-    /**
-     * @return RelationshipManagerInterface
-     */
-    public function getUserManager(): RelationshipManagerInterface
-    {
-        if (null === $this->userManager) {
-            $this->userManager = new UserRelationshipManager($this);
-        }
-
-        return $this->userManager;
-    }
 
     /**
      * @param array $sourceElements
@@ -65,6 +54,7 @@ trait UsersAttributeTrait
         ];
     }
 
+
     /************************************************************
      * REQUEST
      ************************************************************/
@@ -78,7 +68,7 @@ trait UsersAttributeTrait
     public function setUsersFromRequest(string $identifier = 'users')
     {
         if (null !== ($users = Craft::$app->getRequest()->getBodyParam($identifier))) {
-            $this->getUserManager()->setMany((array)$users);
+            $this->getUsers()->clear()->add($users);
         }
 
         return $this;
@@ -86,51 +76,21 @@ trait UsersAttributeTrait
 
 
     /************************************************************
-     * USERS QUERY
+     * USERS
      ************************************************************/
-
-    /**
-     * @param array $criteria
-     * @return UserQuery
-     */
-    public function userQuery($criteria = []): UserQuery
-    {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $query = User::find()
-            ->organization($this)
-            ->orderBy([
-                'userOrder' => SORT_ASC,
-                'username' => SORT_ASC,
-            ]);
-
-        if (!empty($criteria)) {
-            QueryHelper::configure(
-                $query,
-                $criteria
-            );
-        }
-
-        return $query;
-    }
 
     /**
      * Get an array of users associated to an organization
      *
-     * @param array $criteria
-     * @return User[]|Collection
+     * @return UserRelationship|RelationshipInterface
      */
-    public function getUsers(array $criteria = []): Collection
+    public function getUsers(): RelationshipInterface
     {
-        return Collection::make(QueryHelper::configure(
-            $this->userQuery($criteria)
-                ->id(
-                    $this->getUserManager()->findAll()
-                        ->pluck('userId')
-                )
-                ->fixedOrder(true)
-                ->limit(null),
-            $criteria
-        )->all());
+        if (null === $this->userManager) {
+            $this->userManager = new UserRelationship($this);
+        }
+
+        return $this->userManager;
     }
 
     /**
@@ -141,7 +101,7 @@ trait UsersAttributeTrait
      */
     public function setUsers($users)
     {
-        $this->getUserManager()->setMany($users);
+        $this->getUsers()->clear()->add($users);
         return $this;
     }
 }

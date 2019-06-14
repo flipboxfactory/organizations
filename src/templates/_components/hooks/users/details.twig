@@ -5,7 +5,7 @@
 {% endif %}
 
 {% macro listOrganizations(user) %}
-    {% set organizations = user.organizationQuery({status: null}).all() %}
+    {% set organizations = user.organizations.collection %}
     {% do view.registerAssetBundle("flipbox\\organizations\\web\\assets\\userassociations\\UserAssociations") %}
     {% js %}
         new Craft.OrganizationManageAssociations({

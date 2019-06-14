@@ -6,7 +6,7 @@
  * @link       https://www.flipboxfactory.com/software/organization/
  */
 
-namespace flipbox\organizations\managers;
+namespace flipbox\organizations\relationships;
 
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
@@ -16,6 +16,7 @@ use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\OrganizationTypeAssociationQuery;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationTypeAssociation;
+use Tightenco\Collect\Support\Collection;
 
 /**
  * Manages Organization Types associated to Organizations
@@ -23,15 +24,13 @@ use flipbox\organizations\records\OrganizationTypeAssociation;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 2.0.0
  *
- * @property OrganizationTypeAssociation[] $associations
- *
  * @method OrganizationTypeAssociation findOrCreate($object)
  * @method OrganizationTypeAssociation findOne($object = null)
  * @method OrganizationTypeAssociation findOrFail($object)
  */
-class OrganizationTypeRelationshipManager implements RelationshipManagerInterface
+class OrganizationTypeRelationship implements RelationshipInterface
 {
-    use RelationshipManagerTrait;
+    use RelationshipTrait;
 
     /**
      * @var Organization
@@ -45,6 +44,44 @@ class OrganizationTypeRelationshipManager implements RelationshipManagerInterfac
     {
         $this->organization = $organization;
     }
+
+
+    /************************************************************
+     * COLLECTION
+     ************************************************************/
+
+    /**
+     * Get an array of types associated to an organization
+     *
+     * @return OrganizationType[]|Collection
+     */
+    public function getCollection(): Collection
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        $query = OrganizationType::find()
+            ->organization($this->organization)
+            ->orderBy([
+                'sortOrder' => SORT_ASC
+            ]);
+
+        if (null === $this->collection) {
+            return Collection::make(
+                $query->all()
+            );
+        };
+
+        return Collection::make(
+            $query
+                ->id($this->collection->sortBy('sortOrder')->pluck('typeId'))
+                ->limit(null)
+                ->all()
+        );
+    }
+
+
+    /************************************************************
+     * QUERY
+     ************************************************************/
 
     /**
      * @param array $criteria
@@ -96,7 +133,8 @@ class OrganizationTypeRelationshipManager implements RelationshipManagerInterfac
 
         $associations = [];
         $order = 1;
-        foreach ($this->findAll() as $newAssociation) {
+        /** @var OrganizationTypeAssociation $newAssociation */
+        foreach ($this->getRelationships()->sortBy('sortOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
                 $newAssociation->getTypeId()

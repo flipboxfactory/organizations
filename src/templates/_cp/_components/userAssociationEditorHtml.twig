@@ -1,6 +1,6 @@
 {% import "_includes/forms" as forms %}
 
-{% set selectedTypes = association.getTypes().select(['id']).column() %}
+{% set selectedTypes = association.types.collection.pluck('id') %}
 {% set types = craft.organizations.userTypes.all() %}
 
     <div style="padding-left: 24px; padding-right: 24px; padding-top:24px;">
