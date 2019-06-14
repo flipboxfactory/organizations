@@ -30,7 +30,7 @@ trait RelationshipTrait
     /**
      * @var Collection|null
      */
-    protected $collection;
+    protected $relations;
 
     /**
      * @param null $object
@@ -88,16 +88,6 @@ trait RelationshipTrait
     }
 
     /**
-     * @return Collection
-     *
-     * @deprecated use `getCollection()`
-     */
-    public function findAll(): Collection
-    {
-        return $this->getRelationships();
-    }
-
-    /**
      * @param ActiveRecord|ElementInterface|int|string|null $object
      * @return ActiveRecord|null
      */
@@ -107,7 +97,7 @@ trait RelationshipTrait
             return null;
         }
 
-        return $this->collection->get($key);
+        return $this->relations->get($key);
     }
 
     /**
@@ -129,63 +119,19 @@ trait RelationshipTrait
      */
     public function getRelationships(): Collection
     {
-        if (null === $this->collection) {
-            $this->collection = new Collection(
+        if (null === $this->relations) {
+            $this->relations = new Collection(
                 $this->query()->all()
             );
         }
 
-        return $this->collection;
+        return $this->relations;
     }
 
 
     /************************************************************
-     * SET
+     * ADD / REMOVE
      ************************************************************/
-
-    /**
-     * @param QueryInterface|ElementInterface[] $objects
-     * @param array $attributes
-     * @return RelationshipInterface
-     *
-     * @deprecated use `reset()->add($objects, $attributes)`
-     */
-    public function setMany($objects, array $attributes = []): RelationshipInterface
-    {
-        return $this->clear()
-            ->add($objects, $attributes);
-    }
-
-
-    /************************************************************
-     * ADD
-     ************************************************************/
-
-    /**
-     * @param QueryInterface|ElementInterface[] $objects
-     * @param array $attributes
-     * @return RelationshipInterface
-     *
-     * @deprecated use `add($objects, $attributes)`
-     */
-    public function addMany($objects, array $attributes = []): RelationshipInterface
-    {
-        return $this->add($objects, $attributes);
-    }
-
-    /**
-     * Associate a user to an organization
-     *
-     * @param ActiveRecord|ElementInterface|int|array $object
-     * @param array $attributes
-     * @return RelationshipInterface
-     *
-     * @deprecated use `add($objects, $attributes)`
-     */
-    public function addOne($object, array $attributes = []): RelationshipInterface
-    {
-        return $this->add($object, $attributes);
-    }
 
     /**
      * Add one or many object relations (but do not save)
@@ -199,7 +145,7 @@ trait RelationshipTrait
         foreach ($this->objectArray($objects) as $object) {
             if (null === ($association = $this->findOne($object))) {
                 $association = $this->create($object);
-                $this->addToCollection($association);
+                $this->addToRelations($association);
             }
 
             if (!empty($attributes)) {
@@ -215,37 +161,6 @@ trait RelationshipTrait
         return $this;
     }
 
-
-    /************************************************************
-     * REMOVE
-     ************************************************************/
-
-    /**
-     * Dissociate an array of user associations from an organization
-     *
-     * @param QueryInterface|ElementInterface[] $objects
-     * @return RelationshipInterface
-     *
-     * @deprecated use `remove($objects)`
-     */
-    public function removeMany($objects): RelationshipInterface
-    {
-        return $this->remove($objects);
-    }
-
-    /**
-     * Dissociate a user from an organization
-     *
-     * @param ActiveRecord|ElementInterface|int|array
-     * @return RelationshipInterface
-     *
-     * @deprecated use `remove($objects)`
-     */
-    public function removeOne($object): RelationshipInterface
-    {
-        return $this->remove($object);
-    }
-
     /**
      * @param $objects
      * @return RelationshipInterface
@@ -254,7 +169,7 @@ trait RelationshipTrait
     {
         foreach ($this->objectArray($objects) as $object) {
             if (null !== ($key = $this->findKey($object))) {
-                $this->removeFromCollection($key);
+                $this->removeFromRelations($key);
             }
         }
 
@@ -272,7 +187,7 @@ trait RelationshipTrait
      */
     public function reset(): RelationshipInterface
     {
-        $this->collection = null;
+        $this->relations = null;
         $this->mutated = false;
         return $this;
     }
@@ -283,7 +198,7 @@ trait RelationshipTrait
      */
     public function clear(): RelationshipInterface
     {
-        $this->newCollection([]);
+        $this->newRelations([]);
         return $this;
     }
 
@@ -319,7 +234,7 @@ trait RelationshipTrait
             }
         }
 
-        $this->newCollection($newAssociations);
+        $this->newRelations($newAssociations);
         $this->mutated = false;
 
         if (!$success) {
@@ -327,67 +242,6 @@ trait RelationshipTrait
         }
 
         return $success;
-    }
-
-
-    /*******************************************
-     * ASSOCIATE
-     *******************************************/
-
-    /**
-     * @param $object
-     * @param array $attributes
-     * @return bool
-     *
-     * @deprecated use `add($object, $attributes)->save()`
-     */
-    public function associateOne($object, array $attributes = []): bool
-    {
-        return $this->add($object, $attributes)
-            ->save();
-    }
-
-    /**
-     * @param QueryInterface|ElementInterface[] $objects
-     * @return bool
-     *
-     * @deprecated use `add($object, $attributes)->save()`
-     */
-    public function associateMany($objects): bool
-    {
-        return $this->add($objects)
-            ->save();
-    }
-
-
-    /*******************************************
-     * DISSOCIATE
-     *******************************************/
-
-    /**
-     * @noinspection PhpDocMissingThrowsInspection
-     *
-     * @param ActiveRecord|ElementInterface|int|array $object
-     * @return bool
-     *
-     * @deprecated use `remove($object)->save()`
-     */
-    public function dissociateOne($object): bool
-    {
-        return $this->remove($object)
-            ->save();
-    }
-
-    /**
-     * @param QueryInterface|ElementInterface[] $objects
-     * @return bool
-     *
-     * @deprecated use `remove($objects)->save()`
-     */
-    public function dissociateMany($objects): bool
-    {
-        return $this->remove($objects)
-            ->save();
     }
 
 
@@ -400,9 +254,9 @@ trait RelationshipTrait
      * @param bool $mutated
      * @return static
      */
-    protected function newCollection(array $associations, bool $mutated = true): self
+    protected function newRelations(array $associations, bool $mutated = true): self
     {
-        $this->collection = Collection::make($associations);
+        $this->relations = Collection::make($associations);
         $this->mutated = $mutated;
 
         return $this;
@@ -412,13 +266,13 @@ trait RelationshipTrait
      * @param $association
      * @return RelationshipTrait
      */
-    protected function addToCollection($association): self
+    protected function addToRelations($association): self
     {
-        if (null === $this->collection) {
-            return $this->newCollection([$association], true);
+        if (null === $this->relations) {
+            return $this->newRelations([$association], true);
         }
 
-        $this->collection->push($association);
+        $this->relations->push($association);
         $this->mutated = true;
 
         return $this;
@@ -428,9 +282,9 @@ trait RelationshipTrait
      * @param int $key
      * @return RelationshipTrait
      */
-    protected function removeFromCollection(int $key): self
+    protected function removeFromRelations(int $key): self
     {
-        $this->collection->forget($key);
+        $this->relations->forget($key);
         $this->mutated = true;
 
         return $this;

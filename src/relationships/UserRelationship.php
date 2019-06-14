@@ -8,13 +8,11 @@
 
 namespace flipbox\organizations\relationships;
 
-use Craft;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
 use flipbox\craft\ember\helpers\QueryHelper;
-use flipbox\organizations\behaviors\OrganizationsAssociatedToUserBehavior;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
@@ -69,7 +67,7 @@ class UserRelationship implements RelationshipInterface
                 'username' => SORT_ASC,
             ]);
 
-        if (null === $this->collection) {
+        if (null === $this->relations) {
             return Collection::make(
                 $query->all()
             );
@@ -77,7 +75,7 @@ class UserRelationship implements RelationshipInterface
 
         return Collection::make(
             $query
-                ->id($this->collection->sortBy('userOrder')->pluck('userId'))
+                ->id($this->relations->sortBy('userOrder')->pluck('userId'))
                 ->fixedOrder(true)
                 ->limit(null)
                 ->all()
@@ -123,34 +121,6 @@ class UserRelationship implements RelationshipInterface
             ->setUser($this->resolveUser($object));
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @param bool $addToUser
-     */
-    public function addOne($object, array $attributes = [], bool $addToUser = false): RelationshipInterface
-    {
-        if (null === ($association = $this->findOne($object))) {
-            $association = $this->create($object);
-            $this->addToCollection($association);
-        }
-
-        if (!empty($attributes)) {
-            Craft::configure(
-                $association,
-                $attributes
-            );
-        }
-
-        // Add user to user as well?
-        if ($addToUser && null !== ($use = $association->getUser())) {
-            /** @var OrganizationsAssociatedToUserBehavior $use */
-            $use->getOrganizations()->add($this->organization);
-        }
-
-        return $this;
-    }
-
 
     /*******************************************
      * SAVE
@@ -170,9 +140,9 @@ class UserRelationship implements RelationshipInterface
         /** @var UserAssociation $newAssociation */
         foreach ($this->getRelationships()->sortBy('userOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
-                $existingAssociations,
-                $newAssociation->getUserId()
-            ))) {
+                    $existingAssociations,
+                    $newAssociation->getUserId()
+                ))) {
                 $association = $newAssociation;
             } elseif ($newAssociation->getTypes()->isMutated()) {
                 /** @var UserAssociation $association */
@@ -218,7 +188,8 @@ class UserRelationship implements RelationshipInterface
             return null;
         }
 
-        foreach ($this->findAll() as $key => $association) {
+        /** @var UserAssociation $association */
+        foreach ($this->getRelationships()->all() as $key => $association) {
             if (null !== $association->getUser() && $association->getUser()->email == $element->email) {
                 return $key;
             }

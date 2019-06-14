@@ -34,9 +34,9 @@ class UserTypeRelationship implements RelationshipInterface
 {
     use RelationshipTrait {
         reset as parentReset;
-        newCollection as parentSetCache;
-        addToCollection as parentAddToCache;
-        removeFromCollection as parentRemoveFromCache;
+        newRelations as parentSetCache;
+        addToRelations as parentAddToCache;
+        removeFromRelations as parentRemoveFromCache;
     }
 
     /**
@@ -137,9 +137,9 @@ class UserTypeRelationship implements RelationshipInterface
         $order = 1;
         foreach ($this->getRelationships() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
-                $existingAssociations,
-                $newAssociation->typeId
-            ))) {
+                    $existingAssociations,
+                    $newAssociation->typeId
+                ))) {
                 $association = $newAssociation;
             }
 
@@ -168,7 +168,7 @@ class UserTypeRelationship implements RelationshipInterface
      * @param array $associations
      * @return static
      */
-    protected function newCollection(array $associations): self
+    protected function newRelations(array $associations): self
     {
         $this->parentSetCache($associations);
         $this->syncToRelations();
@@ -180,7 +180,7 @@ class UserTypeRelationship implements RelationshipInterface
      * @param $association
      * @return static
      */
-    protected function addToCollection($association): self
+    protected function addToRelations($association): self
     {
         $this->parentAddToCache($association);
         $this->syncToRelations();
@@ -192,7 +192,7 @@ class UserTypeRelationship implements RelationshipInterface
      * @param int $key
      * @return static
      */
-    protected function removeFromCollection(int $key): self
+    protected function removeFromRelations(int $key): self
     {
         $this->parentRemoveFromCache($key);
         $this->syncToRelations();

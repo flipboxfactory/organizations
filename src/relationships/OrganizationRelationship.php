@@ -8,7 +8,6 @@
 
 namespace flipbox\organizations\relationships;
 
-use Craft;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use craft\helpers\Json;
@@ -64,7 +63,7 @@ class OrganizationRelationship implements RelationshipInterface
                 'organizationOrder' => SORT_ASC
             ]);
 
-        if (null === $this->collection) {
+        if (null === $this->relations) {
             return Collection::make(
                 $query->all()
             );
@@ -72,7 +71,7 @@ class OrganizationRelationship implements RelationshipInterface
 
         return Collection::make(
             $query
-                ->id($this->collection->sortBy('organizationOrder')->pluck('organizationId'))
+                ->id($this->relations->sortBy('organizationOrder')->pluck('organizationId'))
                 ->fixedOrder(true)
                 ->limit(null)
                 ->all()
@@ -118,35 +117,6 @@ class OrganizationRelationship implements RelationshipInterface
             ->setUser($this->user);
     }
 
-    /**
-     * @inheritDoc
-     *
-     * @param bool $addToOrganization
-     */
-    public function addOne(
-        $object,
-        array $attributes = [],
-        bool $addToOrganization = false
-    ): RelationshipInterface {
-        if (null === ($association = $this->findOne($object))) {
-            $association = $this->create($object);
-            $this->addToCollection($association);
-        }
-
-        if (!empty($attributes)) {
-            Craft::configure(
-                $association,
-                $attributes
-            );
-        }
-
-        // Add user to organization as well?
-        if ($addToOrganization && $association->getOrganization()->getId() !== null) {
-            $association->getOrganization()->getUsers()->add($this->user);
-        }
-
-        return $this;
-    }
 
     /*******************************************
      * SAVE
@@ -167,9 +137,9 @@ class OrganizationRelationship implements RelationshipInterface
         /** @var UserAssociation $newAssociation */
         foreach ($this->getRelationships()->sortBy('organizationOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
-                $existingAssociations,
-                $newAssociation->getOrganizationId()
-            ))) {
+                    $existingAssociations,
+                    $newAssociation->getOrganizationId()
+                ))) {
                 $association = $newAssociation;
             } elseif ($newAssociation->getTypes()->isMutated()) {
                 /** @var UserAssociation $association */
@@ -215,7 +185,8 @@ class OrganizationRelationship implements RelationshipInterface
             return null;
         }
 
-        foreach ($this->findAll() as $key => $association) {
+        /** @var UserAssociation $association */
+        foreach ($this->getRelationships()->all() as $key => $association) {
             if ($association->getOrganizationId() == $element->getId()) {
                 return $key;
             }

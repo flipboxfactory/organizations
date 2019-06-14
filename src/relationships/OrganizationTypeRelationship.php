@@ -64,7 +64,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
                 'sortOrder' => SORT_ASC
             ]);
 
-        if (null === $this->collection) {
+        if (null === $this->relations) {
             return Collection::make(
                 $query->all()
             );
@@ -72,7 +72,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
 
         return Collection::make(
             $query
-                ->id($this->collection->sortBy('sortOrder')->pluck('typeId'))
+                ->id($this->relations->sortBy('sortOrder')->pluck('typeId'))
                 ->limit(null)
                 ->all()
         );
@@ -136,9 +136,9 @@ class OrganizationTypeRelationship implements RelationshipInterface
         /** @var OrganizationTypeAssociation $newAssociation */
         foreach ($this->getRelationships()->sortBy('sortOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
-                $existingAssociations,
-                $newAssociation->getTypeId()
-            ))) {
+                    $existingAssociations,
+                    $newAssociation->getTypeId()
+                ))) {
                 $association = $newAssociation;
             }
 
@@ -177,7 +177,8 @@ class OrganizationTypeRelationship implements RelationshipInterface
             return null;
         }
 
-        foreach ($this->findAll() as $key => $association) {
+        /** @var OrganizationTypeAssociation $association */
+        foreach ($this->getRelationships()->all() as $key => $association) {
             if ($association->getTypeId() == $record->id) {
                 return $key;
             }
