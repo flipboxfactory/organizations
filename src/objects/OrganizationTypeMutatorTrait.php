@@ -45,6 +45,11 @@ trait OrganizationTypeMutatorTrait
     public function setTypeId(int $id = null)
     {
         $this->internalSetTypeId($id);
+
+        if (null !== $this->internalGetType() && $id !== $this->internalGetType()->id) {
+            $this->internalSetType(null);
+        }
+
         return $this;
     }
 

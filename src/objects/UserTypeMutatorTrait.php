@@ -43,7 +43,11 @@ trait UserTypeMutatorTrait
     public function setTypeId(int $id = null)
     {
         $this->internalSetTypeId($id);
-        $this->internalSetType(null);
+
+        if (null !== $this->internalGetType() && $id !== $this->internalGetType()->id) {
+            $this->internalSetType(null);
+        }
+
         return $this;
     }
 

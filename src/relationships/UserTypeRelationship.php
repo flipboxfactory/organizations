@@ -98,8 +98,7 @@ class UserTypeRelationship implements RelationshipInterface
             ->orderBy([
                 'sortOrder' => SORT_ASC
             ])
-            ->limit(null)
-            ->indexBy('typeId');
+            ->limit(null);
     }
 
     /**

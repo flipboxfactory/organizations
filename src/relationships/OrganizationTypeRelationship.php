@@ -89,8 +89,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
             ->orderBy([
                 'sortOrder' => SORT_ASC
             ])
-            ->limit(null)
-            ->indexBy('typeId');
+            ->limit(null);
 
     }
 
@@ -115,7 +114,9 @@ class OrganizationTypeRelationship implements RelationshipInterface
      */
     protected function delta(): array
     {
-        $existingAssociations = $this->query()->all();
+        $existingAssociations = $this->query()
+            ->indexBy('typeId')
+            ->all();
 
         $associations = [];
         $order = 1;

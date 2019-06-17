@@ -105,8 +105,7 @@ class UserRelationship implements RelationshipInterface
             ->orderBy([
                 'userOrder' => SORT_ASC
             ])
-            ->limit(null)
-            ->indexBy('userId');
+            ->limit(null);
     }
 
     /**
