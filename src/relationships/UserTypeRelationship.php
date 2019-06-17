@@ -13,6 +13,8 @@ use craft\helpers\Json;
 use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserTypeAssociationQuery;
+use flipbox\organizations\records\OrganizationType;
+use flipbox\organizations\records\OrganizationTypeAssociation;
 use flipbox\organizations\records\UserAssociation;
 use flipbox\organizations\records\UserType;
 use flipbox\organizations\records\UserTypeAssociation;
@@ -64,11 +66,22 @@ class UserTypeRelationship implements RelationshipInterface
      */
     public function getCollection(): Collection
     {
-        return Collection::make(
-            $this->association->typeRecords
-        );
+        return $this->getRelationships()
+            ->sortBy('sortOrder')
+            ->pluck('type');
     }
 
+    /**
+     * @return Collection
+     */
+    protected function existingRelationships(): Collection
+    {
+        return new Collection(
+            $this->query()
+                ->with('typeRecord')
+                ->all()
+        );
+    }
 
     /************************************************************
      * QUERY
@@ -78,22 +91,15 @@ class UserTypeRelationship implements RelationshipInterface
      * @inheritDoc
      * @return UserTypeAssociationQuery
      */
-    protected function query(array $criteria = []): UserTypeAssociationQuery
+    protected function query(): UserTypeAssociationQuery
     {
-        $query = UserTypeAssociation::find()
+        return UserTypeAssociation::find()
             ->setUserId($this->association->getId() ?: false)
             ->orderBy([
                 'sortOrder' => SORT_ASC
-            ]);
-
-        if (!empty($criteria)) {
-            QueryHelper::configure(
-                $query,
-                $criteria
-            );
-        }
-
-        return $query;
+            ])
+            ->limit(null)
+            ->indexBy('typeId');
     }
 
     /**
@@ -102,8 +108,9 @@ class UserTypeRelationship implements RelationshipInterface
      */
     protected function create($type): UserTypeAssociation
     {
+        /** @var UserTypeAssociation $association */
         $association = (new UserTypeAssociation())
-            ->setType($this->resolveType($type));
+            ->setType($this->resolve($type));
 
         $association->userId = $this->association->id;
 
@@ -127,7 +134,7 @@ class UserTypeRelationship implements RelationshipInterface
     /**
      * @inheritDoc
      */
-    protected function associationDelta(): array
+    protected function delta(): array
     {
         $existingAssociations = $this->query()
             ->indexBy('typeId')
@@ -149,14 +156,6 @@ class UserTypeRelationship implements RelationshipInterface
         }
 
         return [$associations, $existingAssociations];
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function handleAssociationError()
-    {
-        $this->association->addError('types', 'Unable to save organization types.');
     }
 
 
@@ -222,7 +221,7 @@ class UserTypeRelationship implements RelationshipInterface
      */
     protected function findKey($type = null)
     {
-        if (null === ($record = $this->resolveType($type))) {
+        if (null === ($record = $this->resolve($type))) {
             Organizations::info(sprintf(
                 "Unable to resolve user association type: %s",
                 (string)Json::encode($type)
@@ -243,25 +242,14 @@ class UserTypeRelationship implements RelationshipInterface
      * @param UserTypeAssociation|UserType|int|array|null $type
      * @return UserType|null
      */
-    protected function resolveType($type = null)
+    protected function resolveObject($type)
     {
-
-        if (null === $type) {
-            return null;
-        }
-
         if ($type instanceof UserTypeAssociation) {
             return $type->getType();
         }
 
         if ($type instanceof UserType) {
             return $type;
-        }
-
-        if (is_array($type) &&
-            null !== ($id = ArrayHelper::getValue($type, 'id'))
-        ) {
-            $type = ['id' => $id];
         }
 
         return UserType::findOne($type);

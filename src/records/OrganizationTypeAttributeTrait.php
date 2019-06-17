@@ -9,79 +9,98 @@
 namespace flipbox\organizations\records;
 
 use flipbox\craft\ember\records\ActiveRecordTrait;
-use flipbox\organizations\models\OrganizationTypeRulesTrait;
 use flipbox\organizations\objects\OrganizationTypeMutatorTrait;
-use flipbox\organizations\records\OrganizationType as TypeRecord;
+use flipbox\organizations\records\UserType as TypeRecord;
+use yii\base\Model;
 use yii\db\ActiveQueryInterface;
+use yii\db\ActiveRecordInterface;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
- * @method TypeRecord parentResolveType()
+ * @property OrganizationType|null $typeRecord
  */
 trait OrganizationTypeAttributeTrait
 {
     use ActiveRecordTrait,
-        OrganizationTypeRulesTrait,
-        OrganizationTypeMutatorTrait {
-        resolveType as parentResolveType;
+        OrganizationTypeMutatorTrait;
+
+    /**
+     * Populates the named relation with the related records.
+     * Note that this method does not check if the relation exists or not.
+     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
+     * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
+     * @see getRelation()
+     */
+    abstract public function populateRelation($name, $records);
+
+    /**
+     * @return OrganizationType|null
+     */
+    protected function internalGetType()
+    {
+        return $this->typeRecord;
     }
 
     /**
-     * Get associated typeId
-     *
+     * @param int|null $id
+     */
+    protected function internalSetTypeId(int $id = null)
+    {
+        $this->setAttribute('typeId', $id);
+    }
+
+    /**
      * @return int|null
      */
-    public function getTypeId()
+    protected function internalGetTypeId()
     {
-        $id = $this->getAttribute('typeId');
-        if (null === $id && null !== $this->type) {
-            $id = $this->type->id;
-            $this->setAttribute('typeId', $id);
-        }
-
-        return $id !== false ? $id : null;
+        return $this->getAttribute('typeId');
     }
 
     /**
-     * @return TypeRecord|null
+     * @param OrganizationType|null $type
      */
-    protected function resolveType()
+    protected function internalSetType(OrganizationType $type = null)
     {
-        if ($type = $this->resolveTypeFromRelation()) {
-            return $type;
-        }
-
-        return $this->parentResolveType();
+        $this->populateRelation('typeRecord', $type);
     }
-
+    
     /**
-     * @return TypeRecord|null
+     * @return array
      */
-    private function resolveTypeFromRelation()
+    protected function typeRules(): array
     {
-        if (false === $this->isRelationPopulated('typeRecord')) {
-            return null;
-        }
-
-        if (null === ($record = $this->getRelation('typeRecord'))) {
-            return null;
-        }
-
-        return $record instanceof TypeRecord ? $record : null;
+        return [
+            [
+                [
+                    'typeId'
+                ],
+                'number',
+                'integerOnly' => true
+            ],
+            [
+                [
+                    'typeId',
+                    'type'
+                ],
+                'safe',
+                'on' => [
+                    Model::SCENARIO_DEFAULT
+                ]
+            ]
+        ];
     }
 
     /**
-     * Get the associated Type
-     *
      * @return ActiveQueryInterface
      */
     protected function getTypeRecord()
     {
         return $this->hasOne(
-            TypeRecord::class,
-            ['typeId' => 'id']
+            OrganizationType::class,
+            ['id' => 'typeId']
         );
     }
 }

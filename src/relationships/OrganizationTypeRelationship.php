@@ -57,23 +57,19 @@ class OrganizationTypeRelationship implements RelationshipInterface
      */
     public function getCollection(): Collection
     {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $query = OrganizationType::find()
-            ->organization($this->organization)
-            ->orderBy([
-                'sortOrder' => SORT_ASC
-            ]);
+        return $this->getRelationships()
+            ->sortBy('sortOrder')
+            ->pluck('type');
+    }
 
-        if (null === $this->relations) {
-            return Collection::make(
-                $query->all()
-            );
-        };
-
-        return Collection::make(
-            $query
-                ->id($this->relations->sortBy('sortOrder')->pluck('typeId'))
-                ->limit(null)
+    /**
+     * @return Collection
+     */
+    protected function existingRelationships(): Collection
+    {
+        return new Collection(
+            $this->query()
+                ->with('typeRecord')
                 ->all()
         );
     }
@@ -84,26 +80,18 @@ class OrganizationTypeRelationship implements RelationshipInterface
      ************************************************************/
 
     /**
-     * @param array $criteria
      * @return OrganizationTypeAssociationQuery
      */
-    protected function query(array $criteria = []): OrganizationTypeAssociationQuery
+    protected function query(): OrganizationTypeAssociationQuery
     {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $query = OrganizationTypeAssociation::find()
+        return OrganizationTypeAssociation::find()
             ->setOrganizationId($this->organization->getId() ?: false)
             ->orderBy([
                 'sortOrder' => SORT_ASC
-            ]);
+            ])
+            ->limit(null)
+            ->indexBy('typeId');
 
-        if (!empty($criteria)) {
-            QueryHelper::configure(
-                $query,
-                $criteria
-            );
-        }
-
-        return $query;
     }
 
     /**
@@ -114,7 +102,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
     {
         return (new OrganizationTypeAssociation())
             ->setOrganization($this->organization)
-            ->setType($this->resolveType($type));
+            ->setType($this->resolve($type));
     }
 
 
@@ -125,11 +113,9 @@ class OrganizationTypeRelationship implements RelationshipInterface
     /**
      * @inheritDoc
      */
-    protected function associationDelta(): array
+    protected function delta(): array
     {
-        $existingAssociations = $this->query()
-            ->indexBy('typeId')
-            ->all();
+        $existingAssociations = $this->query()->all();
 
         $associations = [];
         $order = 1;
@@ -169,7 +155,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
      */
     protected function findKey($type = null)
     {
-        if (null === ($record = $this->resolveType($type))) {
+        if (null === ($record = $this->resolve($type))) {
             Organizations::info(sprintf(
                 "Unable to resolve organization type: %s",
                 (string)Json::encode($type)
@@ -188,27 +174,17 @@ class OrganizationTypeRelationship implements RelationshipInterface
     }
 
     /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|array|null $type
+     * @param OrganizationTypeAssociation|OrganizationType|int|array $type
      * @return OrganizationType|null
      */
-    protected function resolveType($type = null)
+    protected function resolveObject($type)
     {
-        if (null === $type) {
-            return null;
-        }
-
         if ($type instanceof OrganizationTypeAssociation) {
             return $type->getType();
         }
 
         if ($type instanceof OrganizationType) {
             return $type;
-        }
-
-        if (is_array($type) &&
-            null !== ($id = ArrayHelper::getValue($type, 'id'))
-        ) {
-            $type = ['id' => $id];
         }
 
         return OrganizationType::findOne($type);

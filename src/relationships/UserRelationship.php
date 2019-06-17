@@ -58,56 +58,55 @@ class UserRelationship implements RelationshipInterface
      */
     public function getCollection(): Collection
     {
-        /** @var UserQuery $query */
-        /** @noinspection PhpUndefinedMethodInspection */
-        $query = User::find()
-            ->organization($this->organization)
-            ->orderBy([
-                'userOrder' => SORT_ASC,
-                'username' => SORT_ASC,
-            ]);
-
-        if (null === $this->relations) {
-            return Collection::make(
-                $query->all()
-            );
-        };
-
-        return Collection::make(
-            $query
-                ->id($this->relations->sortBy('userOrder')->pluck('userId'))
-                ->fixedOrder(true)
-                ->limit(null)
-                ->all()
-        );
+        return $this->getRelationships()
+            ->sortBy('userOrder')
+            ->pluck('user');
     }
 
+    /**
+     * @return Collection
+     */
+    protected function existingRelationships(): Collection
+    {
+        $relationships = $this->query()
+            ->with('types')
+            ->all();
+
+        // 'eager' load where we'll pre-populate all of the associations
+        $elements = User::find()
+            ->id(array_keys($relationships))
+            ->anyStatus()
+            ->limit(null)
+            ->indexBy('id')
+            ->all();
+
+        return (new Collection($relationships))
+            ->transform(function (UserAssociation $association, $key) use ($elements) {
+                if (isset($elements[$key])) {
+                    $association->setUser($elements[$key]);
+                    $association->setOrganization($this->organization);
+                }
+                return $association;
+            });
+    }
 
     /************************************************************
      * QUERY
      ************************************************************/
 
     /**
-     * @param array $criteria
      * @return UserAssociationQuery
      */
-    protected function query(array $criteria = []): UserAssociationQuery
+    protected function query(): UserAssociationQuery
     {
         /** @noinspection PhpUndefinedMethodInspection */
-        $query = UserAssociation::find()
+        return UserAssociation::find()
             ->setOrganizationId($this->organization->getId() ?: false)
             ->orderBy([
                 'userOrder' => SORT_ASC
-            ]);
-
-        if (!empty($criteria)) {
-            QueryHelper::configure(
-                $query,
-                $criteria
-            );
-        }
-
-        return $query;
+            ])
+            ->limit(null)
+            ->indexBy('userId');
     }
 
     /**
@@ -118,7 +117,7 @@ class UserRelationship implements RelationshipInterface
     {
         return (new UserAssociation())
             ->setOrganization($this->organization)
-            ->setUser($this->resolveUser($object));
+            ->setUser($this->resolve($object));
     }
 
 
@@ -129,7 +128,7 @@ class UserRelationship implements RelationshipInterface
     /**
      * @inheritDoc
      */
-    protected function associationDelta(): array
+    protected function delta(): array
     {
         $existingAssociations = $this->query()
             ->indexBy('userId')
@@ -180,7 +179,7 @@ class UserRelationship implements RelationshipInterface
      */
     protected function findKey($object = null)
     {
-        if (null === ($element = $this->resolveUser($object))) {
+        if (null === ($element = $this->resolve($object))) {
             Organizations::info(sprintf(
                 "Unable to resolve user: %s",
                 (string)Json::encode($object)
@@ -202,24 +201,14 @@ class UserRelationship implements RelationshipInterface
      * @param UserAssociation|User|int|array|null $user
      * @return User|null
      */
-    protected function resolveUser($user = null)
+    protected function resolveObject($user)
     {
-        if (null === $user) {
-            return null;
-        }
-
         if ($user instanceof UserAssociation) {
             return $user->getUser();
         }
 
         if ($user instanceof User) {
             return $user;
-        }
-
-        if (is_array($user) &&
-            null !== ($id = ArrayHelper::getValue($user, 'id'))
-        ) {
-            $user = ['id' => $id];
         }
 
         return User::findOne($user);

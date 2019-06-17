@@ -11,42 +11,52 @@ namespace flipbox\organizations\objects;
 use flipbox\organizations\records\UserType;
 
 /**
- * @property int|null $typeId
- *
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  */
 trait UserTypeMutatorTrait
 {
     /**
-     * @var UserType|null
+     * @param int|null $id
      */
-    private $type;
+    abstract protected function internalSetTypeId(int $id = null);
 
     /**
-     * Set associated typeId
-     *
+     * @return int|null
+     */
+    abstract protected function internalGetTypeId();
+
+    /**
+     * @param UserType|null $type
+     */
+    abstract protected function internalSetType(UserType $type = null);
+
+    /**
+     * @return UserType|null
+     */
+    abstract protected function internalGetType();
+
+    /**
      * @param $id
      * @return $this
      */
-    public function setTypeId(int $id)
+    public function setTypeId(int $id = null)
     {
-        $this->typeId = $id;
+        $this->internalSetTypeId($id);
+        $this->internalSetType(null);
         return $this;
     }
 
     /**
-     * Get associated typeId
-     *
      * @return int|null
      */
     public function getTypeId()
     {
-        if (null === $this->typeId && null !== $this->type) {
-            $this->typeId = $this->type->id;
+        if (null === $this->internalGetTypeId() && null !== $this->internalGetType()) {
+            $this->setTypeId($this->internalGetType()->id);
         }
 
-        return $this->typeId;
+        return $this->internalGetTypeId();
     }
 
     /**
@@ -55,13 +65,12 @@ trait UserTypeMutatorTrait
      */
     public function setType($type = null)
     {
-        $this->type = null;
+        $this->internalSetType(null);
+        $this->internalSetTypeId(null);
 
-        if (!$type = $this->internalResolveType($type)) {
-            $this->type = $this->typeId = null;
-        } else {
-            $this->typeId = $type->id;
-            $this->type = $type;
+        if ($type = $this->internalResolveType($type)) {
+            $this->internalSetType($type);
+            $this->internalSetTypeId($type->id);
         }
 
         return $this;
@@ -72,21 +81,19 @@ trait UserTypeMutatorTrait
      */
     public function getType()
     {
-        if ($this->type === null) {
+        if ($this->internalGetType() === null) {
             $type = $this->resolveType();
             $this->setType($type);
             return $type;
         }
 
-        $typeId = $this->typeId;
-        if ($typeId !== null &&
-            $typeId !== $this->type->id
-        ) {
-            $this->type = null;
+        $typeId = $this->internalGetTypeId();
+        if ($typeId !== null && $typeId !== $this->internalGetType()->id) {
+            $this->internalSetType(null);
             return $this->getType();
         }
 
-        return $this->type;
+        return $this->internalGetType();
     }
 
     /**
@@ -106,11 +113,11 @@ trait UserTypeMutatorTrait
      */
     private function resolveTypeFromId()
     {
-        if (null === $this->typeId) {
+        if (null === $this->internalGetTypeId()) {
             return null;
         }
 
-        return UserType::findOne($this->typeId);
+        return UserType::findOne($this->internalGetTypeId());
     }
 
     /**

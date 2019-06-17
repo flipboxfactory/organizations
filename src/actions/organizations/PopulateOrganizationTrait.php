@@ -72,14 +72,6 @@ trait PopulateOrganizationTrait
         // Join date
         $this->populateDateFromRequest($organization, 'dateJoined');
 
-        // Active type
-        $type = Craft::$app->getRequest()->getParam('type');
-        if (!empty($type)) {
-            $organization->setActiveType(
-                OrganizationType::getOne($type)
-            );
-        }
-
         // Set types
         $organization->setTypesFromRequest(
             (string)$request->getParam('typesLocation', 'types')
@@ -94,6 +86,14 @@ trait PopulateOrganizationTrait
         $organization->setFieldValuesFromRequest(
             (string)$request->getParam('fieldsLocation', 'fields')
         );
+
+        // Active type
+        $type = Craft::$app->getRequest()->getParam('type');
+        if (!empty($type)) {
+            $organization->setActiveType(
+                OrganizationType::getOne($type)
+            );
+        }
     }
 
     /**

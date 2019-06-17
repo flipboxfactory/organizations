@@ -39,6 +39,7 @@ class UserTypeAssociation extends ActiveRecord
      * @inheritdoc
      */
     protected $getterPriorityAttributes = ['typeId'];
+    protected $setterPriorityAttributes = ['typeId'];
 
     /**
      * @noinspection PhpDocMissingThrowsInspection
@@ -156,15 +157,5 @@ class UserTypeAssociation extends ActiveRecord
     public function getUserAssociations(): ActiveQueryInterface
     {
         return $this->hasOne(UserAssociation::class, ['id' => 'userId']);
-    }
-
-    /**
-     * Returns the type association.
-     *
-     * @return ActiveQueryInterface The relational query object.
-     */
-    public function getType(): ActiveQueryInterface
-    {
-        return $this->hasOne(UserType::class, ['id' => 'typeId']);
     }
 }

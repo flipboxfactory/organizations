@@ -47,7 +47,7 @@ trait TypesAttributeTrait
     public function setTypesFromRequest(string $identifier = 'types')
     {
         if (null !== ($types = Craft::$app->getRequest()->getBodyParam($identifier))) {
-            $this->getTypes()->add($types);
+            $this->getTypes()->clear()->add($types);
         }
 
         return $this;

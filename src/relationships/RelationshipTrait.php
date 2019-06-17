@@ -39,26 +39,34 @@ trait RelationshipTrait
     abstract protected function findKey($object = null);
 
     /**
-     * @param array $criteria
-     * @return QueryInterface
-     */
-    abstract protected function query(array $criteria = []): QueryInterface;
-
-    /**
+     * Create a new association/relationship record
+     *
      * @param $object
      * @return ActiveRecord
      */
     abstract protected function create($object): ActiveRecord;
 
     /**
-     * @return ActiveRecord[][]
+     * Resolve the object that will be related
+     *
+     * @param $object
+     * @return mixed
      */
-    abstract protected function associationDelta(): array;
+    abstract protected function resolveObject($object);
 
     /**
-     * @return void
+     * A collection of existing relationships, indexed by id.  We'll compare these with
+     * and new relations to determine if we need to add/remove relations
+     *
+     * @return Collection
      */
-    abstract protected function handleAssociationError();
+    abstract protected function existingRelationships(): Collection;
+
+    /**
+     *
+     * @return Collection[]
+     */
+    abstract protected function delta(): array;
 
     /**
      * @param ActiveRecord|ElementInterface|int|string $object
@@ -120,14 +128,11 @@ trait RelationshipTrait
     public function getRelationships(): Collection
     {
         if (null === $this->relations) {
-            $this->relations = new Collection(
-                $this->query()->all()
-            );
+            $this->relations = $this->existingRelationships();
         }
 
         return $this->relations;
     }
-
 
     /************************************************************
      * ADD / REMOVE
@@ -219,27 +224,21 @@ trait RelationshipTrait
 
         $success = true;
 
-        list($newAssociations, $existingAssociations) = $this->associationDelta();
+        list($save, $delete) = $this->delta();
 
-        // Delete those removed
-        foreach ($existingAssociations as $existingAssociation) {
-            if (!$existingAssociation->delete()) {
+        foreach ($delete as $relationship) {
+            if (!$relationship->delete()) {
                 $success = false;
             }
         }
 
-        foreach ($newAssociations as $newAssociation) {
-            if (!$newAssociation->save()) {
+        foreach ($save as $relationship) {
+            if (!$relationship->save()) {
                 $success = false;
             }
         }
 
-        $this->newRelations($newAssociations);
-        $this->mutated = false;
-
-        if (!$success) {
-            $this->handleAssociationError();
-        }
+        $this->newRelations($save, false);
 
         return $success;
     }
@@ -294,6 +293,24 @@ trait RelationshipTrait
     /*******************************************
      * UTILITIES
      *******************************************/
+
+    /**
+     * @inheritDoc
+     */
+    protected function resolve($object = null)
+    {
+        if (null === $object) {
+            return null;
+        }
+
+        if (is_array($object) &&
+            null !== ($id = ArrayHelper::getValue($object, 'id'))
+        ) {
+            $object = ['id' => $id];
+        }
+
+        return $this->resolveObject($object);
+    }
 
     /**
      * Ensure we're working with an array of objects, not configs, etc

@@ -51,31 +51,61 @@ class OrganizationRelationship implements RelationshipInterface
      ************************************************************/
 
     /**
-     * Get a collection of associated organizations
-     *
+     * @inheritDoc
      * @return Organization[]|Collection
      */
     public function getCollection(): Collection
     {
-        $query = Organization::find()
-            ->user($this->user)
+        return $this->getRelationships()
+            ->sortBy('organizationOrder')
+            ->pluck('organization');
+    }
+
+    /**
+     * @inheritDoc
+     * @return Collection
+     */
+    protected function existingRelationships(): Collection
+    {
+        $relationships = $this->query()
+            ->with('types')
+            ->all();
+
+        // 'eager' load where we'll pre-populate all of the associations
+        $elements = Organization::find()
+            ->id(array_keys($relationships))
+            ->anyStatus()
+            ->limit(null)
+            ->indexBy('id')
+            ->all();
+
+        return (new Collection($relationships))
+            ->transform(function (UserAssociation $association, $key) use ($elements) {
+                if (isset($elements[$key])) {
+                    $association->setOrganization($elements[$key]);
+                    $association->setUser($this->user);
+                }
+                return $association;
+            });
+    }
+
+    /************************************************************
+     * QUERY
+     ************************************************************/
+
+    /**
+     * @return UserAssociationQuery
+     */
+    protected function query(): UserAssociationQuery
+    {
+        /** @noinspection PhpUndefinedMethodInspection */
+        return UserAssociation::find()
+            ->setUserId($this->user->getId() ?: false)
             ->orderBy([
                 'organizationOrder' => SORT_ASC
-            ]);
-
-        if (null === $this->relations) {
-            return Collection::make(
-                $query->all()
-            );
-        };
-
-        return Collection::make(
-            $query
-                ->id($this->relations->sortBy('organizationOrder')->pluck('organizationId'))
-                ->fixedOrder(true)
-                ->limit(null)
-                ->all()
-        );
+            ])
+            ->limit(null)
+            ->indexBy('organizationId');
     }
 
 
@@ -84,52 +114,27 @@ class OrganizationRelationship implements RelationshipInterface
      ************************************************************/
 
     /**
-     * @param array $criteria
-     * @return UserAssociationQuery
-     */
-    protected function query(array $criteria = []): UserAssociationQuery
-    {
-        /** @noinspection PhpUndefinedMethodInspection */
-        $query = UserAssociation::find()
-            ->setUserId($this->user->getId() ?: false)
-            ->orderBy([
-                'organizationOrder' => SORT_ASC
-            ]);
-
-        if (!empty($criteria)) {
-            QueryHelper::configure(
-                $query,
-                $criteria
-            );
-        }
-
-        return $query;
-    }
-
-    /**
      * @param $object
      * @return UserAssociation
      */
     protected function create($object): UserAssociation
     {
         return (new UserAssociation())
-            ->setOrganization($this->resolveOrganization($object))
+            ->setOrganization($this->resolve($object))
             ->setUser($this->user);
     }
 
 
     /*******************************************
-     * SAVE
+     * DELTA
      *******************************************/
 
     /**
      * @inheritDoc
      */
-    protected function associationDelta(): array
+    protected function delta(): array
     {
-        $existingAssociations = $this->query()
-            ->indexBy('organizationId')
-            ->all();
+        $existingAssociations = $this->query()->all();
 
         $associations = [];
         $order = 1;
@@ -158,14 +163,6 @@ class OrganizationRelationship implements RelationshipInterface
         return [$associations, $existingAssociations];
     }
 
-    /**
-     * @inheritDoc
-     */
-    protected function handleAssociationError()
-    {
-        $this->user->addError('organizations', 'Unable to save user organizations.');
-    }
-
 
     /*******************************************
      * UTILS
@@ -177,7 +174,7 @@ class OrganizationRelationship implements RelationshipInterface
      */
     protected function findKey($object = null)
     {
-        if (null === ($element = $this->resolveOrganization($object))) {
+        if (null === ($element = $this->resolve($object))) {
             Organizations::info(sprintf(
                 "Unable to resolve organization: %s",
                 (string)Json::encode($object)
@@ -196,27 +193,17 @@ class OrganizationRelationship implements RelationshipInterface
     }
 
     /**
-     * @param UserAssociation|Organization|int|array|null $organization
+     * @param UserAssociation|Organization|int|array $organization
      * @return Organization|null
      */
-    protected function resolveOrganization($organization = null)
+    protected function resolveObject($organization)
     {
-        if (null === $organization) {
-            return null;
-        }
-
         if ($organization instanceof UserAssociation) {
             return $organization->getOrganization();
         }
 
         if ($organization instanceof Organization) {
             return $organization;
-        }
-
-        if (is_array($organization) &&
-            null !== ($id = ArrayHelper::getValue($organization, 'id'))
-        ) {
-            $organization = ['id' => $id];
         }
 
         return Organization::findOne($organization);
