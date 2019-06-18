@@ -83,7 +83,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
     /**
      * @return OrganizationTypeAssociationQuery
      */
-    protected function query(): OrganizationTypeAssociationQuery
+    private function query(): OrganizationTypeAssociationQuery
     {
         return OrganizationTypeAssociation::find()
             ->setOrganizationId($this->organization->getId() ?: false)
@@ -124,23 +124,53 @@ class OrganizationTypeRelationship implements RelationshipInterface
 
         $associations = [];
         $order = 1;
+
         /** @var OrganizationTypeAssociation $newAssociation */
-        foreach ($this->getRelationships()->sortBy('sortOrder') as $newAssociation) {
-            if (null === ($association = ArrayHelper::remove(
+        foreach ($this->getRelationships() as $newAssociation) {
+            $association = ArrayHelper::remove(
                 $existingAssociations,
                 $newAssociation->getTypeId()
-            ))) {
-                $association = $newAssociation;
+            );
+
+            $newAssociation->sortOrder = $order++;
+
+            /** @var OrganizationTypeAssociation $association */
+            $association = $association ?: $newAssociation;
+
+            // Has anything changed?
+            if(!$association->getIsNewRecord() && !$this->hasChanged($newAssociation, $association)) {
+                continue;
             }
 
-            $association->sortOrder = $order++;
-
-            $association->ignoreSortOrder();
-
-            $associations[] = $association;
+            $associations[] = $this->sync($association, $newAssociation);
         }
 
         return [$associations, $existingAssociations];
+    }
+
+    /**
+     * @param OrganizationTypeAssociation $new
+     * @param OrganizationTypeAssociation $existing
+     * @return bool
+     */
+    private function hasChanged(OrganizationTypeAssociation $new, OrganizationTypeAssociation $existing): bool
+    {
+        return $new->sortOrder != $existing->sortOrder;
+    }
+
+    /**
+     * @param OrganizationTypeAssociation $from
+     * @param OrganizationTypeAssociation $to
+     *
+     * @return OrganizationTypeAssociation
+     */
+    private function sync(OrganizationTypeAssociation $to, OrganizationTypeAssociation $from): OrganizationTypeAssociation
+    {
+        $to->sortOrder = $from->sortOrder;
+
+        $to->ignoreSortOrder();
+
+        return $to;
     }
 
 
@@ -166,7 +196,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
      */
     protected function updateCollection(Collection $collection, OrganizationTypeAssociation $association)
     {
-        if ($key = $this->findKey($association)) {
+        if (null !== ($key = $this->findKey($association))) {
             $collection->offsetUnset($key);
         }
 

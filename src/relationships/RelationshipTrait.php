@@ -265,7 +265,8 @@ trait RelationshipTrait
             }
         }
 
-        $this->newRelations($save, false);
+//        $this->newRelations($save, false);
+        $this->reset();
 
         return $success;
     }

@@ -104,7 +104,7 @@ class OrganizationRelationship implements RelationshipInterface
     /**
      * @return OrganizationQuery
      */
-    protected function elementQuery(): OrganizationQuery
+    private function elementQuery(): OrganizationQuery
     {
         return Organization::find()
             ->userId($this->user->getId() ?: false)
@@ -115,7 +115,7 @@ class OrganizationRelationship implements RelationshipInterface
     /**
      * @return UserAssociationQuery
      */
-    protected function associationQuery(): UserAssociationQuery
+    private function associationQuery(): UserAssociationQuery
     {
         return UserAssociation::find()
             ->setUserId($this->user->getId() ?: false)
@@ -164,32 +164,65 @@ class OrganizationRelationship implements RelationshipInterface
 
         /** @var UserAssociation $newAssociation */
         foreach ($this->getRelationships() as $newAssociation) {
-            if (null === ($association = ArrayHelper::remove(
+            $association = ArrayHelper::remove(
                 $existingAssociations,
                 $newAssociation->getOrganizationId()
-            ))) {
-                $association = $newAssociation;
-            } elseif ($newAssociation->getTypes()->isMutated()) {
-                /** @var UserAssociation $association */
-                $association->getTypes()->clear()->add(
-                    $newAssociation->getTypes()->getCollection()
-                );
+            );
+
+            $newAssociation->organizationOrder = $order++;
+
+            /** @var UserAssociation $association */
+            $association = $association ?: $newAssociation;
+
+            // Has anything changed?
+            if(!$association->getIsNewRecord() && !$this->hasChanged($newAssociation, $association)) {
+                continue;
             }
 
-            $association->userOrder = $newAssociation->userOrder;
-            $association->organizationOrder = $order++;
-            $association->state = $newAssociation->state;
-
-            $association->ignoreSortOrder();
-
-            $associations[] = $association;
+            $associations[] = $this->sync($association, $newAssociation);
         }
 
         return [$associations, $existingAssociations];
     }
 
+    /**
+     * @param UserAssociation $new
+     * @param UserAssociation $existing
+     * @return bool
+     */
+    private function hasChanged(UserAssociation $new, UserAssociation $existing): bool
+    {
+        return $new->userOrder != $existing->userOrder ||
+            $new->organizationOrder != $existing->organizationOrder ||
+            $new->state != $existing->state ||
+            $new->getTypes()->isMutated();
+    }
+
+    /**
+     * @param UserAssociation $from
+     * @param UserAssociation $to
+     *
+     * @return UserAssociation
+     */
+    private function sync(UserAssociation $to, UserAssociation $from): UserAssociation
+    {
+        $to->userOrder = $from->userOrder;
+        $to->organizationOrder = $from->organizationOrder;
+        $to->state = $from->state;
+
+        if ($from->getTypes()->isMutated()) {
+            $to->getTypes()->clear()->add(
+                $from->getTypes()->getCollection()
+            );
+        }
+
+        $to->ignoreSortOrder();
+
+        return $to;
+    }
+
     /*******************************************
-     * COLLECTION
+     * COLLECTION UTILS
      *******************************************/
 
     /**
@@ -208,13 +241,11 @@ class OrganizationRelationship implements RelationshipInterface
     }
 
     /**
-     * Reposition the relationship based on the sort order
-     *
      * @inheritDoc
      */
     protected function updateCollection(Collection $collection, UserAssociation $association)
     {
-        if ($key = $this->findKey($association)) {
+        if (null !== ($key = $this->findKey($association))) {
             $collection->offsetUnset($key);
         }
 
@@ -247,7 +278,7 @@ class OrganizationRelationship implements RelationshipInterface
      * @param $identifier
      * @return int|string|null
      */
-    protected function findRelationshipKey($identifier)
+    private function findRelationshipKey($identifier)
     {
         /** @var UserAssociation $association */
         foreach ($this->getRelationships()->all() as $key => $association) {

@@ -91,7 +91,7 @@ class UserTypeRelationship implements RelationshipInterface
      * @inheritDoc
      * @return UserTypeAssociationQuery
      */
-    protected function query(): UserTypeAssociationQuery
+    private function query(): UserTypeAssociationQuery
     {
         return UserTypeAssociation::find()
             ->setUserId($this->association->getId() ?: false)
@@ -144,24 +144,54 @@ class UserTypeRelationship implements RelationshipInterface
 
         $associations = [];
         $order = 1;
+
+        /** @var UserTypeAssociation $newAssociation */
         foreach ($this->getRelationships() as $newAssociation) {
-            if (null === ($association = ArrayHelper::remove(
+            $association = ArrayHelper::remove(
                 $existingAssociations,
-                $newAssociation->typeId
-            ))) {
-                $association = $newAssociation;
+                $newAssociation->getTypeId()
+            );
+
+            $newAssociation->sortOrder = $order++;
+
+            /** @var UserTypeAssociation $association */
+            $association = $association ?: $newAssociation;
+
+            // Has anything changed?
+            if(!$association->getIsNewRecord() && !$this->hasChanged($newAssociation, $association)) {
+                continue;
             }
 
-            $association->sortOrder = $order++;
-
-            $association->ignoreSortOrder();
-
-            $associations[] = $association;
+            $associations[] = $this->sync($association, $newAssociation);
         }
 
         return [$associations, $existingAssociations];
     }
 
+    /**
+     * @param UserTypeAssociation $new
+     * @param UserTypeAssociation $existing
+     * @return bool
+     */
+    private function hasChanged(UserTypeAssociation $new, UserTypeAssociation $existing): bool
+    {
+        return $new->sortOrder != $existing->sortOrder;
+    }
+
+    /**
+     * @param UserTypeAssociation $from
+     * @param UserTypeAssociation $to
+     *
+     * @return UserTypeAssociation
+     */
+    private function sync(UserTypeAssociation $to, UserTypeAssociation $from): UserTypeAssociation
+    {
+        $to->sortOrder = $from->sortOrder;
+
+        $to->ignoreSortOrder();
+
+        return $to;
+    }
 
     /*******************************************
      * COLLECTION UTILS
@@ -183,9 +213,9 @@ class UserTypeRelationship implements RelationshipInterface
     /**
      * @inheritDoc
      */
-    protected function updateCollection(Collection $collection, UserTypeAssociation $association)
+    protected function updateCollection(Collection $collection, UserAssociation $association)
     {
-        if ($key = $this->findKey($association)) {
+        if (null !== ($key = $this->findKey($association))) {
             $collection->offsetUnset($key);
         }
 
@@ -240,7 +270,7 @@ class UserTypeRelationship implements RelationshipInterface
     /**
      * @return $this
      */
-    protected function syncToRelations()
+    private function syncToRelations()
     {
         $this->association->populateRelation(
             'typeRecords',
@@ -255,7 +285,7 @@ class UserTypeRelationship implements RelationshipInterface
      */
     protected function findKey($object = null)
     {
-        if ($object instanceof OrganizationTypeAssociation) {
+        if ($object instanceof UserTypeAssociation) {
             return $this->findRelationshipKey($object->getTypeId());
         }
 
@@ -270,7 +300,7 @@ class UserTypeRelationship implements RelationshipInterface
      * @param $identifier
      * @return int|string|null
      */
-    protected function findRelationshipKey($identifier)
+    private function findRelationshipKey($identifier)
     {
         /** @var UserTypeAssociation $association */
         foreach ($this->getRelationships()->all() as $key => $association) {
