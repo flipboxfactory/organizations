@@ -11,10 +11,7 @@ namespace flipbox\organizations\relationships;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
-use craft\helpers\Json;
-use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 use Tightenco\Collect\Support\Collection;
@@ -58,6 +55,13 @@ class UserRelationship implements RelationshipInterface
      */
     public function getCollection(): Collection
     {
+        if (null === $this->relations) {
+            return new Collection(
+                $this->elementQuery()
+                    ->all()
+            );
+        }
+
         return $this->getRelationships()
             ->sortBy('userOrder')
             ->pluck('user');
@@ -68,22 +72,20 @@ class UserRelationship implements RelationshipInterface
      */
     protected function existingRelationships(): Collection
     {
-        $relationships = $this->query()
+        $relationships = $this->associationQuery()
             ->with('types')
             ->all();
 
         // 'eager' load where we'll pre-populate all of the associations
-        $elements = User::find()
+        $elements = $this->elementQuery()
             ->id(array_keys($relationships))
-            ->anyStatus()
-            ->limit(null)
             ->indexBy('id')
             ->all();
 
-        return (new Collection($relationships))
-            ->transform(function (UserAssociation $association, $key) use ($elements) {
-                if (isset($elements[$key])) {
-                    $association->setUser($elements[$key]);
+        return $this->createRelations($relationships)
+            ->transform(function (UserAssociation $association) use ($elements) {
+                if (isset($elements[$association->getUserId()])) {
+                    $association->setUser($elements[$association->getUserId()]);
                     $association->setOrganization($this->organization);
                 }
                 return $association;
@@ -95,18 +97,33 @@ class UserRelationship implements RelationshipInterface
      ************************************************************/
 
     /**
+     * @return UserQuery
+     */
+    protected function elementQuery(): UserQuery
+    {
+        return User::find()
+            ->organizationId($this->organization->getId() ?: false)
+            ->anyStatus()
+            ->limit(null);
+    }
+
+    /**
      * @return UserAssociationQuery
      */
-    protected function query(): UserAssociationQuery
+    protected function associationQuery(): UserAssociationQuery
     {
         /** @noinspection PhpUndefinedMethodInspection */
         return UserAssociation::find()
             ->setOrganizationId($this->organization->getId() ?: false)
             ->orderBy([
-                'userOrder' => SORT_ASC
+                'organizationOrder' => SORT_ASC
             ])
             ->limit(null);
     }
+
+    /************************************************************
+     * CREATE
+     ************************************************************/
 
     /**
      * @param $object
@@ -114,9 +131,13 @@ class UserRelationship implements RelationshipInterface
      */
     protected function create($object): UserAssociation
     {
+        if ($object instanceof UserAssociation) {
+            return $object;
+        }
+
         return (new UserAssociation())
             ->setOrganization($this->organization)
-            ->setUser($this->resolve($object));
+            ->setUser($this->resolveObject($object));
     }
 
 
@@ -129,14 +150,15 @@ class UserRelationship implements RelationshipInterface
      */
     protected function delta(): array
     {
-        $existingAssociations = $this->query()
+        $existingAssociations = $this->associationQuery()
             ->indexBy('userId')
             ->all();
 
         $associations = [];
         $order = 1;
+
         /** @var UserAssociation $newAssociation */
-        foreach ($this->getRelationships()->sortBy('userOrder') as $newAssociation) {
+        foreach ($this->getRelationships() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
                 $existingAssociations,
                 $newAssociation->getUserId()
@@ -153,18 +175,42 @@ class UserRelationship implements RelationshipInterface
             $association->organizationOrder = $newAssociation->organizationOrder;
             $association->state = $newAssociation->state;
 
+            $association->ignoreSortOrder();
+
             $associations[] = $association;
         }
 
         return [$associations, $existingAssociations];
     }
 
+
+    /*******************************************
+     * COLLECTION
+     *******************************************/
+
     /**
      * @inheritDoc
      */
-    protected function handleAssociationError()
+    protected function insertCollection(Collection $collection, UserAssociation $association)
     {
-        $this->organization->addError('users', 'Unable to save user organizations.');
+        if ($association->userOrder > 0) {
+            $collection->splice($association->userOrder - 1, 0, [$association]);
+            return;
+        }
+
+        $collection->push($association);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function updateCollection(Collection $collection, UserAssociation $association)
+    {
+        if ($key = $this->findKey($association)) {
+            $collection->offsetUnset($key);
+        }
+
+        $this->insertCollection($collection, $association);
     }
 
 
@@ -178,17 +224,30 @@ class UserRelationship implements RelationshipInterface
      */
     protected function findKey($object = null)
     {
-        if (null === ($element = $this->resolve($object))) {
-            Organizations::info(sprintf(
-                "Unable to resolve user: %s",
-                (string)Json::encode($object)
-            ));
+        if ($object instanceof UserAssociation) {
+            if (!$object->getUser()) {
+                return null;
+            }
+
+            return $this->findRelationshipKey($object->getUser()->email);
+        }
+
+        if (null === ($element = $this->resolveObject($object))) {
             return null;
         }
 
+        return $this->findRelationshipKey($element->email);
+    }
+
+    /**
+     * @param $identifier
+     * @return int|string|null
+     */
+    protected function findRelationshipKey($identifier)
+    {
         /** @var UserAssociation $association */
         foreach ($this->getRelationships()->all() as $key => $association) {
-            if (null !== $association->getUser() && $association->getUser()->email == $element->email) {
+            if (null !== $association->getUser() && $association->getUser()->email == $identifier) {
                 return $key;
             }
         }
@@ -200,7 +259,7 @@ class UserRelationship implements RelationshipInterface
      * @param UserAssociation|User|int|array|null $user
      * @return User|null
      */
-    protected function resolveObject($user)
+    protected function resolveObjectInternal($user)
     {
         if ($user instanceof UserAssociation) {
             return $user->getUser();
@@ -208,6 +267,14 @@ class UserRelationship implements RelationshipInterface
 
         if ($user instanceof User) {
             return $user;
+        }
+
+        if (is_numeric($user)) {
+            return \Craft::$app->getUsers()->getUserById($user);
+        }
+
+        if (is_string($user)) {
+            return \Craft::$app->getUsers()->getUserByUsernameOrEmail($user);
         }
 
         return User::findOne($user);

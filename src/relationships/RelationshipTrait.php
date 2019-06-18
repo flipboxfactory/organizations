@@ -52,7 +52,7 @@ trait RelationshipTrait
      * @param $object
      * @return mixed
      */
-    abstract protected function resolveObject($object);
+    abstract protected function resolveObjectInternal($object);
 
     /**
      * A collection of existing relationships, indexed by id.  We'll compare these with
@@ -63,8 +63,10 @@ trait RelationshipTrait
     abstract protected function existingRelationships(): Collection;
 
     /**
+     * An array of relationships to save and an array of relationships to delete.  This will
+     * want to be used as such: `list($save, $delete) = $this->delta();`
      *
-     * @return Collection[]
+     * @return array
      */
     abstract protected function delta(): array;
 
@@ -148,19 +150,44 @@ trait RelationshipTrait
     public function add($objects, array $attributes = []): RelationshipInterface
     {
         foreach ($this->objectArray($objects) as $object) {
-            if (null === ($association = $this->findOne($object))) {
-                $association = $this->create($object);
-                $this->addToRelations($association);
-            }
+            $this->addOne($object, $attributes);
+        }
 
-            if (!empty($attributes)) {
-                Craft::configure(
-                    $association,
-                    $attributes
-                );
+        return $this;
+    }
 
-                $this->mutated = true;
+    /**
+     * @param $object
+     * @param array $attributes
+     * @return RelationshipInterface
+     */
+    protected function addOne($object, array $attributes = []): RelationshipInterface
+    {
+        $isNew = false;
+
+        // Check if it's already linked
+        if (null === ($association = $this->findOne($object))) {
+            $association = $this->create($object);
+            $isNew = true;
+        }
+
+        // Modify?
+        if (!empty($attributes)) {
+            Craft::configure(
+                $association,
+                $attributes
+            );
+
+            $this->mutated = true;
+
+            if (!$isNew) {
+                $this->updateCollection($this->relations, $association);
             }
+        }
+
+        if ($isNew) {
+            $this->addToRelations($association);
+            $this->mutated = true;
         }
 
         return $this;
@@ -255,7 +282,7 @@ trait RelationshipTrait
      */
     protected function newRelations(array $associations, bool $mutated = true): self
     {
-        $this->relations = Collection::make($associations);
+        $this->relations = $this->createRelations($associations);
         $this->mutated = $mutated;
 
         return $this;
@@ -271,7 +298,7 @@ trait RelationshipTrait
             return $this->newRelations([$association], true);
         }
 
-        $this->relations->push($association);
+        $this->insertCollection($this->relations, $association);
         $this->mutated = true;
 
         return $this;
@@ -289,6 +316,41 @@ trait RelationshipTrait
         return $this;
     }
 
+    /**
+     * @param array $associations
+     * @return Collection
+     */
+    protected function createRelations(array $associations = []): Collection
+    {
+        $collection = new Collection();
+        foreach ($associations as $association) {
+            $this->insertCollection($collection, $association);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Update a relation that's already association.
+     *
+     * @param Collection $collection
+     * @param $association
+     */
+    protected function updateCollection(Collection $collection, $association)
+    {
+    }
+
+    /**
+     * Insert a relation that's not already associated
+     *
+     * @param Collection $collection
+     * @param $association
+     */
+    protected function insertCollection(Collection $collection, $association)
+    {
+        $collection->push($association);
+    }
+
 
     /*******************************************
      * UTILITIES
@@ -297,7 +359,7 @@ trait RelationshipTrait
     /**
      * @inheritDoc
      */
-    protected function resolve($object = null)
+    protected function resolveObject($object = null)
     {
         if (null === $object) {
             return null;
@@ -309,7 +371,7 @@ trait RelationshipTrait
             $object = ['id' => $id];
         }
 
-        return $this->resolveObject($object);
+        return $this->resolveObjectInternal($object);
     }
 
     /**

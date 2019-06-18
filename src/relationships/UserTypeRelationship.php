@@ -107,9 +107,12 @@ class UserTypeRelationship implements RelationshipInterface
      */
     protected function create($type): UserTypeAssociation
     {
-        /** @var UserTypeAssociation $association */
+        if ($type instanceof UserTypeAssociation) {
+            return $type;
+        }
+
         $association = (new UserTypeAssociation())
-            ->setType($this->resolve($type));
+            ->setType($this->resolveObject($type));
 
         $association->userId = $this->association->id;
 
@@ -151,10 +154,42 @@ class UserTypeRelationship implements RelationshipInterface
 
             $association->sortOrder = $order++;
 
+            $association->ignoreSortOrder();
+
             $associations[] = $association;
         }
 
         return [$associations, $existingAssociations];
+    }
+
+
+    /*******************************************
+     * COLLECTION UTILS
+     *******************************************/
+
+    /**
+     * @inheritDoc
+     */
+    protected function insertCollection(Collection $collection, UserTypeAssociation $association)
+    {
+        if ($association->sortOrder > 0) {
+            $collection->splice($association->sortOrder - 1, 0, [$association]);
+            return;
+        }
+
+        $collection->push($association);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function updateCollection(Collection $collection, UserTypeAssociation $association)
+    {
+        if ($key = $this->findKey($association)) {
+            $collection->offsetUnset($key);
+        }
+
+        $this->insertCollection($collection, $association);
     }
 
 
@@ -215,21 +250,31 @@ class UserTypeRelationship implements RelationshipInterface
     }
 
     /**
-     * @param UserTypeAssociation|UserType|int|array|null $type
+     * @param UserTypeAssociation|UserType|int|array|null $object
      * @return int|null
      */
-    protected function findKey($type = null)
+    protected function findKey($object = null)
     {
-        if (null === ($record = $this->resolve($type))) {
-            Organizations::info(sprintf(
-                "Unable to resolve user association type: %s",
-                (string)Json::encode($type)
-            ));
+        if ($object instanceof OrganizationTypeAssociation) {
+            return $this->findRelationshipKey($object->getTypeId());
+        }
+
+        if (null === ($type = $this->resolveObject($object))) {
             return null;
         }
 
-        foreach ($this->getRelationships() as $key => $association) {
-            if ($association->getTypeId() == $record->id) {
+        return $this->findRelationshipKey($type->id);
+    }
+
+    /**
+     * @param $identifier
+     * @return int|string|null
+     */
+    protected function findRelationshipKey($identifier)
+    {
+        /** @var UserTypeAssociation $association */
+        foreach ($this->getRelationships()->all() as $key => $association) {
+            if ($association->getTypeId() == $identifier) {
                 return $key;
             }
         }
@@ -241,7 +286,7 @@ class UserTypeRelationship implements RelationshipInterface
      * @param UserTypeAssociation|UserType|int|array|null $type
      * @return UserType|null
      */
-    protected function resolveObject($type)
+    protected function resolveObjectInternal($type)
     {
         if ($type instanceof UserTypeAssociation) {
             return $type->getType();

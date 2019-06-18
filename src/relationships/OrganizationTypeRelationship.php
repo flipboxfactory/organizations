@@ -16,6 +16,7 @@ use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\OrganizationTypeAssociationQuery;
 use flipbox\organizations\records\OrganizationType;
 use flipbox\organizations\records\OrganizationTypeAssociation;
+use flipbox\organizations\records\UserAssociation;
 use Tightenco\Collect\Support\Collection;
 
 /**
@@ -98,9 +99,13 @@ class OrganizationTypeRelationship implements RelationshipInterface
      */
     protected function create($type): OrganizationTypeAssociation
     {
+        if ($type instanceof OrganizationTypeAssociation) {
+            return $type;
+        }
+
         return (new OrganizationTypeAssociation())
             ->setOrganization($this->organization)
-            ->setType($this->resolve($type));
+            ->setType($this->resolveObject($type));
     }
 
 
@@ -130,18 +135,42 @@ class OrganizationTypeRelationship implements RelationshipInterface
 
             $association->sortOrder = $order++;
 
+            $association->ignoreSortOrder();
+
             $associations[] = $association;
         }
 
         return [$associations, $existingAssociations];
     }
 
+
+    /*******************************************
+     * COLLECTION UTILS
+     *******************************************/
+
     /**
      * @inheritDoc
      */
-    protected function handleAssociationError()
+    protected function insertCollection(Collection $collection, OrganizationTypeAssociation $association)
     {
-        $this->organization->addError('types', 'Unable to save organization types.');
+        if ($association->sortOrder > 0) {
+            $collection->splice($association->sortOrder - 1, 0, [$association]);
+            return;
+        }
+
+        $collection->push($association);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function updateCollection(Collection $collection, OrganizationTypeAssociation $association)
+    {
+        if ($key = $this->findKey($association)) {
+            $collection->offsetUnset($key);
+        }
+
+        $this->insertCollection($collection, $association);
     }
 
 
@@ -150,22 +179,31 @@ class OrganizationTypeRelationship implements RelationshipInterface
      *******************************************/
 
     /**
-     * @param OrganizationTypeAssociation|OrganizationType|int|array|null $type
+     * @param OrganizationTypeAssociation|OrganizationType|int|array|null $object
      * @return int|null
      */
-    protected function findKey($type = null)
+    protected function findKey($object = null)
     {
-        if (null === ($record = $this->resolve($type))) {
-            Organizations::info(sprintf(
-                "Unable to resolve organization type: %s",
-                (string)Json::encode($type)
-            ));
+        if ($object instanceof OrganizationTypeAssociation) {
+            return $this->findRelationshipKey($object->getTypeId());
+        }
+
+        if (null === ($type = $this->resolveObject($object))) {
             return null;
         }
 
+        return $this->findRelationshipKey($type->id);
+    }
+
+    /**
+     * @param $identifier
+     * @return int|string|null
+     */
+    protected function findRelationshipKey($identifier)
+    {
         /** @var OrganizationTypeAssociation $association */
         foreach ($this->getRelationships()->all() as $key => $association) {
-            if ($association->getTypeId() == $record->id) {
+            if ($association->getTypeId() == $identifier) {
                 return $key;
             }
         }
@@ -177,7 +215,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
      * @param OrganizationTypeAssociation|OrganizationType|int|array $type
      * @return OrganizationType|null
      */
-    protected function resolveObject($type)
+    protected function resolveObjectInternal($type)
     {
         if ($type instanceof OrganizationTypeAssociation) {
             return $type->getType();
