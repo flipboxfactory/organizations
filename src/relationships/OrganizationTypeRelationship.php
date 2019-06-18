@@ -90,7 +90,6 @@ class OrganizationTypeRelationship implements RelationshipInterface
                 'sortOrder' => SORT_ASC
             ])
             ->limit(null);
-
     }
 
     /**
@@ -123,9 +122,9 @@ class OrganizationTypeRelationship implements RelationshipInterface
         /** @var OrganizationTypeAssociation $newAssociation */
         foreach ($this->getRelationships()->sortBy('sortOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
-                    $existingAssociations,
-                    $newAssociation->getTypeId()
-                ))) {
+                $existingAssociations,
+                $newAssociation->getTypeId()
+            ))) {
                 $association = $newAssociation;
             }
 

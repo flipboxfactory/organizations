@@ -143,9 +143,9 @@ class UserTypeRelationship implements RelationshipInterface
         $order = 1;
         foreach ($this->getRelationships() as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
-                    $existingAssociations,
-                    $newAssociation->typeId
-                ))) {
+                $existingAssociations,
+                $newAssociation->typeId
+            ))) {
                 $association = $newAssociation;
             }
 

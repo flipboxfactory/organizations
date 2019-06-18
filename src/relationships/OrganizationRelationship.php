@@ -143,9 +143,9 @@ class OrganizationRelationship implements RelationshipInterface
         /** @var UserAssociation $newAssociation */
         foreach ($this->getRelationships()->sortBy('organizationOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
-                    $existingAssociations,
-                    $newAssociation->getOrganizationId()
-                ))) {
+                $existingAssociations,
+                $newAssociation->getOrganizationId()
+            ))) {
                 $association = $newAssociation;
             } elseif ($newAssociation->getTypes()->isMutated()) {
                 /** @var UserAssociation $association */

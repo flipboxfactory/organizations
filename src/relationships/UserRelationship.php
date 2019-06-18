@@ -138,9 +138,9 @@ class UserRelationship implements RelationshipInterface
         /** @var UserAssociation $newAssociation */
         foreach ($this->getRelationships()->sortBy('userOrder') as $newAssociation) {
             if (null === ($association = ArrayHelper::remove(
-                    $existingAssociations,
-                    $newAssociation->getUserId()
-                ))) {
+                $existingAssociations,
+                $newAssociation->getUserId()
+            ))) {
                 $association = $newAssociation;
             } elseif ($newAssociation->getTypes()->isMutated()) {
                 /** @var UserAssociation $association */
