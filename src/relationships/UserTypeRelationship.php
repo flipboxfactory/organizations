@@ -184,8 +184,10 @@ class UserTypeRelationship implements RelationshipInterface
      *
      * @return UserTypeAssociation
      */
-    private function sync(UserTypeAssociation $to, UserTypeAssociation $from): UserTypeAssociation
-    {
+    private function sync(
+        UserTypeAssociation $to,
+        UserTypeAssociation $from
+    ): UserTypeAssociation {
         $to->sortOrder = $from->sortOrder;
 
         $to->ignoreSortOrder();

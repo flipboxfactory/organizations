@@ -164,8 +164,10 @@ class OrganizationTypeRelationship implements RelationshipInterface
      *
      * @return OrganizationTypeAssociation
      */
-    private function sync(OrganizationTypeAssociation $to, OrganizationTypeAssociation $from): OrganizationTypeAssociation
-    {
+    private function sync(
+        OrganizationTypeAssociation $to,
+        OrganizationTypeAssociation $from
+    ): OrganizationTypeAssociation {
         $to->sortOrder = $from->sortOrder;
 
         $to->ignoreSortOrder();
