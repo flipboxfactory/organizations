@@ -13,7 +13,6 @@ use flipbox\organizations\objects\UserTypeMutatorTrait;
 use flipbox\organizations\records\UserType as TypeRecord;
 use yii\base\Model;
 use yii\db\ActiveQueryInterface;
-use yii\db\ActiveRecordInterface;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -26,13 +25,6 @@ trait UserTypeAttributeTrait
     use ActiveRecordTrait,
         UserTypeMutatorTrait;
 
-    /**
-     * Populates the named relation with the related records.
-     * Note that this method does not check if the relation exists or not.
-     * @param string $name the relation name, e.g. `orders` for a relation defined via `getOrders()` method (case-sensitive).
-     * @param ActiveRecordInterface|array|null $records the related records to be populated into the relation.
-     * @see getRelation()
-     */
     abstract public function populateRelation($name, $records);
 
     /**
