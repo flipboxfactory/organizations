@@ -175,7 +175,7 @@ class OrganizationRelationship implements RelationshipInterface
             $association = $association ?: $newAssociation;
 
             // Has anything changed?
-            if(!$association->getIsNewRecord() && !$this->hasChanged($newAssociation, $association)) {
+            if (!$association->getIsNewRecord() && !$this->hasChanged($newAssociation, $association)) {
                 continue;
             }
 
