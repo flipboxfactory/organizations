@@ -107,16 +107,7 @@ trait RelationshipTrait
             return null;
         }
 
-        return $this->relations->get($key);
-    }
-
-    /**
-     * @param ActiveRecord|ElementInterface|int|string $object
-     * @return bool
-     */
-    public function exists($object): bool
-    {
-        return null !== $this->findKey($object);
+        return $this->getRelationships()->get($key);
     }
 
 
@@ -135,6 +126,7 @@ trait RelationshipTrait
 
         return $this->relations;
     }
+
 
     /************************************************************
      * ADD / REMOVE
@@ -161,7 +153,7 @@ trait RelationshipTrait
      * @param array $attributes
      * @return RelationshipInterface
      */
-    protected function addOne($object, array $attributes = []): RelationshipInterface
+    private function addOne($object, array $attributes = []): RelationshipInterface
     {
         $isNew = false;
 
@@ -209,32 +201,6 @@ trait RelationshipTrait
     }
 
 
-    /************************************************************
-     * RESET
-     ************************************************************/
-
-    /**
-     * Reset associations
-     * @return RelationshipInterface
-     */
-    public function reset(): RelationshipInterface
-    {
-        $this->relations = null;
-        $this->mutated = false;
-        return $this;
-    }
-
-    /**
-     * Reset associations
-     * @return RelationshipInterface
-     */
-    public function clear(): RelationshipInterface
-    {
-        $this->newRelations([]);
-        return $this;
-    }
-
-
     /*******************************************
      * SAVE
      *******************************************/
@@ -265,15 +231,49 @@ trait RelationshipTrait
             }
         }
 
-//        $this->newRelations($save, false);
-        $this->reset();
+        $this->mutated = false;
 
         return $success;
     }
 
 
+    /************************************************************
+     * UTILITIES
+     ************************************************************/
+
+    /**
+     * Reset associations
+     * @return RelationshipInterface
+     */
+    public function reset(): RelationshipInterface
+    {
+        $this->relations = null;
+        $this->mutated = false;
+        return $this;
+    }
+
+    /**
+     * Reset associations
+     * @return RelationshipInterface
+     */
+    public function clear(): RelationshipInterface
+    {
+        $this->newRelations([]);
+        return $this;
+    }
+
+    /**
+     * @param ActiveRecord|ElementInterface|int|string $object
+     * @return bool
+     */
+    public function exists($object): bool
+    {
+        return null !== $this->findKey($object);
+    }
+
+
     /*******************************************
-     * CACHE
+     * COLLECTION UTILS
      *******************************************/
 
     /**
@@ -354,7 +354,7 @@ trait RelationshipTrait
 
 
     /*******************************************
-     * UTILITIES
+     * RESOLVERS
      *******************************************/
 
     /**

@@ -67,7 +67,6 @@ class UserTypeRelationship implements RelationshipInterface
     public function getCollection(): Collection
     {
         return $this->getRelationships()
-            ->sortBy('sortOrder')
             ->pluck('type');
     }
 
@@ -76,7 +75,7 @@ class UserTypeRelationship implements RelationshipInterface
      */
     protected function existingRelationships(): Collection
     {
-        return new Collection(
+        return $this->createRelations(
             $this->query()
                 ->with('typeRecord')
                 ->all()

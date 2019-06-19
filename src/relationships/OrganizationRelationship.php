@@ -10,10 +10,7 @@ namespace flipbox\organizations\relationships;
 
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
-use craft\helpers\Json;
-use flipbox\craft\ember\helpers\QueryHelper;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
@@ -65,7 +62,6 @@ class OrganizationRelationship implements RelationshipInterface
         }
 
         return $this->getRelationships()
-            ->sortBy('organizationOrder')
             ->pluck('organization');
     }
 

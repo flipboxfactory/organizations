@@ -63,7 +63,6 @@ class UserRelationship implements RelationshipInterface
         }
 
         return $this->getRelationships()
-            ->sortBy('userOrder')
             ->pluck('user');
     }
 

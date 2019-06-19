@@ -59,7 +59,6 @@ class OrganizationTypeRelationship implements RelationshipInterface
     public function getCollection(): Collection
     {
         return $this->getRelationships()
-            ->sortBy('sortOrder')
             ->pluck('type');
     }
 
@@ -68,7 +67,7 @@ class OrganizationTypeRelationship implements RelationshipInterface
      */
     protected function existingRelationships(): Collection
     {
-        return new Collection(
+        return $this->createRelations(
             $this->query()
                 ->with('typeRecord')
                 ->all()
