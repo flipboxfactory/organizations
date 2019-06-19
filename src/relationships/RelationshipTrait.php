@@ -179,7 +179,6 @@ trait RelationshipTrait
 
         if ($isNew) {
             $this->addToRelations($association);
-            $this->mutated = true;
         }
 
         return $this;

@@ -11,6 +11,7 @@ namespace flipbox\organizations\relationships;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\organizations\elements\Organization;
+use flipbox\organizations\Organizations;
 use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
@@ -61,8 +62,13 @@ class OrganizationRelationship implements RelationshipInterface
             );
         }
 
-        return $this->getRelationships()
-            ->pluck('organization');
+        return new Collection(
+            $this->elementQuery()
+                ->id($this->getRelationships()->pluck('organizationId')->all())
+                ->fixedOrder(true)
+                ->anyStatus()
+                ->all()
+        );
     }
 
     /**
@@ -75,22 +81,7 @@ class OrganizationRelationship implements RelationshipInterface
             ->with('types')
             ->all();
 
-        // 'eager' load where we'll pre-populate all of the associations
-        $elements = $this->elementQuery()
-            ->id(array_keys($relationships))
-            ->indexBy('id')
-            ->all();
-
-        return $this->createRelations($relationships)
-            ->transform(function (UserAssociation $association) use ($elements) {
-                if (isset($elements[$association->getOrganizationId()])) {
-                    $association->setOrganization($elements[$association->getOrganizationId()]);
-                }
-
-                $association->setUser($this->user);
-
-                return $association;
-            });
+        return $this->createRelations($relationships);
     }
 
     /************************************************************
@@ -188,8 +179,8 @@ class OrganizationRelationship implements RelationshipInterface
      */
     private function hasChanged(UserAssociation $new, UserAssociation $existing): bool
     {
-        return $new->userOrder != $existing->userOrder ||
-            $new->organizationOrder != $existing->organizationOrder ||
+        return (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder() &&
+                $new->organizationOrder != $existing->organizationOrder) ||
             $new->state != $existing->state ||
             $new->getTypes()->isMutated();
     }
@@ -202,7 +193,6 @@ class OrganizationRelationship implements RelationshipInterface
      */
     private function sync(UserAssociation $to, UserAssociation $from): UserAssociation
     {
-        $to->userOrder = $from->userOrder;
         $to->organizationOrder = $from->organizationOrder;
         $to->state = $from->state;
 
@@ -228,7 +218,7 @@ class OrganizationRelationship implements RelationshipInterface
      */
     protected function insertCollection(Collection $collection, UserAssociation $association)
     {
-        if ($association->organizationOrder > 0) {
+        if (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder() && $association->organizationOrder > 0) {
             $collection->splice($association->organizationOrder - 1, 0, [$association]);
             return;
         }
@@ -241,6 +231,10 @@ class OrganizationRelationship implements RelationshipInterface
      */
     protected function updateCollection(Collection $collection, UserAssociation $association)
     {
+        if (!Organizations::getInstance()->getSettings()->getEnforceUserSortOrder()) {
+            return;
+        }
+
         if (null !== ($key = $this->findKey($association))) {
             $collection->offsetUnset($key);
         }
