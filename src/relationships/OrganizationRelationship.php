@@ -241,7 +241,9 @@ class OrganizationRelationship implements RelationshipInterface
      */
     protected function insertCollection(Collection $collection, UserAssociation $association)
     {
-        if (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder() && $association->organizationOrder > 0) {
+        if (Organizations::getInstance()->getSettings()->getEnforceUserSortOrder() &&
+            $association->organizationOrder > 0
+        ) {
             $collection->splice($association->organizationOrder - 1, 0, [$association]);
             return;
         }
