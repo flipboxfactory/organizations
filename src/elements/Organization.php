@@ -593,7 +593,7 @@ class Organization extends Element
      */
     public function withTypes(): self
     {
-        $this->saveTypes = false;
+        $this->saveTypes = true;
         return $this;
     }
 
@@ -602,7 +602,7 @@ class Organization extends Element
      */
     public function withoutTypes(): self
     {
-        $this->saveTypes = true;
+        $this->saveTypes = false;
         return $this;
     }
 
@@ -611,7 +611,7 @@ class Organization extends Element
      */
     public function withUsers(): self
     {
-        $this->saveUsers = false;
+        $this->saveUsers = true;
         return $this;
     }
 
@@ -620,7 +620,7 @@ class Organization extends Element
      */
     public function withoutUsers(): self
     {
-        $this->saveUsers = true;
+        $this->saveUsers = false;
         return $this;
     }
 

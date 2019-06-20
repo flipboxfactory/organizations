@@ -31,6 +31,31 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
     private $manager;
 
     /**
+     * Whether associated organizations should be saved
+     *
+     * @var bool
+     */
+    private $saveOrganizations = true;
+
+    /**
+     * @return static
+     */
+    public function withOrganizations(): self
+    {
+        $this->saveOrganizations = true;
+        return $this;
+    }
+
+    /**
+     * @return static
+     */
+    public function withoutUsers(): self
+    {
+        $this->saveOrganizations = false;
+        return $this;
+    }
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -94,7 +119,7 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
     private function onAfterSave(User $user)
     {
         // Check cache for explicitly set (and possibly not saved) organizations
-        if ($user->getOrganizations()->isMutated()) {
+        if (true === $this->saveOrganizations && $user->getOrganizations()->isMutated()) {
 
             /** @var Organization $organization */
             foreach ($user->getOrganizations()->getCollection() as $organization) {
@@ -109,9 +134,9 @@ class OrganizationsAssociatedToUserBehavior extends Behavior
                     }
                 }
             }
-        }
 
-        $user->getOrganizations()->save();
+            $user->getOrganizations()->save();
+        }
     }
 
     /**

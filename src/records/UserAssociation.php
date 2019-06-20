@@ -70,7 +70,7 @@ class UserAssociation extends ActiveRecord
      */
     public function withTypes(): self
     {
-        $this->saveTypes = false;
+        $this->saveTypes = true;
         return $this;
     }
 
@@ -79,7 +79,7 @@ class UserAssociation extends ActiveRecord
      */
     public function withoutTypes(): self
     {
-        $this->saveTypes = true;
+        $this->saveTypes = false;
         return $this;
     }
 
