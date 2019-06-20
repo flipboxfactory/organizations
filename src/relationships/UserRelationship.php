@@ -63,13 +63,36 @@ class UserRelationship implements RelationshipInterface
             );
         }
 
-        return new Collection(
-            $this->elementQuery()
-                ->id($this->getRelationships()->pluck('userId')->all())
-                ->fixedOrder(true)
-                ->anyStatus()
-                ->all()
-        );
+        return $this->createCollectionFromRelations();
+    }
+
+    /**
+     * @return Collection
+     */
+    protected function createCollectionFromRelations()
+    {
+        $ids = $this->getRelationships()->pluck('userId')->all();
+        if (empty($ids)) {
+            return $this->getRelationships()->pluck('user');
+        }
+
+        // 'eager' load where we'll pre-populate all of the elements
+        $elements = $this->elementQuery()
+            ->id($ids)
+            ->indexBy('id')
+            ->all();
+
+        return $this->getRelationships()
+            ->transform(function (UserAssociation $association) use ($elements) {
+                if (!$association->isUserSet() && isset($elements[$association->getUserId()])) {
+                    $association->setUser($elements[$association->getUserId()]);
+                }
+
+                $association->setOrganization($this->organization);
+
+                return $association;
+            })
+            ->pluck('user');
     }
 
     /**

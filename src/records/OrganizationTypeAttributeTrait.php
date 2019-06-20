@@ -27,6 +27,14 @@ trait OrganizationTypeAttributeTrait
     abstract public function populateRelation($name, $records);
 
     /**
+     * @return bool
+     */
+    public function isTypeSet(): bool
+    {
+        return null !== $this->isRelationPopulated('typeRecord');
+    }
+
+    /**
      * @return OrganizationType|null
      */
     protected function internalGetType()

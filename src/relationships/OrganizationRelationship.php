@@ -62,13 +62,36 @@ class OrganizationRelationship implements RelationshipInterface
             );
         }
 
-        return new Collection(
-            $this->elementQuery()
-                ->id($this->getRelationships()->pluck('organizationId')->all())
-                ->fixedOrder(true)
-                ->anyStatus()
-                ->all()
-        );
+        return $this->createCollectionFromRelations();
+    }
+
+    /**
+     * @return Collection
+     */
+    protected function createCollectionFromRelations()
+    {
+        $ids = $this->getRelationships()->pluck('organizationId')->all();
+        if (empty($ids)) {
+            return $this->getRelationships()->pluck('organization');
+        }
+
+        // 'eager' load where we'll pre-populate all of the elements
+        $elements = $this->elementQuery()
+            ->id($ids)
+            ->indexBy('id')
+            ->all();
+
+        return $this->getRelationships()
+            ->transform(function (UserAssociation $association) use ($elements) {
+                if (!$association->isOrganizationSet() && isset($elements[$association->getOrganizationId()])) {
+                    $association->setOrganization($elements[$association->getOrganizationId()]);
+                }
+
+                $association->setUser($this->user);
+
+                return $association;
+            })
+            ->pluck('organization');
     }
 
     /**

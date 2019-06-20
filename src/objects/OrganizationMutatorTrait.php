@@ -27,6 +27,14 @@ trait OrganizationMutatorTrait
     private $organization;
 
     /**
+     * @return bool
+     */
+    public function isOrganizationSet(): bool
+    {
+        return null !== $this->organization;
+    }
+
+    /**
      * Set associated organizationId
      *
      * @param $id
