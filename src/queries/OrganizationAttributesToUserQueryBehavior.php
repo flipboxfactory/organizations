@@ -9,7 +9,7 @@ use yii\base\Behavior;
 
 /**
  * Class UserOrganizationBehavior
- * @package flipbox\organizations\db\behaviors
+ * @package flipbox\organizations\queries
  *
  * @property UserQuery $owner
  */
