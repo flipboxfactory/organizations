@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\relationships;
 
+use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\organizations\elements\Organization;
@@ -16,6 +17,7 @@ use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 use Tightenco\Collect\Support\Collection;
+use yii\db\QueryInterface;
 
 /**
  * Manages Organizations associated to Users
@@ -27,7 +29,7 @@ use Tightenco\Collect\Support\Collection;
  * @method UserAssociation findOne($object = null)
  * @method UserAssociation findOrFail($object)
  */
-class OrganizationRelationship implements RelationshipInterface
+class OrganizationRelationship implements ElementRelationshipInterface
 {
     use RelationshipTrait;
 
@@ -57,7 +59,9 @@ class OrganizationRelationship implements RelationshipInterface
     {
         if (null === $this->relations) {
             return new Collection(
-                $this->elementQuery()
+                $this->getQuery()
+                    ->anyStatus()
+                    ->limit(null)
                     ->all()
             );
         }
@@ -76,9 +80,11 @@ class OrganizationRelationship implements RelationshipInterface
         }
 
         // 'eager' load where we'll pre-populate all of the elements
-        $elements = $this->elementQuery()
+        $elements = $this->getQuery()
             ->id($ids)
             ->indexBy('id')
+            ->anyStatus()
+            ->limit(null)
             ->all();
 
         return $this->getRelationships()
@@ -107,19 +113,19 @@ class OrganizationRelationship implements RelationshipInterface
         return $this->createRelations($relationships);
     }
 
+
     /************************************************************
      * QUERY
      ************************************************************/
 
     /**
+     * @inheritDoc
      * @return OrganizationQuery
      */
-    private function elementQuery(): OrganizationQuery
+    public function getQuery(): ElementQueryInterface
     {
         return Organization::find()
-            ->userId($this->user->getId() ?: false)
-            ->anyStatus()
-            ->limit(null);
+            ->userId($this->user->getId() ?: false);
     }
 
     /**

@@ -8,11 +8,13 @@
 
 namespace flipbox\organizations\relationships;
 
+use craft\elements\db\ElementQueryInterface;
 use craft\elements\db\UserQuery;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
 use flipbox\organizations\elements\Organization;
 use flipbox\organizations\Organizations;
+use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 use Tightenco\Collect\Support\Collection;
@@ -27,7 +29,7 @@ use Tightenco\Collect\Support\Collection;
  * @method UserAssociation findOne($object = null)
  * @method UserAssociation findOrFail($object)
  */
-class UserRelationship implements RelationshipInterface
+class UserRelationship implements ElementRelationshipInterface
 {
     use RelationshipTrait;
 
@@ -58,7 +60,9 @@ class UserRelationship implements RelationshipInterface
     {
         if (null === $this->relations) {
             return new Collection(
-                $this->elementQuery()
+                $this->getQuery()
+                    ->anyStatus()
+                    ->limit(null)
                     ->all()
             );
         }
@@ -77,9 +81,11 @@ class UserRelationship implements RelationshipInterface
         }
 
         // 'eager' load where we'll pre-populate all of the elements
-        $elements = $this->elementQuery()
+        $elements = $this->getQuery()
             ->id($ids)
             ->indexBy('id')
+            ->anyStatus()
+            ->limit(null)
             ->all();
 
         return $this->getRelationships()
@@ -112,14 +118,13 @@ class UserRelationship implements RelationshipInterface
      ************************************************************/
 
     /**
+     * @inheritDoc
      * @return UserQuery
      */
-    private function elementQuery(): UserQuery
+    public function getQuery(): ElementQueryInterface
     {
         return User::find()
-            ->organizationId($this->organization->getId() ?: false)
-            ->anyStatus()
-            ->limit(null);
+            ->organizationId($this->organization->getId() ?: false);
     }
 
     /**

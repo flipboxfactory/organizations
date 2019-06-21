@@ -230,7 +230,7 @@ trait RelationshipTrait
             }
         }
 
-        $this->mutated = false;
+        $this->reset();
 
         return $success;
     }
