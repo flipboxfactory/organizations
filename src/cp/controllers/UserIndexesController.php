@@ -9,6 +9,7 @@
 namespace flipbox\organizations\cp\controllers;
 
 use Craft;
+use craft\base\ElementInterface;
 use craft\controllers\ElementIndexesController;
 use craft\elements\User;
 use craft\events\RegisterElementHtmlAttributesEvent;
@@ -81,6 +82,47 @@ class UserIndexesController extends ElementIndexesController
         );
 
         parent::init();
+    }
+
+    /**
+     * Returns the element data to be returned to the client.
+     *
+     * @param bool $includeContainer Whether the element container should be included in the response data
+     * @param bool $includeActions Whether info about the available actions should be included in the response data
+     * @return array
+     */
+    protected function elementResponseData(bool $includeContainer, bool $includeActions): array
+    {
+        $responseData = [];
+
+        $view = $this->getView();
+
+        // Get the action head/foot HTML before any more is added to it from the element HTML
+        if ($includeActions) {
+            $responseData['actions'] = $this->actionData();
+            $responseData['actionsHeadHtml'] = $view->getHeadHtml();
+            $responseData['actionsFootHtml'] = $view->getBodyHtml();
+        }
+
+        $disabledElementIds = Craft::$app->getRequest()->getParam('disabledElementIds', []);
+        $showCheckboxes = !empty($this->actions);
+        /** @var string|ElementInterface $elementType */
+        $elementType = $this->elementType;
+
+        $responseData['html'] = $elementType::indexHtml(
+            $this->elementQuery,
+            $disabledElementIds,
+            $this->viewState,
+            'organizations', // Only changed this
+            $this->context,
+            $includeContainer,
+            $showCheckboxes
+        );
+
+        $responseData['headHtml'] = $view->getHeadHtml();
+        $responseData['footHtml'] = $view->getBodyHtml();
+
+        return $responseData;
     }
 
     /**
