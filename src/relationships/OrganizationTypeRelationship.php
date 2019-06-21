@@ -232,6 +232,10 @@ class OrganizationTypeRelationship implements RelationshipInterface
      */
     protected function findRelationshipKey($identifier)
     {
+        if (null === $identifier) {
+            return null;
+        }
+
         /** @var OrganizationTypeAssociation $association */
         foreach ($this->getRelationships()->all() as $key => $association) {
             if ($association->getTypeId() == $identifier) {

@@ -294,11 +294,7 @@ trait RelationshipTrait
      */
     protected function addToRelations($association): self
     {
-        if (null === $this->relations) {
-            return $this->newRelations([$association], true);
-        }
-
-        $this->insertCollection($this->relations, $association);
+        $this->insertCollection($this->getRelationships(), $association);
         $this->mutated = true;
 
         return $this;

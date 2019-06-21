@@ -303,6 +303,10 @@ class UserTypeRelationship implements RelationshipInterface
      */
     private function findRelationshipKey($identifier)
     {
+        if (null === $identifier) {
+            return null;
+        }
+
         /** @var UserTypeAssociation $association */
         foreach ($this->getRelationships()->all() as $key => $association) {
             if ($association->getTypeId() == $identifier) {

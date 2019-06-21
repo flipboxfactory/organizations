@@ -303,6 +303,10 @@ class UserRelationship implements ElementRelationshipInterface
      */
     private function findRelationshipKey($identifier)
     {
+        if (null === $identifier) {
+            return null;
+        }
+
         /** @var UserAssociation $association */
         foreach ($this->getRelationships()->all() as $key => $association) {
             if (null !== $association->getUser() && $association->getUser()->email == $identifier) {

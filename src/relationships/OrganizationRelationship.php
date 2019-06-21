@@ -301,6 +301,10 @@ class OrganizationRelationship implements ElementRelationshipInterface
      */
     private function findRelationshipKey($identifier)
     {
+        if (null === $identifier) {
+            return null;
+        }
+
         /** @var UserAssociation $association */
         foreach ($this->getRelationships()->all() as $key => $association) {
             if ($association->getOrganizationId() == $identifier) {
