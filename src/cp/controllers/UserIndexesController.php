@@ -113,8 +113,8 @@ class UserIndexesController extends ElementIndexesController
             $this->elementQuery,
             $disabledElementIds,
             $this->viewState,
-            'organizations', // Only changed this
-            'index',
+            'organizations', // Changed this
+            'index', // Changed this
             $includeContainer,
             $showCheckboxes
         );
