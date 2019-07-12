@@ -211,6 +211,8 @@
         } only %}
     </div>
 
+    {% hook "cp.organizations.edit.meta" %}
+
     {% if organization.id %}
         <hr>
         <div class="meta read-only">
