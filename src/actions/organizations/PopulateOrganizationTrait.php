@@ -87,6 +87,12 @@ trait PopulateOrganizationTrait
             (string)$request->getParam('fieldsLocation', 'fields')
         );
 
+        // Extra content
+        $this->populateExtraValuesFromRequest(
+            $organization,
+            (string)$request->getParam('extraLocation', 'extra')
+        );
+
         // Active type
         $type = Craft::$app->getRequest()->getParam('type');
         if (!empty($type)) {
@@ -119,6 +125,26 @@ trait PopulateOrganizationTrait
             Craft::$app->getRequest()->getBodyParam($dateProperty, $organization->{$dateProperty})
         );
         $organization->{$dateProperty} = $dateTime === false ? null : $dateTime;
+    }
+
+    /**
+     * Populate any 'extra' namespaced input values on the organization
+     *
+     * @param OrganizationElement $organization
+     * @param string $identifier
+     */
+    public function populateExtraValuesFromRequest(OrganizationElement $organization, string $identifier = 'extra')
+    {
+        if (null !== ($data = Craft::$app->getRequest()->getBodyParam($identifier))) {
+            if (!is_array($data)) {
+                return;
+            }
+
+            Craft::configure(
+                $organization,
+                $data
+            );
+        }
     }
 
     /*******************************************
