@@ -14,7 +14,7 @@ use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\db\UserQuery;
 use craft\helpers\ArrayHelper;
-use flipbox\organizations\objects\OrganizationMutatorTrait;
+use flipbox\organizations\objects\OrganizationAttributeTrait;
 use yii\base\InvalidArgumentException;
 
 /**
@@ -23,7 +23,7 @@ use yii\base\InvalidArgumentException;
  */
 class DissociateUsersFromOrganizationAction extends ElementAction
 {
-    use OrganizationMutatorTrait;
+    use OrganizationAttributeTrait;
 
     /**
      * @return array

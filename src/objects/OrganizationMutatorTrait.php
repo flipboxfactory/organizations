@@ -13,7 +13,13 @@ use flipbox\craft\ember\helpers\ObjectHelper;
 use flipbox\organizations\elements\Organization;
 
 /**
- * @property int|null $organizationId
+ * This trait accepts both an Organization or and Organization Id and ensures that the both
+ * the Organization and the Id are in sync; If one changes (and does not match the other) it
+ * resolves (removes / updates) the other.
+ *
+ * In addition, this trait is primarily useful when a new Organization is set and saved; the Organization
+ * Id can be retrieved without needing to explicitly set the newly created Id.
+ *
  * @property Organization|null $organization
  *
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -25,6 +31,23 @@ trait OrganizationMutatorTrait
      * @var Organization|null
      */
     private $organization;
+
+    /**
+     * Internally set the Organization Id.  This can be overridden. A record for example
+     * should use `setAttribute`.
+     *
+     * @param int|null $id
+     * @return $this
+     */
+    abstract protected function internalSetOrganizationId(int $id = null);
+
+    /**
+     * Internally get the Organization Id.  This can be overridden.  A record for example
+     * should use `getAttribute`.
+     *
+     * @return int|null
+     */
+    abstract protected function internalGetOrganizationId();
 
     /**
      * @return bool
@@ -40,9 +63,14 @@ trait OrganizationMutatorTrait
      * @param $id
      * @return $this
      */
-    public function setOrganizationId(int $id)
+    public function setOrganizationId(int $id = null)
     {
-        $this->organizationId = $id;
+        $this->internalSetOrganizationId($id);
+
+        if (null !== $this->organization && $id !== $this->organization->id) {
+            $this->organization = null;
+        }
+
         return $this;
     }
 
@@ -53,11 +81,11 @@ trait OrganizationMutatorTrait
      */
     public function getOrganizationId()
     {
-        if (null === $this->organizationId && null !== $this->organization) {
-            $this->organizationId = $this->organization->id;
+        if (null === $this->internalGetOrganizationId() && null !== $this->organization) {
+            $this->setOrganizationId($this->organization->id);
         }
 
-        return $this->organizationId;
+        return $this->internalGetOrganizationId();
     }
 
     /**
@@ -69,12 +97,11 @@ trait OrganizationMutatorTrait
     public function setOrganization($organization = null)
     {
         $this->organization = null;
+        $this->internalSetOrganizationId(null);
 
-        if (null === ($organization = $this->internalResolveOrganization($organization))) {
-            $this->organization = $this->organizationId = null;
-        } else {
-            $this->organizationId = $organization->id;
+        if (null !== ($organization = $this->verifyOrganization($organization))) {
             $this->organization = $organization;
+            $this->internalSetOrganizationId($organization->id);
         }
 
         return $this;
@@ -91,10 +118,8 @@ trait OrganizationMutatorTrait
             return $organization;
         }
 
-        $organizationId = $this->organizationId;
-        if ($organizationId !== null &&
-            $organizationId !== $this->organization->id
-        ) {
+        $organizationId = $this->internalGetOrganizationId();
+        if ($organizationId !== null && $organizationId !== $this->organization->id) {
             $this->organization = null;
             return $this->getOrganization();
         }
@@ -107,8 +132,8 @@ trait OrganizationMutatorTrait
      */
     protected function resolveOrganization()
     {
-        if ($model = $this->resolveOrganizationFromId()) {
-            return $model;
+        if ($organization = $this->resolveOrganizationFromId()) {
+            return $organization;
         }
 
         return null;
@@ -119,18 +144,21 @@ trait OrganizationMutatorTrait
      */
     private function resolveOrganizationFromId()
     {
-        if (null === $this->organizationId) {
+        if (null === ($organizationId = $this->internalGetOrganizationId())) {
             return null;
         }
 
-        return Organization::findOne($this->organizationId);
+        return Organization::findOne($organizationId);
     }
 
     /**
-     * @param $organization
+     * Attempt to verify that the passed 'organization' is a valid element.  A primary key or query
+     * can be passed to lookup an organization.
+     *
+     * @param mixed $organization
      * @return Organization|null
      */
-    protected function internalResolveOrganization($organization = null)
+    protected function verifyOrganization($organization = null)
     {
         if (null === $organization) {
             return null;
@@ -140,21 +168,6 @@ trait OrganizationMutatorTrait
             return $organization;
         }
 
-        if (is_numeric($organization) || is_string($organization)) {
-            return Organization::findOne($organization);
-        }
-
-        try {
-            $object = Craft::createObject(Organization::class, [$organization]);
-        } catch (\Exception $e) {
-            $object = new Organization();
-            ObjectHelper::populate(
-                $object,
-                $organization
-            );
-        }
-
-        /** @var Organization $object */
-        return $object;
+        return Organization::findOne($organization);
     }
 }

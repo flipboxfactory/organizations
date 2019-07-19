@@ -9,7 +9,7 @@
 namespace flipbox\organizations\models;
 
 use craft\elements\User as UserElement;
-use flipbox\craft\ember\helpers\ModelHelper;
+use yii\base\Model;
 
 /**
  * @property int|null $userId
@@ -40,7 +40,7 @@ trait OrganizationRulesTrait
                 ],
                 'safe',
                 'on' => [
-                    ModelHelper::SCENARIO_DEFAULT
+                    Model::SCENARIO_DEFAULT
                 ]
             ]
         ];

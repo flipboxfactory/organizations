@@ -11,6 +11,7 @@ namespace flipbox\organizations\models;
 use Craft;
 use DateTime;
 use flipbox\organizations\objects\DateJoinedMutatorTrait;
+use flipbox\organizations\Organizations;
 
 /**
  * @property DateTime|null $dateJoined
@@ -43,7 +44,7 @@ trait DateJoinedAttributeTrait
     protected function dateJoinedAttributeLabels()
     {
         return [
-            'dateJoined' => Craft::t('organizations', 'Date Joined')
+            'dateJoined' => Organizations::t('Date Joined')
         ];
     }
 }

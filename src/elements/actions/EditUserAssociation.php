@@ -11,7 +11,7 @@ namespace flipbox\organizations\elements\actions;
 use Craft;
 use craft\base\ElementAction;
 use craft\helpers\Json;
-use flipbox\organizations\objects\OrganizationMutatorTrait;
+use flipbox\organizations\objects\OrganizationAttributeTrait;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -19,7 +19,7 @@ use flipbox\organizations\objects\OrganizationMutatorTrait;
  */
 class EditUserAssociation extends ElementAction
 {
-    use OrganizationMutatorTrait;
+    use OrganizationAttributeTrait;
 
     /**
      * @return array

@@ -12,13 +12,16 @@ use flipbox\craft\ember\records\ActiveRecordTrait;
 use flipbox\organizations\elements\Organization as OrganizationElement;
 use flipbox\organizations\models\OrganizationRulesTrait;
 use flipbox\organizations\objects\OrganizationMutatorTrait;
+use flipbox\organizations\Organizations;
 use yii\db\ActiveQueryInterface;
 
 /**
+ * Intended to be used on an ActiveRecord, this class provides `$this->organizationId` attribute along with 'getters'
+ * and 'setters' to ensure continuity between the Id and Object.  An organization object is lazy loaded when called.
+ * In addition, ActiveRecord rules are available.
+ *
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
- *
- * @property Organization[] $organizationRecord
  */
 trait OrganizationAttributeTrait
 {
@@ -27,19 +30,43 @@ trait OrganizationAttributeTrait
         OrganizationMutatorTrait;
 
     /**
-     * Get associated organizationId
-     *
-     * @return int|null
+     * @inheritdoc
      */
-    public function getOrganizationId()
+    public function organizationAttributes(): array
     {
-        $id = $this->getAttribute('organizationId');
-        if (null === $id && null !== $this->organization) {
-            $id = $this->organization->id;
-            $this->setAttribute('organizationId', $id);
-        }
+        return [
+            'organizationId'
+        ];
+    }
 
-        return $id;
+    /**
+     * @inheritdoc
+     */
+    public function organizationAttributeLabels(): array
+    {
+        return [
+            'organizationId' => Organizations::t('Organization Id')
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function internalSetOrganizationId(int $id = null)
+    {
+        $this->setAttribute('organizationId', $id);
+        return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected function internalGetOrganizationId()
+    {
+        if (null === ($id = $this->getAttribute('organizationId'))) {
+            return null;
+        }
+        return (int) $id;
     }
 
     /**
@@ -63,11 +90,11 @@ trait OrganizationAttributeTrait
             return null;
         }
 
-        /** @var Organization $record */
-        $record = $this->getRelation('organizationRecord');
-        if (null === $record) {
+        if (null === ($record = $this->getRelation('organizationRecord'))) {
             return null;
         }
+
+        /** @var Organization $record */
 
         return OrganizationElement::findOne($record->id);
     }
