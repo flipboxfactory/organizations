@@ -32,7 +32,7 @@ class OrganizationType extends ActiveRecordWithId
 {
     use FieldLayoutAttributeTrait,
         HandleRulesTrait {
-        resolveFieldLayout as parentResolveFieldLayout;
+        resolveFieldLayout as traitResolveFieldLayout;
     }
 
     /**
@@ -58,7 +58,7 @@ class OrganizationType extends ActiveRecordWithId
      */
     protected function resolveFieldLayout()
     {
-        if (null === ($fieldLayout = $this->parentResolveFieldLayout())) {
+        if (null === ($fieldLayout = $this->traitResolveFieldLayout())) {
             $fieldLayout = OrganizationPlugin::getInstance()->getSettings()->getFieldLayout();
         }
 
