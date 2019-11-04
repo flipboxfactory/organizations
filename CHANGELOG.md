@@ -7,6 +7,9 @@ Changelog
 As a result, `Organization::getUsers()`, `Organization::getTypes()`, `User::getOrganizations()` and
  `User::getUserTypes()` return a `RelationshipInterface` which is used to access and manage relationships.
 
+### Added
+- Craft Project config support.
+
 ## 2.0.2 - 2019-06-12
 ### Added
 - Associations can bypass child association saving

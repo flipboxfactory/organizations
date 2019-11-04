@@ -97,4 +97,19 @@ class UserType extends ActiveRecordWithId
     {
         return (string)$this->getAttribute('name');
     }
+
+    /*******************************************
+     * PROJECT CONFIG
+     *******************************************/
+
+    /**
+     * Return an array suitable for Craft's Project config
+     */
+    public function toProjectConfig(): array
+    {
+        return $this->toArray([
+            'handle',
+            'name'
+        ]);
+    }
 }

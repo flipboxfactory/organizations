@@ -21,6 +21,7 @@ use flipbox\organizations\models\SiteSettingsInterface;
  * @author Flipbox Factory <hello@flipboxfactory.com>
  * @since 1.0.0
  *
+ * @property bool $enabledByDefault
  * @property bool $hasUrls
  * @property string $uriFormat
  * @property string $template
@@ -89,13 +90,14 @@ class OrganizationTypeSiteSettings extends ActiveRecord implements SiteSettingsI
                 ],
                 [
                     [
+                        'enabledByDefault',
                         'hasUrls',
                         'uriFormat',
                         'template'
                     ],
                     'safe',
                     'on' => [
-                        ModelHelper::SCENARIO_DEFAULT
+                        static::SCENARIO_DEFAULT
                     ]
                 ],
                 [
@@ -113,6 +115,22 @@ class OrganizationTypeSiteSettings extends ActiveRecord implements SiteSettingsI
         );
     }
 
+    /*******************************************
+     * PROJECT CONFIG
+     *******************************************/
+
+    /**
+     * Return an array suitable for Craft's Project config
+     */
+    public function toProjectConfig(): array
+    {
+        return $this->toArray([
+            'enabledByDefault',
+            'hasUrls',
+            'uriFormat',
+            'template'
+        ]);
+    }
 
     /**
      * @inheritdoc
@@ -141,7 +159,6 @@ class OrganizationTypeSiteSettings extends ActiveRecord implements SiteSettingsI
         $this->reSaveOrganizations();
         parent::afterDelete();
     }
-
 
     /**
      * Save organizations

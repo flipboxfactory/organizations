@@ -17,12 +17,15 @@ use craft\helpers\UrlHelper;
 use craft\models\FieldLayout as FieldLayoutModel;
 use craft\services\Elements;
 use craft\services\Fields;
+use craft\services\ProjectConfig;
 use craft\web\twig\variables\CraftVariable;
 use craft\web\UrlManager;
 use flipbox\craft\ember\modules\LoggerTrait;
 use flipbox\organizations\elements\Organization as OrganizationElement;
+use flipbox\organizations\events\handlers\ProjectConfigHandler;
 use flipbox\organizations\models\Settings as OrganizationSettings;
 use flipbox\organizations\records\OrganizationType as OrganizationType;
+use flipbox\organizations\records\UserType;
 use flipbox\organizations\web\twig\variables\Organization as OrganizationVariable;
 use yii\base\Event;
 
@@ -54,6 +57,9 @@ class Organizations extends BasePlugin
         ]);
 
         parent::init();
+
+        // Project config
+        $this->registerProjectConfigEvents();
 
         // Fields
         Event::on(
@@ -163,6 +169,129 @@ class Organizations extends BasePlugin
                 );
             });
         }
+    }
+
+    /**
+     * Register project config events, if we're able to
+     */
+    protected function registerProjectConfigEvents()
+    {
+        if (!version_compare(Craft::$app->getVersion(), '3.1', '>=')) {
+            return;
+        }
+
+        // Project Config
+        Craft::$app->projectConfig
+            ->onAdd(
+                'plugins.organizations.organizationTypes.{uid}',
+                [
+                    ProjectConfigHandler::class,
+                    'handleChangedOrganizationType'
+                ]
+            )
+            ->onUpdate(
+                'plugins.organizations.organizationTypes.{uid}',
+                [
+                    ProjectConfigHandler::class,
+                    'handleChangedOrganizationType'
+                ]
+            )
+            ->onRemove(
+                'plugins.organizations.organizationTypes.{uid}',
+                [
+                    ProjectConfigHandler::class,
+                    'handleDeletedOrganizationType'
+                ]
+            )
+            ->onAdd(
+                'plugins.organizations.userTypes.{uid}',
+                [
+                    ProjectConfigHandler::class,
+                    'handleChangedUserType'
+                ]
+            )
+            ->onUpdate(
+                'plugins.organizations.userTypes.{uid}',
+                [
+                    ProjectConfigHandler::class,
+                    'handleChangedUserType'
+                ]
+            )
+            ->onRemove(
+                'plugins.organizations.userTypes.{uid}',
+                [
+                    ProjectConfigHandler::class,
+                    'handleDeletedUserType'
+                ]
+            );
+
+        /**
+         * Rebuilding project configs was introduce in 3.1.20
+         */
+        if (version_compare(Craft::$app->getVersion(), '3.1.20', '>=')) {
+            Event::on(
+                ProjectConfig::class,
+                ProjectConfig::EVENT_REBUILD,
+                [
+                    events\handlers\ProjectConfigHandler::class,
+                    'rebuild'
+                ]
+            );
+        }
+
+        Event::on(
+            OrganizationType::class,
+            OrganizationType::EVENT_AFTER_INSERT,
+            [
+                events\ManageOrganizationTypeProjectConfig::class,
+                'save'
+            ]
+        );
+
+        Event::on(
+            OrganizationType::class,
+            OrganizationType::EVENT_AFTER_UPDATE,
+            [
+                events\ManageOrganizationTypeProjectConfig::class,
+                'save'
+            ]
+        );
+
+        Event::on(
+            OrganizationType::class,
+            OrganizationType::EVENT_AFTER_DELETE,
+            [
+                events\ManageOrganizationTypeProjectConfig::class,
+                'delete'
+            ]
+        );
+
+        Event::on(
+            UserType::class,
+            UserType::EVENT_AFTER_INSERT,
+            [
+                events\ManageUserTypeProjectConfig::class,
+                'save'
+            ]
+        );
+
+        Event::on(
+            UserType::class,
+            UserType::EVENT_AFTER_UPDATE,
+            [
+                events\ManageUserTypeProjectConfig::class,
+                'save'
+            ]
+        );
+
+        Event::on(
+            UserType::class,
+            UserType::EVENT_AFTER_DELETE,
+            [
+                events\ManageUserTypeProjectConfig::class,
+                'delete'
+            ]
+        );
     }
 
     /*******************************************

@@ -339,4 +339,31 @@ class OrganizationType extends ActiveRecordWithId
     {
         return (string)$this->getAttribute('name');
     }
+
+    /*******************************************
+     * PROJECT CONFIG
+     *******************************************/
+
+    /**
+     * Return an array suitable for Craft's Project config
+     */
+    public function toProjectConfig(): array
+    {
+        $siteSettings = [];
+
+        foreach ($this->getSiteSettings() as $record) {
+            $siteSettings[$record->siteId] = $record->toProjectConfig();
+        }
+
+        return array_merge(
+            $this->toArray([
+                'handle',
+                'name',
+                'fieldLayoutId',
+            ]),
+            [
+                'siteSettings' => $siteSettings
+            ]
+        );
+    }
 }
