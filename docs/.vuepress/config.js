@@ -50,16 +50,6 @@ module.exports = {
                     ]
                 },
                 {
-                    title: 'Services',
-                    collapsable: false,
-                    children: [
-                        ['/services/elements', 'Organization Elements'],
-                        ['/services/organization-types', 'Organization Types'],
-                        ['/services/users', 'User Elements'],
-                        ['/services/user-types', 'User Types']
-                    ]
-                },
-                {
                     title: 'Objects',
                     collapsable: false,
                     children: [

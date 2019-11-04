@@ -23,13 +23,12 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
             this.loadHud();
         },
 
-        getBaseData: function() {
+        getBaseData: function () {
             var data = $.extend({}, this.settings.params);
 
             if (this.settings.elementId) {
                 data.elementId = this.settings.elementId;
-            }
-            else if (this.$element && this.$element.data('id')) {
+            } else if (this.$element && this.$element.data('id')) {
                 data.elementId = this.$element.data('id');
             }
 
@@ -51,7 +50,7 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
             Craft.postActionRequest(this.settings.loadHudAction, data, $.proxy(this, 'showHud'));
         },
 
-        showHud: function(response, textStatus) {
+        showHud: function (response, textStatus) {
             this.onEndLoading();
 
             if (textStatus === 'success') {
@@ -85,11 +84,10 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
 
                     this.hud.$hud.data('elementEditor', this);
 
-                    this.hud.on('hide', $.proxy(function() {
+                    this.hud.on('hide', $.proxy(function () {
                         delete this.hud;
                     }, this));
-                }
-                else {
+                } else {
                     this.hud.updateBody($hudContents);
                     this.hud.updateSizeAndPosition();
                 }
@@ -97,7 +95,7 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
                 // Focus on the first text input
                 $hudContents.find('.text:first').trigger('focus');
 
-                this.addListener(this.$cancelBtn, 'click', function() {
+                this.addListener(this.$cancelBtn, 'click', function () {
                     this.hud.hide();
                 });
             }
@@ -117,14 +115,13 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
             }, this));
         },
 
-        updateForm: function(response) {
+        updateForm: function (response) {
             this.$fieldsContainer.html(response.html);
 
             // Swap any instruction text with info icons
             var $instructions = this.$fieldsContainer.find('> .meta > .field > .heading > .instructions');
 
             for (var i = 0; i < $instructions.length; i++) {
-
                 $instructions.eq(i)
                     .replaceWith($('<span/>', {
                         'class': 'info',
@@ -133,7 +130,7 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
                     .infoicon();
             }
 
-            Garnish.requestAnimationFrame($.proxy(function() {
+            Garnish.requestAnimationFrame($.proxy(function () {
                 Craft.appendHeadHtml(response.headHtml);
                 Craft.appendFootHtml(response.footHtml);
                 Craft.initUiElements(this.$fieldsContainer);
@@ -183,7 +180,7 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
             }, this));
         },
 
-        closeHud: function() {
+        closeHud: function () {
             this.hud.hide();
             delete this.hud;
         },
@@ -191,12 +188,12 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
         // Events
         // -------------------------------------------------------------------------
 
-        onShowHud: function() {
+        onShowHud: function () {
             this.settings.onShowHud();
             this.trigger('showHud');
         },
 
-        onHideHud: function() {
+        onHideHud: function () {
             if (this.reloadIndex && this.settings.elementIndex) {
                 this.settings.elementIndex.updateElements();
             }
@@ -205,7 +202,7 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
             this.trigger('hideHud');
         },
 
-        onBeginLoading: function() {
+        onBeginLoading: function () {
             if (this.$element) {
                 this.$element.addClass('loading');
             }
@@ -214,7 +211,7 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
             this.trigger('beginLoading');
         },
 
-        onEndLoading: function() {
+        onEndLoading: function () {
             if (this.$element) {
                 this.$element.removeClass('loading');
             }
@@ -223,14 +220,14 @@ Craft.UserAssociationEditor = Garnish.Base.extend(
             this.trigger('endLoading');
         },
 
-        onSaveElement: function(response) {
+        onSaveElement: function (response) {
             this.settings.onSaveElement(response);
             this.trigger('saveElement', {
                 response: response
             });
         },
 
-        onCreateForm: function($form) {
+        onCreateForm: function ($form) {
             this.settings.onCreateForm($form);
         }
     },
