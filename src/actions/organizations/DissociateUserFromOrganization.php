@@ -45,12 +45,13 @@ class DissociateUserFromOrganization extends Action
     }
 
     /**
-     * @inheritdoc
-     * @param UserAssociation $record
+     * @param UserAssociation $association
      * @return bool
+     * @throws \Throwable
+     * @throws \yii\db\StaleObjectException
      */
     protected function performAction(UserAssociation $association): bool
     {
-        return $association->save();
+        return (bool) $association->delete();
     }
 }
