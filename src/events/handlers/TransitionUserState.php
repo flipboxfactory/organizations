@@ -43,7 +43,8 @@ class TransitionUserState
         } catch (\Exception $e) {
             Organizations::warning(
                 sprintf(
-                    "Exception caught while trying to transition user '%s' organization type states. Exception: [%s].",
+                    "Exception caught while trying to transition user '%s' organization type states. " .
+                    "Exception: [%s].",
                     $user->getId(),
                     (string)Json::encode([
                         'Trace' => $e->getTraceAsString(),
@@ -100,7 +101,8 @@ class TransitionUserState
             if (!$association->save(true)) {
                 Organizations::warning(
                     sprintf(
-                        "Failed to transition user '%s' associated to organization '%s' from state '%s' to '%s'. Exception: [%s].",
+                        "Failed to transition user '%s' associated to organization '%s' " .
+                        "from state '%s' to '%s'. Exception: [%s].",
                         $association->getUserId(),
                         $association->getOrganizationId(),
                         $state,
@@ -113,7 +115,8 @@ class TransitionUserState
         } catch (\Exception $e) {
             Organizations::warning(
                 sprintf(
-                    "Exception caught while trying to transition user '%s' associated to organization '%s' from state '%s' to '%s'. Exception: [%s].",
+                    "Exception caught while trying to transition user '%s' associated to organization '%s' " .
+                    "from state '%s' to '%s'. Exception: [%s].",
                     $association->getUserId(),
                     $association->getOrganizationId(),
                     $state,
