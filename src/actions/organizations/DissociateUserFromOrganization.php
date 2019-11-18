@@ -30,8 +30,7 @@ class DissociateUserFromOrganization extends Action
     public function run(
         string $user,
         string $organization
-    )
-    {
+    ) {
         if (null === ($user = $this->findUser($user))) {
             return $this->handleNotFoundResponse();
         }
