@@ -34,9 +34,11 @@ use yii\helpers\Json;
  */
 class UserAssociation extends ActiveRecord
 {
+
     const STATE_ACTIVE = 'active';
     const STATE_PENDING = 'pending';
     const STATE_INACTIVE = 'inactive';
+    const STATE_INVITED = 'invited';
 
     use SortableTrait,
         UserAttributeTrait,

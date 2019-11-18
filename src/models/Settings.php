@@ -79,7 +79,8 @@ class Settings extends Model
         return [
             UserAssociation::STATE_ACTIVE => Organizations::t('Active'),
             UserAssociation::STATE_PENDING => Organizations::t('Pending'),
-            UserAssociation::STATE_INACTIVE => Organizations::t('Inactive')
+            UserAssociation::STATE_INACTIVE => Organizations::t('Inactive'),
+            UserAssociation::STATE_INVITED => Organizations::t('Invited')
         ];
     }
 
