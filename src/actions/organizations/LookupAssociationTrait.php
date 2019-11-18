@@ -11,7 +11,6 @@ namespace flipbox\organizations\actions\organizations;
 use Craft;
 use craft\elements\User;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\records\UserAssociation;
 use yii\db\ActiveRecord;
 use yii\web\HttpException;
 
@@ -23,35 +22,6 @@ use yii\web\HttpException;
  */
 trait LookupAssociationTrait
 {
-    /**
-     * @param ActiveRecord|UserAssociation $record
-     * @return UserAssociation
-     */
-    abstract protected function runInternal(ActiveRecord $record);
-
-    /**
-     * @param string $user
-     * @param string $organization
-     * @return null|\yii\base\Model|\yii\web\Response
-     * @throws HttpException
-     */
-    public function run(
-        string $user,
-        string $organization
-    ) {
-        if (null === ($user = $this->findUser($user))) {
-            return $this->handleNotFoundResponse();
-        }
-
-        if (null === ($organization = Organization::findOne($organization))) {
-            return $this->handleNotFoundResponse();
-        }
-
-        return $this->runInternal(
-            $organization->getUsers()->findOrCreate($user)
-        );
-    }
-
     /**
      * HTTP not found response code
      *
@@ -82,6 +52,14 @@ trait LookupAssociationTrait
         );
     }
 
+    /**
+     * @param string|int $identifier
+     * @return ORganization|null
+     */
+    protected function findOrganization($identifier)
+    {
+        return Organization::findOne($identifier);
+    }
 
     /**
      * @param string|int $identifier

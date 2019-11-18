@@ -13,6 +13,7 @@ use flipbox\craft\ember\actions\records\SaveRecordTrait;
 use flipbox\organizations\records\UserAssociation;
 use yii\base\Action;
 use yii\db\ActiveRecord;
+use yii\web\HttpException;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -29,6 +30,30 @@ class AssociateUserToOrganization extends Action
         'sortOrder' => 'userOrder',
         'state'
     ];
+
+    /**
+     * @param string $user
+     * @param string $organization
+     * @return null|\yii\base\Model|\yii\web\Response
+     * @throws HttpException
+     */
+    public function run(
+        string $user,
+        string $organization
+    )
+    {
+        if (null === ($user = $this->findUser($user))) {
+            return $this->handleNotFoundResponse();
+        }
+
+        if (null === ($organization = $this->findOrganization($organization))) {
+            return $this->handleNotFoundResponse();
+        }
+
+        return $this->runInternal(
+            $organization->getUsers()->findOrCreate($user)
+        );
+    }
 
     /**
      * @inheritdoc
