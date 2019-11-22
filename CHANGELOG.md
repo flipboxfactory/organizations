@@ -1,7 +1,10 @@
 Changelog
 =========
+## 3.0.1 - 2019-11-22
+### Fixed
+- Migration typo in class name
 
-## Unreleased
+## 3.0.0 - 2019-11-20
 ### Changed
 - Refactored getters and setters used to access/manage relationships directly from `Organization` and `User` elements.
 As a result, `Organization::getUsers()`, `Organization::getTypes()`, `User::getOrganizations()` and
