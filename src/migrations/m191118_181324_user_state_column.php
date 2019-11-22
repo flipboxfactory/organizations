@@ -15,7 +15,7 @@ use flipbox\organizations\records\UserAssociation;
 /**
  * This migration alters the 'state' column to include the new 'invited' option.
  */
-class m191118_1813249_user_state_column extends Migration
+class m191118_181324_user_state_column extends Migration
 {
     /**
      * @inheritdoc
@@ -33,7 +33,7 @@ class m191118_1813249_user_state_column extends Migration
         $type = $this->enum(
             AlterUserStates::COLUMN_NAME,
             $states
-        )->defaultValue($defaultState)->notNull()->after('organizationOrder');
+        )->defaultValue($defaultState)->notNull();
 
         $this->alterColumn(
             UserAssociation::tableName(),
