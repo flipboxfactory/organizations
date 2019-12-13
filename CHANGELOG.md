@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 3.0.2 - 2019-12-13
 ### Changed
 - Relaxing explicit '!==' id checks to '!='.
 
