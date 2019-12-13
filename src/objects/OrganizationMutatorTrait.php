@@ -67,7 +67,7 @@ trait OrganizationMutatorTrait
     {
         $this->internalSetOrganizationId($id);
 
-        if (null !== $this->organization && $id !== $this->organization->id) {
+        if (null !== $this->organization && $id != $this->organization->id) {
             $this->organization = null;
         }
 
@@ -119,7 +119,7 @@ trait OrganizationMutatorTrait
         }
 
         $organizationId = $this->internalGetOrganizationId();
-        if ($organizationId !== null && $organizationId !== $this->organization->id) {
+        if ($organizationId !== null && $organizationId != $this->organization->id) {
             $this->organization = null;
             return $this->getOrganization();
         }

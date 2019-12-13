@@ -46,7 +46,7 @@ trait OrganizationTypeMutatorTrait
     {
         $this->internalSetTypeId($id);
 
-        if (null !== $this->internalGetType() && $id !== $this->internalGetType()->id) {
+        if (null !== $this->internalGetType() && $id != $this->internalGetType()->id) {
             $this->internalSetType(null);
         }
 
@@ -94,7 +94,7 @@ trait OrganizationTypeMutatorTrait
         }
 
         $typeId = $this->internalGetTypeId();
-        if ($typeId !== null && $typeId !== $this->internalGetType()->id) {
+        if ($typeId !== null && $typeId != $this->internalGetType()->id) {
             $this->internalSetType(null);
             return $this->getType();
         }

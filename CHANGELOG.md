@@ -1,5 +1,10 @@
 Changelog
 =========
+
+## Unreleased
+### Changed
+- Relaxing explicit '!==' id checks to '!='.
+
 ## 3.0.1 - 2019-11-22
 ### Fixed
 - Migration typo in class name

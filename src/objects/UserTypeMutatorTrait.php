@@ -44,7 +44,7 @@ trait UserTypeMutatorTrait
     {
         $this->internalSetTypeId($id);
 
-        if (null !== $this->internalGetType() && $id !== $this->internalGetType()->id) {
+        if (null !== $this->internalGetType() && $id != $this->internalGetType()->id) {
             $this->internalSetType(null);
         }
 
@@ -56,7 +56,7 @@ trait UserTypeMutatorTrait
      */
     public function getTypeId()
     {
-        if (null === $this->internalGetTypeId() && null !== $this->internalGetType()) {
+        if (null === $this->internalGetTypeId() && null != $this->internalGetType()) {
             $this->setTypeId($this->internalGetType()->id);
         }
 
@@ -92,7 +92,7 @@ trait UserTypeMutatorTrait
         }
 
         $typeId = $this->internalGetTypeId();
-        if ($typeId !== null && $typeId !== $this->internalGetType()->id) {
+        if ($typeId !== null && $typeId != $this->internalGetType()->id) {
             $this->internalSetType(null);
             return $this->getType();
         }
