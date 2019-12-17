@@ -75,7 +75,7 @@ class ProjectConfigHandler
         // Sites
         if (isset($event->newValue['siteSettings'])) {
             $siteSettings = [];
-            foreach((array)$event->newValue['siteSettings'] as $id => $settings) {
+            foreach ((array)$event->newValue['siteSettings'] as $id => $settings) {
                 // id may be a uid
                 if (!is_numeric($id)) {
                     $uid = $id;
