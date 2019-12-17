@@ -32,7 +32,7 @@ class OrganizationType extends ActiveRecordWithId
 {
     use FieldLayoutAttributeTrait,
         HandleRulesTrait {
-        resolveFieldLayout as traitResolveFieldLayout;
+            resolveFieldLayout as traitResolveFieldLayout;
     }
 
     /**
@@ -352,16 +352,19 @@ class OrganizationType extends ActiveRecordWithId
         $siteSettings = [];
 
         foreach ($this->getSiteSettings() as $record) {
-            $siteSettings[$record->siteId] = $record->toProjectConfig();
+            $siteSettings[$record->getSite()->uid] = $record->toProjectConfig();
         }
 
         return array_merge(
             $this->toArray([
                 'handle',
-                'name',
-                'fieldLayoutId',
+                'name'
             ]),
             [
+                'fieldLayout' => array_merge(
+                    ['uid' => $this->getFieldLayout()->uid],
+                    $this->getFieldLayout()->getConfig()
+                ),
                 'siteSettings' => $siteSettings
             ]
         );

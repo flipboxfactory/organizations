@@ -9,7 +9,10 @@
 namespace flipbox\organizations\events\handlers;
 
 use Craft;
+use craft\db\Table;
 use craft\events\ConfigEvent;
+use craft\helpers\Db;
+use craft\models\FieldLayout;
 use flipbox\organizations\events\ManageOrganizationTypeProjectConfig;
 use flipbox\organizations\events\ManageUserTypeProjectConfig;
 use flipbox\organizations\records\OrganizationType;
@@ -45,18 +48,54 @@ class ProjectConfigHandler
             ]
         );
 
+        Event::off(
+            OrganizationType::class,
+            OrganizationType::EVENT_AFTER_INSERT,
+            [
+                ManageOrganizationTypeProjectConfig::class,
+                'save'
+            ]
+        );
+
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
 
-        if (null === ($provider = OrganizationType::findOne([
+        if (null === ($type = OrganizationType::findOne([
                 'uid' => $uid
-            ]))) {
-            $provider = new OrganizationType();
+            ]))
+        ) {
+            $type = new OrganizationType();
         }
 
-        Craft::configure($provider, $event->newValue);
+        // Field Layout
+        if (isset($event->newValue['fieldLayout'])) {
+            $event->newValue['fieldLayout'] = static::createFieldLayout($event->newValue['fieldLayout'] ?? []);
+        }
 
-        $provider->save();
+        // Sites
+        if (isset($event->newValue['siteSettings'])) {
+            $siteSettings = [];
+            foreach((array)$event->newValue['siteSettings'] as $id => $settings) {
+                // id may be a uid
+                if (!is_numeric($id)) {
+                    $uid = $id;
+                    $id = Db::idByUid(Table::SITES, $uid);
+                }
+
+                $settings['typeId'] = $type->getId();
+
+                if (!empty($uid)) {
+                    $settings['uid'] = $uid;
+                }
+
+                $siteSettings[$id] = $settings;
+            }
+            $event->newValue['siteSettings'] = $siteSettings;
+        }
+
+        Craft::configure($type, $event->newValue);
+
+        $type->save();
 
         Event::on(
             OrganizationType::class,
@@ -78,6 +117,22 @@ class ProjectConfigHandler
     }
 
     /**
+     * @param array $config
+     * @return FieldLayout
+     */
+    protected static function createFieldLayout(array $config = [])
+    {
+        $fieldLayout = FieldLayout::createFromConfig($config);
+
+        if (isset($config['uid'])) {
+            $fieldLayout->uid = $config['uid'];
+            $fieldLayout->id = Db::idByUid(Table::FIELDLAYOUTS, $config['uid']);
+        }
+
+        return $fieldLayout;
+    }
+
+    /**
      * @param ConfigEvent $event
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
@@ -96,13 +151,13 @@ class ProjectConfigHandler
         // Get the UID that was matched in the config path
         $uid = $event->tokenMatches[0];
 
-        if (null === $provider = OrganizationType::findOne([
+        if (null === $type = OrganizationType::findOne([
                 'uid' => $uid
             ])) {
             return;
         }
 
-        $provider->delete();
+        $type->delete();
 
         Event::on(
             OrganizationType::class,

@@ -13,6 +13,7 @@ use craft\helpers\Db;
 use flipbox\craft\ember\queries\CacheableActiveQuery;
 use flipbox\craft\ember\queries\UserAttributeTrait;
 use flipbox\organizations\records\UserAssociation;
+use flipbox\organizations\records\UserTypeAssociation;
 
 /**
  * @author Flipbox Factory <hello@flipboxfactory.com>
@@ -25,7 +26,8 @@ use flipbox\organizations\records\UserAssociation;
 class UserAssociationQuery extends CacheableActiveQuery
 {
     use UserAttributeTrait,
-        OrganizationAttributeTrait;
+        OrganizationAttributeTrait,
+        UserTypeAttributeTrait;
 
     /**
      * @var string|string[]|null
@@ -64,6 +66,26 @@ class UserAssociationQuery extends CacheableActiveQuery
     }
 
     /**
+     * @return string
+     */
+    protected function joinUserTypeTable(): string
+    {
+        $name = UserTypeAssociation::tableName();
+        $alias = UserTypeAssociation::tableAlias();
+
+        $table = "{$name} {$alias}";
+
+        if (!is_array($this->join) || !$this->isJoined($table)) {
+            $this->leftJoin(
+                $table,
+                '[[' . $alias . '.userId]] = [['. UserAssociation::tableAlias() .'.id]]'
+            );
+        }
+
+        return $alias;
+    }
+
+    /**
      * @inheritdoc
      * @throws QueryAbortedException
      */
@@ -79,6 +101,7 @@ class UserAssociationQuery extends CacheableActiveQuery
 
         $this->applyUserParam();
         $this->applyOrganizationParam();
+        $this->applyUserTypeParam();
 
         return parent::prepare($builder);
     }
@@ -120,6 +143,28 @@ class UserAssociationQuery extends CacheableActiveQuery
 
         $this->andWhere(
             Db::parseParam('organizationId', $this->parseOrganizationValue($this->organization))
+        );
+    }
+
+    /**
+     * @return void
+     * @throws QueryAbortedException
+     */
+    protected function applyUserTypeParam()
+    {
+        // Is the query already doomed?
+        if ($this->userType !== null && empty($this->userType)) {
+            throw new QueryAbortedException();
+        }
+
+        if (empty($this->userType)) {
+            return;
+        }
+
+        $alias = $this->joinUserTypeTable();
+
+        $this->andWhere(
+            Db::parseParam($alias . '.typeId', $this->parseUserTypeValue($this->userType))
         );
     }
 }

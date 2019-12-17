@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## Unreleased
+### Changed
+- Project config is referencing the entire field layout instead of just the field layout id.
+
+### Added
+- UserAssociation query can be filtered by user type.
+
 ## 3.0.2 - 2019-12-13
 ### Changed
 - Relaxing explicit '!==' id checks to '!='.
