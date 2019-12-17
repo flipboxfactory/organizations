@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## Unreleased
+## 3.1.0 - 2019-12-17
 ### Changed
 - Project config is referencing the entire field layout instead of just the field layout id.
 
