@@ -130,7 +130,7 @@ class OrganizationsController extends AbstractController
 
         // Allow switching between types
         Craft::$app->getView()->registerAssetBundle(OrganizationAsset::class);
-        Craft::$app->getView()->registerJs('new Craft.OrganizationTypeSwitcher();');
+        Craft::$app->getView()->registerJs('window.OrganizationTypeSwitcher = new Craft.OrganizationTypeSwitcher();');
 
         // The user select input criteria
         $variables['elementType'] = UserElement::class;
