@@ -1,7 +1,7 @@
 {
 	"name": "flipboxfactory/organizations",
 	"description": "Simple parent + child management",
-	"version": "3.1.1",
+	"version": "3.2.0",
 	"type": "craft-plugin",
 	"keywords": [
 		"flipbox",
@@ -23,9 +23,9 @@
 		"rss": "https://github.com/flipboxfactory/organizations/commits/master.atom"
 	},
 	"require": {
-		"craftcms/cms": "^3.2",
+		"craftcms/cms": ">=3.4.0",
 		"flipboxfactory/craft-ember": "^2.4.1",
-		"flipboxfactory/craft-elements-nested-index": "^2.3.1",
+		"flipboxfactory/craft-elements-nested-index": "^2.4",
 		"tightenco/collect": "^5.5"
 	},
 	"require-dev": {

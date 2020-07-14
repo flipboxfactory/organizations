@@ -1,5 +1,8 @@
 Changelog
 =========
+## 3.2.0 - 2020-07-14
+### Changed
+- Addressed minor issues w/ 3.4 styling
 
 ## 3.1.1 - 2020-01-09
 ### Added
