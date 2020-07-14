@@ -213,7 +213,8 @@ class OrganizationsController extends AbstractController
             ],
             'viewSettings' => [
                 'loadMoreElementsAction' => 'organizations/cp/user-indexes/get-more-elements',
-                'context' => 'index'
+                'context' => 'index',
+                'batchSize' => null
             ]
         ];
     }
