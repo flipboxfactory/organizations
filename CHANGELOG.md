@@ -1,5 +1,10 @@
 Changelog
 =========
+
+## Unreleased
+### Fixed
+- PSR-4 autoloading issue w/ Composer v2
+
 ## 3.2.0 - 2020-07-14
 ### Changed
 - Addressed minor issues w/ 3.4 styling
