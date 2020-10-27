@@ -1,9 +1,9 @@
 Changelog
 =========
 
-## Unreleased
+## 3.2.1 - 2020-10-27
 ### Fixed
-- PSR-4 autoloading issue w/ Composer v2
+- PSR-4 autoloading issue w/ Composer v2 [#18](https://github.com/flipboxfactory/organizations/issues/18)
 
 ## 3.2.0 - 2020-07-14
 ### Changed
