@@ -59,9 +59,9 @@ class AssociateUserToOrganization extends Action
      * @param UserAssociation $record
      * @return bool
      */
-    protected function performAction(UserAssociation $association): bool
+    protected function performAction(ActiveRecord $record): bool
     {
-        return $association->save();
+        return $record->save();
     }
 
     /**

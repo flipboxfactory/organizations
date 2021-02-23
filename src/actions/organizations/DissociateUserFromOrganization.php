@@ -11,6 +11,7 @@ namespace flipbox\organizations\actions\organizations;
 use flipbox\craft\ember\actions\records\DeleteRecordTrait;
 use flipbox\organizations\records\UserAssociation;
 use yii\base\Action;
+use yii\db\ActiveRecord;
 use yii\web\HttpException;
 
 /**
@@ -45,13 +46,13 @@ class DissociateUserFromOrganization extends Action
     }
 
     /**
-     * @param UserAssociation $association
+     * @param UserAssociation $record
      * @return bool
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
      */
-    protected function performAction(UserAssociation $association): bool
+    protected function performAction(ActiveRecord $record): bool
     {
-        return (bool) $association->delete();
+        return (bool) $record->delete();
     }
 }

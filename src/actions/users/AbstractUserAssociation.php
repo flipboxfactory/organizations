@@ -10,9 +10,8 @@ namespace flipbox\organizations\actions\users;
 
 use Craft;
 use craft\elements\User;
-use flipbox\craft\ember\actions\ManageTrait;
+use flipbox\craft\ember\actions\CheckAccessTrait;
 use flipbox\organizations\elements\Organization;
-use flipbox\organizations\records\UserAssociation;
 use yii\base\Action;
 use yii\web\HttpException;
 
@@ -22,11 +21,12 @@ use yii\web\HttpException;
  */
 abstract class AbstractUserAssociation extends Action
 {
-    use ManageTrait;
+    use CheckAccessTrait;
 
     /**
      * @inheritdoc
-     * @param UserAssociation $record
+     * @param User $user
+     * @param Organization $organization
      * @return bool
      */
     abstract protected function performAction(User $user, Organization $organization, int $sortOrder = null): bool;
@@ -116,5 +116,46 @@ abstract class AbstractUserAssociation extends Action
         }
 
         return $this->handleSuccessResponse($user);
+    }
+
+    /**
+     * HTTP success response code
+     *
+     * @return int
+     */
+    protected function statusCodeSuccess(): int
+    {
+        return $this->statusCodeSuccess ?? 200;
+    }
+
+    /**
+     * HTTP fail response code
+     *
+     * @return int
+     */
+    protected function statusCodeFail(): int
+    {
+        return $this->statusCodeFail ?? 400;
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    protected function handleSuccessResponse($data)
+    {
+        // Success status code
+        Craft::$app->getResponse()->setStatusCode($this->statusCodeSuccess());
+        return $data;
+    }
+
+    /**
+     * @param $data
+     * @return mixed
+     */
+    protected function handleFailResponse($data)
+    {
+        Craft::$app->getResponse()->setStatusCode($this->statusCodeFail());
+        return $data;
     }
 }

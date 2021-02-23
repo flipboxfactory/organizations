@@ -8,6 +8,7 @@
 
 namespace flipbox\organizations\relationships;
 
+use craft\base\ElementInterface;
 use craft\elements\db\ElementQueryInterface;
 use craft\elements\User;
 use craft\helpers\ArrayHelper;
@@ -17,7 +18,7 @@ use flipbox\organizations\queries\OrganizationQuery;
 use flipbox\organizations\queries\UserAssociationQuery;
 use flipbox\organizations\records\UserAssociation;
 use Tightenco\Collect\Support\Collection;
-use yii\db\QueryInterface;
+use yii\db\ActiveRecord;
 
 /**
  * Manages Organizations associated to Users

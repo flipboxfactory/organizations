@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 3.2.2 - 2021-02-23
+### Fixed
+- Various PHP 8 typing issues
+
 ## 3.2.1 - 2020-10-27
 ### Fixed
 - PSR-4 autoloading issue w/ Composer v2 [#18](https://github.com/flipboxfactory/organizations/issues/18)

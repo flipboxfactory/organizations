@@ -10,7 +10,6 @@ namespace flipbox\organizations\cp\actions\organization;
 
 use Craft;
 use flipbox\craft\ember\actions\CheckAccessTrait;
-use flipbox\craft\ember\actions\LookupTrait;
 use flipbox\craft\ember\actions\PopulateTrait;
 use flipbox\organizations\actions\organizations\PopulateOrganizationTrait;
 use flipbox\organizations\cp\controllers\OrganizationTabsTrait;
@@ -29,7 +28,6 @@ class SwitchType extends Action
         OrganizationTabsTrait,
         PopulateOrganizationTrait,
         PopulateTrait,
-        LookupTrait,
         CheckAccessTrait {
         populate as parentPopulate;
     }
@@ -155,4 +153,5 @@ class SwitchType extends Action
 
         return $element;
     }
+
 }
