@@ -173,7 +173,7 @@ class UserTypeQuery extends CacheableActiveQuery
      */
     protected function prepareRelationsParams()
     {
-        if (empty($this->user) && empty($this->organization)) {
+        if (is_null($this->user) && is_null($this->organization)) {
             return;
         }
 
@@ -243,7 +243,7 @@ class UserTypeQuery extends CacheableActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->user)) {
+        if (is_null($this->user)) {
             return;
         }
 
@@ -268,7 +268,7 @@ class UserTypeQuery extends CacheableActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->organization)) {
+        if (is_null($this->organization)) {
             return;
         }
 

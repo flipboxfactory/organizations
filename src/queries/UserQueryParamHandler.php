@@ -170,7 +170,7 @@ class UserQueryParamHandler extends BaseObject
             throw new QueryAbortedException();
         }
 
-        if (empty($organization)) {
+        if (is_null($organization)) {
             return;
         }
 
@@ -200,7 +200,7 @@ class UserQueryParamHandler extends BaseObject
             throw new QueryAbortedException();
         }
 
-        if (empty($type)) {
+        if (is_null($type)) {
             return;
         }
 
@@ -232,7 +232,7 @@ class UserQueryParamHandler extends BaseObject
             throw new QueryAbortedException();
         }
 
-        if (empty($state)) {
+        if (is_null($state)) {
             return;
         }
 

@@ -167,7 +167,7 @@ class OrganizationTypeQuery extends CacheableActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->organization)) {
+        if (is_null($this->organization)) {
             return;
         }
 

@@ -117,7 +117,7 @@ class UserAssociationQuery extends CacheableActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->user)) {
+        if (is_null($this->user)) {
             return;
         }
 
@@ -137,7 +137,7 @@ class UserAssociationQuery extends CacheableActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->organization)) {
+        if (is_null($this->organization)) {
             return;
         }
 
@@ -157,7 +157,7 @@ class UserAssociationQuery extends CacheableActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->userType)) {
+        if (is_null($this->userType)) {
             return;
         }
 

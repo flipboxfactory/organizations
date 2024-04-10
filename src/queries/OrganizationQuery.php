@@ -93,7 +93,7 @@ class OrganizationQuery extends ElementQuery
         // Type
         $this->applyTypeParam();
 
-        if (empty($this->user) && empty($this->userGroup) && empty($this->userType)) {
+        if (is_null($this->user) && is_null($this->userGroup) && is_null($this->userType)) {
             return;
         }
 
@@ -168,7 +168,7 @@ class OrganizationQuery extends ElementQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->user)) {
+        if (is_null($this->user)) {
             return;
         }
 
@@ -195,7 +195,7 @@ class OrganizationQuery extends ElementQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->userGroup)) {
+        if (is_null($this->userGroup)) {
             return;
         }
 
@@ -229,7 +229,7 @@ class OrganizationQuery extends ElementQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->userType)) {
+        if (is_null($this->userType)) {
             return;
         }
 
@@ -263,7 +263,7 @@ class OrganizationQuery extends ElementQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->userState)) {
+        if (is_null($this->userState)) {
             return;
         }
 
@@ -288,7 +288,7 @@ class OrganizationQuery extends ElementQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->organizationType)) {
+        if (is_null($this->organizationType)) {
             return;
         }
 

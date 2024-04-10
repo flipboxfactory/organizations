@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 3.2.3 - 2024-04-10
+### Fixed
+- Query with relations not handling the value 'false' correctly.
+
 ## 3.2.2 - 2021-02-23
 ### Fixed
 - Various PHP 8 typing issues

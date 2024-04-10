@@ -118,7 +118,7 @@ class OrganizationTypeAssociationQuery extends ActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->organizationType)) {
+        if (is_null($this->organizationType)) {
             return;
         }
 
@@ -138,7 +138,7 @@ class OrganizationTypeAssociationQuery extends ActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->organization)) {
+        if (is_null($this->organization)) {
             return;
         }
 

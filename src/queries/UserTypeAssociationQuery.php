@@ -112,7 +112,7 @@ class UserTypeAssociationQuery extends ActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->userId)) {
+        if (is_null($this->userId)) {
             return;
         }
 
@@ -132,7 +132,7 @@ class UserTypeAssociationQuery extends ActiveQuery
             throw new QueryAbortedException();
         }
 
-        if (empty($this->typeId)) {
+        if (is_null($this->typeId)) {
             return;
         }
 
