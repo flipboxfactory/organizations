@@ -71,10 +71,10 @@ class SetOrganizationUserElementTableAttributeHtml
                 break;
 
             case 'types':
-                $types = $association ? $association->getTypes() : [];
+                $types = $association ? $association->getTypes()->getCollection() : [];
 
                 $html = $label = [];
-                foreach ($types->getCollection() as $type) {
+                foreach ($types as $type) {
                     $label[] = $type->name;
                     $html[] = self::icon($type);
                 }

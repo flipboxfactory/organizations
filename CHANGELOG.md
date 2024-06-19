@@ -1,6 +1,10 @@
 Changelog
 =========
 
+## 3.2.5 - 2024-06-19
+### Fixed
+- Error when repopulating a user index after dissociating a user from an org
+
 ## 3.2.4 - 2024-06-19
 ### Fixed
 - Error when dissociating a user from an organization
