@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 3.2.4 - 2024-06-19
+### Fixed
+- Error when dissociating a user from an organization
+
+### Added
+- Element index cache is removed when a user is dissociated from an organization 
+
 ## 3.2.3 - 2024-04-10
 ### Fixed
 - Query with relations not handling the value 'false' correctly.

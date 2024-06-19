@@ -25,15 +25,12 @@ class DissociateUsersFromOrganizationAction extends ElementAction
 {
     use OrganizationAttributeTrait;
 
-    /**
-     * @return array
-     */
-    public function settingsAttributes(): array
+    public function getSettings(): array
     {
         return array_merge(
-            parent::settingsAttributes(),
+            parent::getSettings(),
             [
-                'organization'
+                'organization' => $this->getOrganizationId()
             ]
         );
     }
@@ -86,6 +83,9 @@ class DissociateUsersFromOrganizationAction extends ElementAction
 
             return false;
         }
+
+        // Invalidate caches
+        Craft::$app->getElements()->invalidateCachesForElement($organization);
 
         $this->setMessage($this->assembleSuccessMessage($userCount));
         return true;
